@@ -16,6 +16,12 @@ class Workflow extends Component {
     async componentDidMount() {
         const workflows = await this.state.signService.getWorkflows();
         const workflow = await this.state.signService.getWorkflowById(this.state.workflowName);
+        
+        console.log('workflows: ');
+        console.log(workflows);
+        console.log('workflow for ' + this.state.workflowName);
+        console.log(workflow);
+
         this.setState({
             workflows: workflows,
             workflow: workflow
@@ -27,12 +33,6 @@ class Workflow extends Component {
             <div>
                 <p>Workflow Page</p>
                 <p>Workflow name = {this.state.workflowName}</p>
-
-                <div>Id</div>
-                {this.state.workflows.map(workflow => <div>{workflow.id}</div>)}
-
-                <p></p>
-                <p>workflow Id = {this.state.workflow.id}</p>
             </div>
         );
     }

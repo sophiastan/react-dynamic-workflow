@@ -8,12 +8,14 @@ class SignService {
     }
 
     async getWorkflows() {
+        // return await this.get('http://localhost:5000/api/vehicles');
         const url = this.baseUrl + '/workflows';
         const data = await this.get(url);
         return data['userWorkflowList'];
     }
 
     async getWorkflowById(id) {
+        // return await this.get('http://localhost:5000/api/vehicles/' + id);
         const url = this.baseUrl + '/workflows/' + id;
         return await this.get(url);
     }
