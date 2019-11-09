@@ -6,8 +6,8 @@ import WorkflowForm from '../Workflow/WorkflowForm';
 
 function App() {
   return (
-    <div className="container">
-      <div>
+    <div className="container h-100">
+      <div className="h-100 justify-content-center align-items-center">
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/workflows/:name" component={WorkflowForm} />
