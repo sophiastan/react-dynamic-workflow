@@ -1,7 +1,8 @@
 class SignService {
     constructor() {
-        this.integration = "";
-        this.baseUrl = "";
+        this.integration = "3AAABLblqZhDW_2g8E7Mn0ENMEOOSPx1m-264qAe5ppbNaoUOjkcXeASUPCIDHjIuIIeP3BBcY6u9bXKzNMJ6SEbunNmjRFBR";
+        this.baseUrl = "https://api.na2.echosign.com:443";
+        this.endpoint = "/api/rest/v5";
         this.headers = {
             'Access-Token': this.integration
         }
