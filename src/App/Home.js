@@ -3,16 +3,12 @@ import React, {Component} from 'react';
 class Home extends Component {
     constructor(props) {
         super();
-
-        this.state = {
-            linkMessage: props.linkMessage
-        };
     }
 
     render() {
         return (
             <div>
-                <p>{this.state.linkMessage}</p>
+                <h3 className="text-left mt-3 ml-3">Provide url for creating agreement</h3>
             </div>
         );
     }

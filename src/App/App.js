@@ -15,7 +15,7 @@ function App() {
     return (
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/workflows/:name" component={AgreementForm} />
+        <Route path="/workflow/:name" component={AgreementForm} />
       </Switch>
     );  
   }
@@ -25,6 +25,7 @@ function App() {
     return (
         <Switch>
           <Route exact path="/" component={DynamicWorkflow} />
+          <Route path="/workflow/:name" component={AgreementForm} />
         </Switch>
      );
   }

@@ -7,17 +7,20 @@ class AgreementForm extends Component {
     constructor(props) {
         super();
 
-        // Get workflow name from url params
-        let workflowName = props.match ? props.match.params.name : null;
-        if (!workflowName) {
-            // Get workflow name from props
-            workflowName =  props.workflowName;
+        let workflowName = null;
+        const fromUrl = props.match && props.match.params && props.match.params.name;
+        if (fromUrl) {
+            workflowName = props.match.params.name;
+        }
+        else {
+            workflowName = props.workflowName;
         }
 
         this.state = {
+            fromUrl: fromUrl,
             workflowName: workflowName,
             workflows: [],
-            workflow: '',
+            workflow: null,
             signService: new SignService(),
             workflowService: new WorkflowService(),
 
@@ -34,41 +37,69 @@ class AgreementForm extends Component {
             reminders: "",
             message: ""        
         };
-    }
+     }
 
     async componentDidMount() {
         const workflows = await this.state.signService.getWorkflows();
+        if (workflows) {
+            this.setState({
+                workflows: workflows
+            });
 
-        if (this.state.workflowName) {
-            const workflowId = this.state.workflowService.getWorkflowId(workflows, 
-                this.state.workflowName);
+            const workflow = await this.getWorkflow(workflows, this.state.workflowName);
+            this.setWorkflow(workflow);
+        }
+    }
+    
+    // Gets workflow detail for a workflow name
+    async getWorkflow(workflows, workflowName) {
+        let workflow = null;
+        if (workflowName) {
+            const workflowId = this.state.workflowService.getWorkflowId(workflows, workflowName);
     
             if (workflowId) {
-                const workflow = await this.state.signService.getWorkflowById(workflowId);
                 this.setState({
-                    workflows: workflows,
-                    workflow: workflow,
-                    workflow_id: workflowId,
-    
-                    agreement_name: workflow.agreementNameInfo.defaultValue,
-                    message: workflow.messageInfo.defaultValue
+                    workflow_id: workflowId
                 });
-    
-                console.log(this.state);
-            }    
+                workflow = await this.state.signService.getWorkflowById(workflowId);
+            }
+        }
+
+        return workflow;
+    }
+
+    // Sets workflow data
+    setWorkflow(workflow) {
+        if (workflow) {
+            const agreementName = workflow.agreementName ? workflow.agreementNameInfo.defaultValue : '';
+            const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
+            this.setState({
+                workflow: workflow,
+                agreement_name: agreementName,
+                message: message
+            });    
+        }
+        else {
+            this.setState({
+                workflow: null
+            });
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        console.log('componentDidUpdate');
-        console.log(prevProps);
-        console.log(prevState);
-        // Updates workflowName if changed
-        if (prevProps.workflowName !== this.state.workflowName) {
-            this.setState({
-                workflowName: this.state.workflowName
-            });
+    async componentDidUpdate(prevProps, prevState) {
+        if (!this.state.fromUrl && prevProps.workflowName !== this.state.workflowName) {
+            const workflow = await this.getWorkflow(this.state.workflows, this.state.workflowName);
+            this.setWorkflow(workflow);
         }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowName && state.workflowName !== props.workflowName) {
+            return {
+                workflowName: props.workflowName
+            };    
+        }
+        return null;
     }
 
     // Event handler when an input text changed
