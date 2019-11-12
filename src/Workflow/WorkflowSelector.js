@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import AgreementForm from './AgreementForm';
 import SignService from '../Services/SignService';
 
-class DynamicWorkflow extends Component {
+class WorkflowSelector extends Component {
 
     constructor(props) {
-        super();
+        super(props);
         this.state = {
             signService: new SignService(),
-            workflowName: "",
+            workflow_id: null,
             workflows: []
         };
     }
@@ -22,13 +22,13 @@ class DynamicWorkflow extends Component {
     }
 
     onWorkflowChanged = (event) => {
-        const displayName = event.target.value;
+        const workflow_id = event.target.value;
         this.setState({
-            workflowName: displayName
+            workflow_id: workflow_id
         })
    }
 
-    runWorkflow() {
+    runWorkflow = (event) => {
     }
 
     render() {
@@ -49,7 +49,7 @@ class DynamicWorkflow extends Component {
                                             {
                                                 this.state.workflows ? this.state.workflows.map(
                                                     workflow =>
-                                                    <option key={workflow.name} value={workflow.displayName}>
+                                                    <option key={workflow.name} value={workflow.workflowId}>
                                                         {workflow.displayName}
                                                     </option>
                                                 ) : null
@@ -65,7 +65,7 @@ class DynamicWorkflow extends Component {
                     </div>
                 </div>
                 <div id="workflow_form_bottom">
-                    <AgreementForm workflowName={this.state.workflowName}></AgreementForm>
+                    <AgreementForm workflow_id={this.state.workflow_id}></AgreementForm>
                 </div>
             </div>
         </div>
@@ -73,4 +73,4 @@ class DynamicWorkflow extends Component {
     }
 }
 
-export default DynamicWorkflow;
+export default WorkflowSelector;
