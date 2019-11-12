@@ -23,9 +23,12 @@ class SignService {
     }
 
     // Gets a workflow detail
-    async getWorkflowById(id) {
-        const url = `${this.baseUrl}/workflows/${id}`;
-        return await this.get(url);    
+    async getWorkflowById(workflow_id) {
+        if (workflow_id) {
+            const url = `${this.baseUrl}/workflows/${workflow_id}`;
+            return await this.get(url);        
+        }
+        return null;
     }
 
     // Posts an agreement for a workflow
