@@ -59,17 +59,17 @@ class AgreementForm extends Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        console.log('componentDidUpdate');
-        console.log(prevProps);
-        console.log(prevState);
-        // Updates workflowName if changed
-        if (prevProps.workflowName !== this.state.workflowName) {
-            this.setState({
-                workflowName: this.state.workflowName
-            });
-        }
-    }
+    // componentDidUpdate(prevProps, prevState) {
+    //     console.log('componentDidUpdate');
+    //     console.log(prevProps);
+    //     console.log(prevState);
+    //     // Updates workflowName if changed
+    //     if (prevProps.workflowName !== this.state.workflowName) {
+    //         this.setState({
+    //             workflowName: this.state.workflowName
+    //         });
+    //     }
+    // }
 
     // Event handler when an input text changed
     onInputChanged = (event) => {
@@ -109,8 +109,17 @@ class AgreementForm extends Component {
                             <div>
                                 <h3>{this.state.workflow.description}</h3>
                             </div>
-                            <div className="form_hidden" id="recipient_section"></div>
-                            <div className="form_hidden" id="cc_section"></div>
+                            <div className="add_border_bottom" id="recipient_group_id">
+                                <h3 className="recipient_label">INNERHTML</h3>
+                                <input type="text" id="recipient_id" name="recipient_id" className="recipient_form_input" placeholder="Enter Recipient's Email"></input>
+                            </div>
+                            <div id="cc_div_id" className="add_border_bottom">
+                                <h3 className="recipient_label">CC</h3>
+                                <input type="text" id="cc_id" className="recipient_form_input" 
+                                    placeholder="Enter Cc's Email"
+                                    onChange={this.onInputChanged}>
+                                </input>
+                            </div>
                         </div>
                         <div className="col-lg-12" id="bottom_form_bottom">
                             <div className="row">
@@ -136,7 +145,17 @@ class AgreementForm extends Component {
                                         <div id="upload_header">
                                             <h3 id="upload_header_label" className="recipient_label">Files</h3>
                                         </div>
-                                        <div id="upload_body"></div>
+                                        <div id="upload_body">
+                                            <div id="file_info_filename" className="file_info_div row">
+                                                <div className="col-lg-4">
+                                                    <div className="custom-file" id="upload_filename">Upload Document</div>
+                                                </div>
+                                                <div className="col-lg-8">
+                                                    <input className="custom-file-input" id="logo_filename" type="file"></input>
+                                                    <h4 className="custom-file-label text-truncate">Please Upload A File</h4>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div>
                                         <div id="merge_header">
@@ -148,9 +167,39 @@ class AgreementForm extends Component {
                                 <div className="col-lg-5">
                                     <div className="option_wrapper">
                                         <div id="options" className="col-lg-12">
-                                            <div className="form_hidden" id="send_options_section"></div>
-                                            <div className="form_hidden" id="deadline_section"></div>
-                                            <div className="form_hidden" id="reminder_section"></div>
+                                            <div className="add_border_bottom" id="pass_div">
+                                                <input type="checkbox" name="pass_checkbox" id="pass_checkbox"></input>
+                                                <label className="checkbox_input" id="pass_checkbox">Password Required</label>
+                                                <div id="sub_pass_div" className="add_border_bottom">
+                                                    <h3 className="recipient_label">Password must contain 1 to 32 characters.</h3>
+                                                    <input type="password" className="recipient_form_input" maxLength="32" placeholder="Password"></input>
+                                                    <input type="password" className="recipient_form_input" maxLength="32" placeholder="Confirm Password"></input>
+                                                    <input type="checkbox" name="input_checkbox" value="true" id="input_checkbox"></input>
+                                                    <label className="checkbox_input" id="input_checkbox">Show Password</label>
+                                                    <h3 className="recipient_label error_msg">Password Requirement Not Met</h3>
+                                                </div>
+                                            </div>
+                                            <div id="deadline_div" className="add_border_bottom">
+                                                <input type="checkbox" name="deadline_checkbox" id="deadline_checkbox"></input>
+                                                <label className="checkbox_input" id="deadline_checkbox">Completion Deadline</label>
+                                                <div id="sub_deadline_div" className="add_border_bottom">
+                                                    <input type="date" name="deadline_input" id="deadline_input" className="recipient_form_input"></input>
+                                                </div>
+                                            </div>
+                                            <div className="add_border_bottom" id="reminder_div">
+                                                <input type="checkbox" name="reminder_checkbox" id="reminder_checkbox"></input>
+                                                <label className="checkbox_input" id="reminder_checkbox">Set Reminder</label>
+                                                <div id="sub_reminder_div" className="add_border_bottom">
+                                                    <select id="reminder_dropdown">
+                                                        <option value="DAILY_UNTIL_SIGNED">Every day</option>
+                                                        <option value="WEEKLY_UNTIL_SIGNED">Every week</option>
+                                                        <option value="WEEKDAILY_UNTIL_SIGNED">Every business day</option>
+                                                        <option value="EVERY_OTHER_DAY_UNTIL_SIGNED">Every other day</option>
+                                                        <option value="EVERY_THIRD_DAY_UNTIL_SIGNED">Every third day</option>
+                                                        <option value="EVERY_FIFTH_DAY_UNTIL_SIGNED">Every fifth day</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
