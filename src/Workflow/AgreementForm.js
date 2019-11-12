@@ -1,31 +1,17 @@
 import React, {Component} from 'react';
 
 import SignService from '../Services/SignService';
-import WorkflowService from '../Services/WorkflowService';
 
 class AgreementForm extends Component {
     constructor(props) {
-        super();
-
-        let workflowName = null;
-        const fromUrl = props.match && props.match.params && props.match.params.name;
-        if (fromUrl) {
-            workflowName = props.match.params.name;
-        }
-        else {
-            workflowName = props.workflowName;
-        }
+        super(props);
 
         this.state = {
-            fromUrl: fromUrl,
-            workflowName: workflowName,
-            workflows: [],
             workflow: null,
             signService: new SignService(),
-            workflowService: new WorkflowService(),
 
             // Agreement data
-            workflow_id: "",
+            workflow_id: props.workflowId,
             agreement_name: "",
             file_infos: [],
             recipients_list: [],
@@ -40,34 +26,10 @@ class AgreementForm extends Component {
      }
 
     async componentDidMount() {
-        const workflows = await this.state.signService.getWorkflows();
-        if (workflows) {
-            this.setState({
-                workflows: workflows
-            });
-
-            const workflow = await this.getWorkflow(workflows, this.state.workflowName);
-            this.setWorkflow(workflow);
-        }
+        const workflow = await this.state.signService.getWorkflowById(this.state.workflow_id);
+         this.setWorkflow(workflow);
     }
     
-    // Gets workflow detail for a workflow name
-    async getWorkflow(workflows, workflowName) {
-        let workflow = null;
-        if (workflowName) {
-            const workflowId = this.state.workflowService.getWorkflowId(workflows, workflowName);
-    
-            if (workflowId) {
-                this.setState({
-                    workflow_id: workflowId
-                });
-                workflow = await this.state.signService.getWorkflowById(workflowId);
-            }
-        }
-
-        return workflow;
-    }
-
     // Sets workflow data
     setWorkflow(workflow) {
         if (workflow) {
@@ -80,27 +42,31 @@ class AgreementForm extends Component {
             });    
         }
         else {
-            this.setState({
-                workflow: null
-            });
+            if (workflow !== this.state.workflow) {
+                this.setState({
+                    workflow: workflow
+                });
+    
+            }
         }
     }
 
     async componentDidUpdate(prevProps, prevState) {
-        if (!this.state.fromUrl && prevProps.workflowName !== this.state.workflowName) {
-            const workflow = await this.getWorkflow(this.state.workflows, this.state.workflowName);
+        if (prevProps.workflow_id !== this.state.workflow_id) {
+            const workflow = await this.state.signService.getWorkflowById(this.state.workflow_id);
             this.setWorkflow(workflow);
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.workflowName && state.workflowName !== props.workflowName) {
+        if (state.workflow_id !== props.workflow_id) {
             return {
-                workflowName: props.workflowName
+                workflow_id: props.workflow_id
             };    
         }
         return null;
     }
+
 
     // Event handler when an input text changed
     onInputChanged = (event) => {

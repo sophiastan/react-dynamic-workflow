@@ -2,8 +2,8 @@ import React from 'react';
 import {Switch, Route} from 'react-router-dom';
 
 import Home from './Home';
-import AgreementForm from '../Workflow/AgreementForm';
-import DynamicWorkflow from '../Workflow/DynamicWorkflow';
+import WorkflowSelector from '../Workflow/WorkflowSelector';
+import SpecificWorkflow from '../Workflow/SpecificWorkflow';
 import ConfigService from '../Services/ConfigService';
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
     return (
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/workflow/:name" component={AgreementForm} />
+        <Route path="/workflow/:name" component={SpecificWorkflow} />
       </Switch>
     );  
   }
@@ -24,8 +24,8 @@ function App() {
     // Create routes that show a list of workflows in default url
     return (
         <Switch>
-          <Route exact path="/" component={DynamicWorkflow} />
-          <Route path="/workflow/:name" component={AgreementForm} />
+          <Route exact path="/" component={WorkflowSelector} />
+          <Route path="/workflow/:name" component={SpecificWorkflow} />
         </Switch>
      );
   }
