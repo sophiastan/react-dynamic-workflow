@@ -69,6 +69,32 @@ class AgreementForm extends Component {
         return null;
     }
 
+    // Event handler when checkbox checked
+    onCheck = (event) => {
+        if (document.getElementById('pass_checkbox').checked === true) {
+            document.getElementById('sub_pass_div').hidden = false;
+        }
+        else {
+            document.getElementById('sub_pass_div').hidden = true;
+            this.checked = false;
+        }
+        
+        if (document.getElementById('deadline_checkbox').checked === true) {
+            document.getElementById('sub_deadline_div').hidden = false;
+        }
+        else {
+            document.getElementById('sub_deadline_div').hidden = true;
+            this.checked = false;
+        }
+
+        if (document.getElementById('reminder_checkbox').checked === true) {
+            document.getElementById('sub_reminder_div').hidden = false;
+        }
+        else {
+            document.getElementById('sub_reminder_div').hidden = true;
+            this.checked = false;
+        }
+    }
 
     // Event handler when an input text changed
     onInputChanged = (event) => {
@@ -109,7 +135,7 @@ class AgreementForm extends Component {
                                 <h3>{this.state.workflow.description}</h3>
                             </div>
                             <div className="add_border_bottom" id="recipient_group_id">
-                                <h3 className="recipient_label">INNERHTML</h3>
+                                <h3 className="recipient_label">Signer</h3>
                                 <input type="text" id="recipient_id" name="recipient_id" className="recipient_form_input" placeholder="Enter Recipient's Email"></input>
                             </div>
                             <div id="cc_div_id" className="add_border_bottom">
@@ -166,7 +192,7 @@ class AgreementForm extends Component {
                                 <div className="col-lg-5">
                                     <div className="option_wrapper">
                                         <div id="options" className="col-lg-12">
-                                            <div className="add_border_bottom" id="pass_div">
+                                            <div className="add_border_bottom" id="pass_div" onChange={this.onCheck}>
                                                 <input type="checkbox" name="pass_checkbox" id="pass_checkbox"></input>
                                                 <label className="checkbox_input" id="pass_checkbox">Password Required</label>
                                                 <div id="sub_pass_div" className="add_border_bottom">
@@ -178,14 +204,14 @@ class AgreementForm extends Component {
                                                     <h3 className="recipient_label error_msg">Password Requirement Not Met</h3>
                                                 </div>
                                             </div>
-                                            <div id="deadline_div" className="add_border_bottom">
+                                            <div className="add_border_bottom" id="deadline_div" onChange={this.onCheck}>
                                                 <input type="checkbox" name="deadline_checkbox" id="deadline_checkbox"></input>
                                                 <label className="checkbox_input" id="deadline_checkbox">Completion Deadline</label>
                                                 <div id="sub_deadline_div" className="add_border_bottom">
                                                     <input type="date" name="deadline_input" id="deadline_input" className="recipient_form_input"></input>
                                                 </div>
                                             </div>
-                                            <div className="add_border_bottom" id="reminder_div">
+                                            <div className="add_border_bottom" id="reminder_div" onChange={this.onCheck}>
                                                 <input type="checkbox" name="reminder_checkbox" id="reminder_checkbox"></input>
                                                 <label className="checkbox_input" id="reminder_checkbox">Set Reminder</label>
                                                 <div id="sub_reminder_div" className="add_border_bottom">
@@ -204,7 +230,7 @@ class AgreementForm extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-lg-7" id="form_submit">
+                        <div className="col-lg-12" id="form_submit">
                             <button type="button" className="btn btn-primary btn-custom" 
                                 id="recipient_submit_button" onClick={this.onSubmit}>
                                 Submit

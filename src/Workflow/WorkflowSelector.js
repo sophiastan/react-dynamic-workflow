@@ -63,9 +63,11 @@ class WorkflowSelector extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div id="workflow_form_bottom">
-                    <AgreementForm workflow_id={this.state.workflow_id}></AgreementForm>
+                    <div id="workflow_form_bottom">
+                        <div id="workflow_form_bot_wrapper">
+                            <AgreementForm workflow_id={this.state.workflow_id}></AgreementForm>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
