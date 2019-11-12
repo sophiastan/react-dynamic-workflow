@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import SignService from '../Services/SignService';
+import WorkflowService from '../Services/WorkflowService';
 
 class AgreementForm extends Component {
     constructor(props) {
@@ -9,6 +10,7 @@ class AgreementForm extends Component {
         this.state = {
             workflow: null,
             signService: new SignService(),
+            workflowService: new WorkflowService(),
 
             // Agreement data
             workflow_id: props.workflowId,
