@@ -70,15 +70,59 @@ class AgreementForm extends Component {
     }
 
     // Event handler when checkbox checked
-    onCheck = (event) => {
+    onPassCheck = (event) => {
+        // Show sub pass div 
         if (document.getElementById('pass_checkbox').checked === true) {
             document.getElementById('sub_pass_div').hidden = false;
+            this.checked = true;
+
+            // Disable submit if pass empty
+            if (document.getElementById("Password").value.length === 0) {
+                document.getElementById('recipient_submit_button').disabled = true;
+            }
+            else {
+                document.getElementById('recipient_submit_button').disabled = false;
+            }
         }
+        // Hide sub pass div
         else {
             document.getElementById('sub_pass_div').hidden = true;
+            document.getElementById('recipient_submit_button').disabled = false;
             this.checked = false;
         }
-        
+    }
+
+    showPass = (event) => {
+        if(document.getElementById("input_checkbox").checked === false){
+            document.getElementById('Password').type = 'password';
+            document.getElementById('Confirm Password').type = 'password';
+        }
+        else{
+            document.getElementById('Password').type = 'text';
+            document.getElementById('Confirm Password').type = 'text';
+        }
+    }
+
+    passErrorMsg = (event) => {
+        var submit_button = document.getElementById('recipient_submit_button');
+        // Enable submit and hide error msg if input matches
+        if(document.getElementById("Password").value === document.getElementById("Confirm Password").value
+            && document.getElementById('Password').value.length > 0){
+                submit_button.disabled = false;
+                document.getElementsByClassName('recipient_label error_msg').hidden = true;
+                this.disabled_button = false;
+            }
+        // Disable submit, set trigger, and show error message if mismatch
+        else{
+            submit_button.disabled = true;
+            document.getElementsByClassName('recipient_label error_msg').hidden = false;
+            this.disabled_button = true;
+        }
+    }
+    
+    // Event handler when deadline checkbox checked
+    onDeadlineCheck = (event) => {
+        // Hide sub deadline div
         if (document.getElementById('deadline_checkbox').checked === true) {
             document.getElementById('sub_deadline_div').hidden = false;
         }
@@ -86,7 +130,11 @@ class AgreementForm extends Component {
             document.getElementById('sub_deadline_div').hidden = true;
             this.checked = false;
         }
+    }
 
+    // Event handler when reminder checkbox checked
+    onReminderCheck = (event) => {
+        // Hide sub reminder div
         if (document.getElementById('reminder_checkbox').checked === true) {
             document.getElementById('sub_reminder_div').hidden = false;
         }
@@ -192,29 +240,45 @@ class AgreementForm extends Component {
                                 <div className="col-lg-5">
                                     <div className="option_wrapper">
                                         <div id="options" className="col-lg-12">
-                                            <div className="add_border_bottom" id="pass_div" onChange={this.onCheck}>
-                                                <input type="checkbox" name="pass_checkbox" id="pass_checkbox"></input>
+                                            <div className="add_border_bottom" id="pass_div">
+                                                <input type="checkbox" name="pass_checkbox" id="pass_checkbox" onClick={this.onPassCheck}></input>
                                                 <label className="checkbox_input" id="pass_checkbox">Password Required</label>
-                                                <div id="sub_pass_div" className="add_border_bottom">
+                                                <div id="sub_pass_div" className="add_border_bottom" hidden>
                                                     <h3 className="recipient_label">Password must contain 1 to 32 characters.</h3>
-                                                    <input type="password" className="recipient_form_input" maxLength="32" placeholder="Password"></input>
-                                                    <input type="password" className="recipient_form_input" maxLength="32" placeholder="Confirm Password"></input>
-                                                    <input type="checkbox" name="input_checkbox" value="true" id="input_checkbox"></input>
-                                                    <label className="checkbox_input" id="input_checkbox">Show Password</label>
-                                                    <h3 className="recipient_label error_msg">Password Requirement Not Met</h3>
+                                                    <input 
+                                                        type="password" 
+                                                        name="Password" 
+                                                        id="Password" 
+                                                        className="recipient_form_input" 
+                                                        maxLength="32" 
+                                                        placeholder="Password"
+                                                        onChange={this.passErrorMsg}>
+                                                    </input>
+                                                    <input 
+                                                        type="password" 
+                                                        name="Confirm Password" 
+                                                        id="Confirm Password" 
+                                                        className="recipient_form_input" 
+                                                        maxLength="32" 
+                                                        placeholder="Confirm Password"
+                                                        onChange={this.passErrorMsg}> 
+                                                    </input>
+                                                    <input type="checkbox" name="input_checkbox" value="true" id="input_checkbox" onClick={this.showPass}></input>
+                                                    <label className="checkbox_input" htmlFor="input_checkbox">Show Password</label>
+                                                    <h3 className="recipient_label error_msg" hidden>Password Requirement Not Met</h3>
                                                 </div>
                                             </div>
-                                            <div className="add_border_bottom" id="deadline_div" onChange={this.onCheck}>
+                                            <div className="add_border_bottom" id="deadline_div" onClick={this.onDeadlineCheck}>
                                                 <input type="checkbox" name="deadline_checkbox" id="deadline_checkbox"></input>
                                                 <label className="checkbox_input" id="deadline_checkbox">Completion Deadline</label>
-                                                <div id="sub_deadline_div" className="add_border_bottom">
+                                                <div id="sub_deadline_div" className="add_border_bottom" hidden>
                                                     <input type="date" name="deadline_input" id="deadline_input" className="recipient_form_input"></input>
                                                 </div>
                                             </div>
-                                            <div className="add_border_bottom" id="reminder_div" onChange={this.onCheck}>
+                                            <div className="add_border_bottom" id="reminder_div" onClick={this.onReminderCheck}>
                                                 <input type="checkbox" name="reminder_checkbox" id="reminder_checkbox"></input>
                                                 <label className="checkbox_input" id="reminder_checkbox">Set Reminder</label>
-                                                <div id="sub_reminder_div" className="add_border_bottom">
+                                                <div id="sub_reminder_div" className="add_border_bottom" hidden>
                                                     <select id="reminder_dropdown">
                                                         <option value="DAILY_UNTIL_SIGNED">Every day</option>
                                                         <option value="WEEKLY_UNTIL_SIGNED">Every week</option>
