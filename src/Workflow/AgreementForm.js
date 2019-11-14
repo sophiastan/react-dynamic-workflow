@@ -69,7 +69,7 @@ class AgreementForm extends Component {
         return null;
     }
 
-    // Event handler when checkbox checked
+    // Event handler when pass checkbox checked
     onPassCheck = (event) => {
         // Show sub pass div 
         if (document.getElementById('pass_checkbox').checked === true) {
@@ -92,6 +92,7 @@ class AgreementForm extends Component {
         }
     }
 
+    // Shows the password 
     showPass = (event) => {
         if(document.getElementById("input_checkbox").checked === false){
             document.getElementById('Password').type = 'password';
@@ -103,6 +104,7 @@ class AgreementForm extends Component {
         }
     }
 
+    // Shows password error if requirements are not met
     passErrorMsg = (event) => {
         var submit_button = document.getElementById('recipient_submit_button');
         // Enable submit and hide error msg if input matches
@@ -111,6 +113,7 @@ class AgreementForm extends Component {
                 submit_button.disabled = false;
                 document.getElementsByClassName('recipient_label error_msg').hidden = true;
                 this.disabled_button = false;
+                this.setState({pass_option: event.target.value});
             }
         // Disable submit, set trigger, and show error message if mismatch
         else{
@@ -132,6 +135,11 @@ class AgreementForm extends Component {
         }
     }
 
+    // Sets deadline date
+    onDeadlineChange = (event) => {
+        this.setState({deadline: event.target.value});
+    }
+
     // Event handler when reminder checkbox checked
     onReminderCheck = (event) => {
         // Hide sub reminder div
@@ -142,6 +150,11 @@ class AgreementForm extends Component {
             document.getElementById('sub_reminder_div').hidden = true;
             this.checked = false;
         }
+    }
+
+    // Sets reminders
+    onReminderChange = (event) => {
+        this.setState({reminders: event.target.value});
     }
 
     // Event handler when an input text changed
@@ -268,18 +281,18 @@ class AgreementForm extends Component {
                                                     <h3 className="recipient_label error_msg" hidden>Password Requirement Not Met</h3>
                                                 </div>
                                             </div>
-                                            <div className="add_border_bottom" id="deadline_div" onClick={this.onDeadlineCheck}>
-                                                <input type="checkbox" name="deadline_checkbox" id="deadline_checkbox"></input>
-                                                <label className="checkbox_input" id="deadline_checkbox">Completion Deadline</label>
+                                            <div className="add_border_bottom" id="deadline_div">
+                                                <input type="checkbox" name="deadline_checkbox" id="deadline_checkbox" onClick={this.onDeadlineCheck}></input>
+                                                <label className="checkbox_input" htmlFor="deadline_checkbox">Completion Deadline</label>
                                                 <div id="sub_deadline_div" className="add_border_bottom" hidden>
-                                                    <input type="date" name="deadline_input" id="deadline_input" className="recipient_form_input"></input>
+                                                    <input type="date" name="deadline_input" id="deadline_input" className="recipient_form_input" onChange={this.onDeadlineChange}></input>
                                                 </div>
                                             </div>
                                             <div className="add_border_bottom" id="reminder_div" onClick={this.onReminderCheck}>
                                                 <input type="checkbox" name="reminder_checkbox" id="reminder_checkbox"></input>
-                                                <label className="checkbox_input" id="reminder_checkbox">Set Reminder</label>
+                                                <label className="checkbox_input" htmlFor="reminder_checkbox">Set Reminder</label>
                                                 <div id="sub_reminder_div" className="add_border_bottom" hidden>
-                                                    <select id="reminder_dropdown">
+                                                    <select id="reminder_dropdown" onChange={this.onReminderChange}>
                                                         <option value="DAILY_UNTIL_SIGNED">Every day</option>
                                                         <option value="WEEKLY_UNTIL_SIGNED">Every week</option>
                                                         <option value="WEEKDAILY_UNTIL_SIGNED">Every business day</option>
