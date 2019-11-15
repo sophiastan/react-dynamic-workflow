@@ -4,6 +4,7 @@ import {Switch, Route} from 'react-router-dom';
 import Home from './Home';
 import WorkflowSelector from '../Workflow/WorkflowSelector';
 import SpecificWorkflow from '../Workflow/SpecificWorkflow';
+import Selector_SpecificWorkflow from '../Workflow/Selector_SpecificWorkflow';
 import ConfigService from '../Services/ConfigService';
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
     return (
         <Switch>
           <Route exact path="/" component={WorkflowSelector} />
-          <Route path="/workflow/:name" component={SpecificWorkflow} />
+          <Route path="/workflow/:name" component={Selector_SpecificWorkflow} />
         </Switch>
      );
   }

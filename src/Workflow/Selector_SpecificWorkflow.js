@@ -1,24 +1,35 @@
 import React, { Component } from 'react';
 import AgreementForm from './AgreementForm';
 import SignService from '../Services/SignService';
+import WorkflowService from '../Services/WorkflowService';
 
-class WorkflowSelector extends Component {
-
+class Selector_SpecificWorkflow extends Component {
     constructor(props) {
         super(props);
+
+        let workflowName = null;
+        if (props.match && props.match.params) {
+            workflowName = props.match.params.name;
+        }
+
         this.state = {
-            signService: new SignService(),
+            workflows: [],
+            workflowName: workflowName,
             workflow_id: null,
-            workflows: []
+            signService: new SignService(),
+            workflowService: new WorkflowService(),
         };
     }
 
     async componentDidMount() {
         const workflows = await this.state.signService.getWorkflows();
-
-        this.setState({
-            workflows: workflows
-        });
+        const workflow_id = this.state.workflowService.getWorkflowId(workflows, this.state.workflowName);
+        if (workflows) {
+            this.setState({
+                workflows: workflows,
+                workflow_id: workflow_id
+            });
+        }
     }
 
     onWorkflowChanged = (event) => {
@@ -41,8 +52,7 @@ class WorkflowSelector extends Component {
                                 <div id="workflow_selector">
                                     <form>
                                         <div className="form-group">
-                                            <label htmlFor="workflow_dropdown" id="workflow_dropdown_label">Workflow
-                                            Selector</label>
+                                            <label htmlFor="workflow_dropdown" id="workflow_dropdown_label">Workflow Selector</label>
                                             <select className="form-control" id="workflow_dropdown"
                                                 value={this.state.workflowName} onChange={this.onWorkflowChanged}>
                                                 <option value=""></option>
@@ -58,7 +68,7 @@ class WorkflowSelector extends Component {
                                         </div>
                                         <button type="button" className="btn btn-primary btn-custom" id="option_submit_button"
                                             onClick={this.runWorkflow}>Select
-                                    </button>
+                                </button>
                                     </form>
                                 </div>
                             </div>
@@ -75,4 +85,4 @@ class WorkflowSelector extends Component {
     }
 }
 
-export default WorkflowSelector;
+export default Selector_SpecificWorkflow;
