@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import SignService from '../Services/SignService';
 import WorkflowService from '../Services/WorkflowService';
@@ -12,6 +12,8 @@ class AgreementForm extends Component {
             signService: new SignService(),
             workflowService: new WorkflowService(),
 
+            date: new Date().toISOString().substr(0, 10),
+
             // Agreement data
             workflow_id: props.workflowId,
             agreement_name: "",
@@ -23,15 +25,15 @@ class AgreementForm extends Component {
             pass_option: "",
             deadline: "",
             reminders: "",
-            message: ""        
+            message: ""
         };
-     }
+    }
 
     async componentDidMount() {
         const workflow = await this.state.signService.getWorkflowById(this.state.workflow_id);
-         this.setWorkflow(workflow);
+        this.setWorkflow(workflow);
     }
-    
+
     // Sets workflow data
     setWorkflow(workflow) {
         if (workflow) {
@@ -41,14 +43,14 @@ class AgreementForm extends Component {
                 workflow: workflow,
                 agreement_name: agreementName,
                 message: message
-            });    
+            });
         }
         else {
             if (workflow !== this.state.workflow) {
                 this.setState({
                     workflow: workflow
                 });
-    
+
             }
         }
     }
@@ -64,7 +66,7 @@ class AgreementForm extends Component {
         if (state.workflow_id !== props.workflow_id) {
             return {
                 workflow_id: props.workflow_id
-            };    
+            };
         }
         return null;
     }
@@ -94,11 +96,11 @@ class AgreementForm extends Component {
 
     // Shows the password 
     showPass = (event) => {
-        if(document.getElementById("input_checkbox").checked === false){
+        if (document.getElementById("input_checkbox").checked === false) {
             document.getElementById('Password').type = 'password';
             document.getElementById('Confirm Password').type = 'password';
         }
-        else{
+        else {
             document.getElementById('Password').type = 'text';
             document.getElementById('Confirm Password').type = 'text';
         }
@@ -106,23 +108,23 @@ class AgreementForm extends Component {
 
     // Shows password error if requirements are not met
     passErrorMsg = (event) => {
-        var submit_button = document.getElementById('recipient_submit_button');
+        let submit_button = document.getElementById('recipient_submit_button');
         // Enable submit and hide error msg if input matches
-        if(document.getElementById("Password").value === document.getElementById("Confirm Password").value
-            && document.getElementById('Password').value.length > 0){
-                submit_button.disabled = false;
-                document.getElementsByClassName('recipient_label error_msg').hidden = true;
-                this.disabled_button = false;
-                this.setState({pass_option: event.target.value});
-            }
+        if (document.getElementById("Password").value === document.getElementById("Confirm Password").value
+            && document.getElementById('Password').value.length > 0) {
+            submit_button.disabled = false;
+            document.getElementById('recipient_label error_msg').hidden = true;
+            this.disabled_button = false;
+            this.setState({ pass_option: event.target.value });
+        }
         // Disable submit, set trigger, and show error message if mismatch
-        else{
+        else {
             submit_button.disabled = true;
-            document.getElementsByClassName('recipient_label error_msg').hidden = false;
+            document.getElementById('recipient_label error_msg').hidden = false;
             this.disabled_button = true;
         }
     }
-    
+
     // Event handler when deadline checkbox checked
     onDeadlineCheck = (event) => {
         // Hide sub deadline div
@@ -137,7 +139,7 @@ class AgreementForm extends Component {
 
     // Sets deadline date
     onDeadlineChange = (event) => {
-        this.setState({deadline: event.target.value});
+        this.setState({ deadline: event.target.value });
     }
 
     // Event handler when reminder checkbox checked
@@ -154,7 +156,7 @@ class AgreementForm extends Component {
 
     // Sets reminders
     onReminderChange = (event) => {
-        this.setState({reminders: event.target.value});
+        this.setState({ reminders: event.target.value });
     }
 
     // Event handler when an input text changed
@@ -162,7 +164,7 @@ class AgreementForm extends Component {
         const name = event.target.name;
         const val = event.target.value;
 
-        this.setState({[name]: val});
+        this.setState({ [name]: val });
     }
 
     // onClick event handler for submitting data
@@ -187,136 +189,137 @@ class AgreementForm extends Component {
             return (<div></div>);
         }
         return (
-        <div id="dynamic_form">
-            <div className="row">
-                <div className="col-lg-12">
-                    <form id="recipient_form" encType="multipart/form-data">
-                        <div className="col-lg-12" id="bottom_form_top">
-                            <div>
-                                <h3>{this.state.workflow.description}</h3>
-                            </div>
-                            <div className="add_border_bottom" id="recipient_group_id">
-                                <h3 className="recipient_label">Signer</h3>
-                                <input type="text" id="recipient_id" name="recipient_id" className="recipient_form_input" placeholder="Enter Recipient's Email"></input>
-                            </div>
-                            <div id="cc_div_id" className="add_border_bottom">
-                                <h3 className="recipient_label">CC</h3>
-                                <input type="text" id="cc_id" className="recipient_form_input" 
-                                    placeholder="Enter Cc's Email"
-                                    onChange={this.onInputChanged}>
-                                </input>
-                            </div>
-                        </div>
-                        <div className="col-lg-12" id="bottom_form_bottom">
-                            <div className="row">
-                                <div className="col-lg-7">
-                                    <div>
-                                        <h3 className="recipient_label">Document Name</h3>
-                                        <input type="text" id="agreement_name" name="agreement_name" 
-                                            placeholder="Enter Agreement Name" className="recipient_form_input" 
-                                            required 
-                                            value={this.state.agreement_name}
-                                            onChange={this.onInputChanged}>
-                                        </input>
-                                    </div>
-                                    <div>
-                                        <h3 className="recipient_label">Messages</h3>
-                                        <textarea id="messages_input" name="message" rows="3"
-                                            placeholder="Message" className="recipient_form_input"
-                                            value={this.state.message}
-                                            onChange={this.onInputChanged}>
-                                        </textarea>
-                                    </div>
-                                    <div>
-                                        <div id="upload_header">
-                                            <h3 id="upload_header_label" className="recipient_label">Files</h3>
-                                        </div>
-                                        <div id="upload_body">
-                                            <div id="file_info_filename" className="file_info_div row">
-                                                <div className="col-lg-4">
-                                                    <div className="custom-file" id="upload_filename">Upload Document</div>
-                                                </div>
-                                                <div className="col-lg-8">
-                                                    <input className="custom-file-input" id="logo_filename" type="file"></input>
-                                                    <h4 className="custom-file-label text-truncate">Please Upload A File</h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div id="merge_header">
-                                            <h3 id="merge_header_label" className="recipient_label">Fields</h3>                                     
-                                        </div>
-                                        <div id="merge_body"></div>
-                                    </div>
+            <div id="dynamic_form">
+                <div className="row">
+                    <div className="col-lg-12">
+                        <form id="recipient_form" encType="multipart/form-data">
+                            <div className="col-lg-12" id="bottom_form_top">
+                                <div>
+                                    <h3>{this.state.workflow.description}</h3>
                                 </div>
-                                <div className="col-lg-5">
-                                    <div className="option_wrapper">
-                                        <div id="options" className="col-lg-12">
-                                            <div className="add_border_bottom" id="pass_div">
-                                                <input type="checkbox" name="pass_checkbox" id="pass_checkbox" onClick={this.onPassCheck}></input>
-                                                <label className="checkbox_input" id="pass_checkbox">Password Required</label>
-                                                <div id="sub_pass_div" className="add_border_bottom" hidden>
-                                                    <h3 className="recipient_label">Password must contain 1 to 32 characters.</h3>
-                                                    <input 
-                                                        type="password" 
-                                                        name="Password" 
-                                                        id="Password" 
-                                                        className="recipient_form_input" 
-                                                        maxLength="32" 
-                                                        placeholder="Password"
-                                                        onChange={this.passErrorMsg}>
-                                                    </input>
-                                                    <input 
-                                                        type="password" 
-                                                        name="Confirm Password" 
-                                                        id="Confirm Password" 
-                                                        className="recipient_form_input" 
-                                                        maxLength="32" 
-                                                        placeholder="Confirm Password"
-                                                        onChange={this.passErrorMsg}> 
-                                                    </input>
-                                                    <input type="checkbox" name="input_checkbox" value="true" id="input_checkbox" onClick={this.showPass}></input>
-                                                    <label className="checkbox_input" htmlFor="input_checkbox">Show Password</label>
-                                                    <h3 className="recipient_label error_msg" hidden>Password Requirement Not Met</h3>
-                                                </div>
-                                            </div>
-                                            <div className="add_border_bottom" id="deadline_div">
-                                                <input type="checkbox" name="deadline_checkbox" id="deadline_checkbox" onClick={this.onDeadlineCheck}></input>
-                                                <label className="checkbox_input" htmlFor="deadline_checkbox">Completion Deadline</label>
-                                                <div id="sub_deadline_div" className="add_border_bottom" hidden>
-                                                    <input type="date" name="deadline_input" id="deadline_input" className="recipient_form_input" onChange={this.onDeadlineChange}></input>
-                                                </div>
-                                            </div>
-                                            <div className="add_border_bottom" id="reminder_div" onClick={this.onReminderCheck}>
-                                                <input type="checkbox" name="reminder_checkbox" id="reminder_checkbox"></input>
-                                                <label className="checkbox_input" htmlFor="reminder_checkbox">Set Reminder</label>
-                                                <div id="sub_reminder_div" className="add_border_bottom" hidden>
-                                                    <select id="reminder_dropdown" onChange={this.onReminderChange}>
-                                                        <option value="DAILY_UNTIL_SIGNED">Every day</option>
-                                                        <option value="WEEKLY_UNTIL_SIGNED">Every week</option>
-                                                        <option value="WEEKDAILY_UNTIL_SIGNED">Every business day</option>
-                                                        <option value="EVERY_OTHER_DAY_UNTIL_SIGNED">Every other day</option>
-                                                        <option value="EVERY_THIRD_DAY_UNTIL_SIGNED">Every third day</option>
-                                                        <option value="EVERY_FIFTH_DAY_UNTIL_SIGNED">Every fifth day</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div className="add_border_bottom" id="recipient_group_id">
+                                    <h3 className="recipient_label">Signer</h3>
+                                    <input type="text" id="recipient_id" name="recipient_id" className="recipient_form_input" placeholder="Enter Recipient's Email"></input>  
+                                </div>
+                                <div id="cc_div_id" className="add_border_bottom">
+                                    <h3 className="recipient_label">CC</h3>
+                                    <input type="text" id="cc_id" className="recipient_form_input"
+                                        placeholder="Enter Cc's Email"
+                                        onChange={this.onInputChanged}>
+                                    </input>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-lg-12" id="form_submit">
-                            <button type="button" className="btn btn-primary btn-custom" 
-                                id="recipient_submit_button" onClick={this.onSubmit}>
-                                Submit
+                            <div className="col-lg-12" id="bottom_form_bottom">
+                                <div className="row">
+                                    <div className="col-lg-7">
+                                        <div>
+                                            <h3 className="recipient_label">Document Name</h3>
+                                            <input type="text" id="agreement_name" name="agreement_name"
+                                                placeholder="Enter Agreement Name" className="recipient_form_input"
+                                                required
+                                                value={this.state.agreement_name}
+                                                onChange={this.onInputChanged}>
+                                            </input>
+                                        </div>
+                                        <div>
+                                            <h3 className="recipient_label">Messages</h3>
+                                            <textarea id="messages_input" name="message" rows="3"
+                                                placeholder="Message" className="recipient_form_input"
+                                                value={this.state.message}
+                                                onChange={this.onInputChanged}>
+                                            </textarea>
+                                        </div>
+                                        <div>
+                                            <div id="upload_header">
+                                                <h3 id="upload_header_label" className="recipient_label">Files</h3>
+                                            </div>
+                                            <div id="upload_body">
+                                                <div id="file_info_filename" className="file_info_div row">
+                                                    <div className="col-lg-4">
+                                                        <div className="custom-file" id="upload_filename">Upload Document</div>
+                                                    </div>
+                                                    <div className="col-lg-8">
+                                                        <input className="custom-file-input" id="logo_filename" type="file"></input>
+                                                        <h4 className="custom-file-label text-truncate">Please Upload A File</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div id="merge_header">
+                                                <h3 id="merge_header_label" className="recipient_label">Fields</h3>
+                                            </div>
+                                            <div id="merge_body"></div>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-5">
+                                        <div className="option_wrapper">
+                                            <div id="options" className="col-lg-12">
+                                                <div className="add_border_bottom" id="pass_div">
+                                                    <input type="checkbox" name="pass_checkbox" id="pass_checkbox" onClick={this.onPassCheck}></input>
+                                                    <label className="checkbox_input" id="pass_checkbox">Password Required</label>
+                                                    <div id="sub_pass_div" className="add_border_bottom" hidden>
+                                                        <h3 className="recipient_label">Password must contain 1 to 32 characters.</h3>
+                                                        <input
+                                                            type="password"
+                                                            name="Password"
+                                                            id="Password"
+                                                            className="recipient_form_input"
+                                                            maxLength="32"
+                                                            placeholder="Password"
+                                                            onChange={this.passErrorMsg}>
+                                                        </input>
+                                                        <input
+                                                            type="password"
+                                                            name="Confirm Password"
+                                                            id="Confirm Password"
+                                                            className="recipient_form_input"
+                                                            maxLength="32"
+                                                            placeholder="Confirm Password"
+                                                            onChange={this.passErrorMsg}>
+                                                        </input>
+                                                        <input type="checkbox" name="input_checkbox" value="true" id="input_checkbox" onClick={this.showPass}></input>
+                                                        <label className="checkbox_input" htmlFor="input_checkbox">Show Password</label>
+                                                        <h3 id="recipient_label error_msg" hidden>Password Requirement Not Met</h3>
+                                                    </div>
+                                                </div>
+                                                <div className="add_border_bottom" id="deadline_div">
+                                                    <input type="checkbox" name="deadline_checkbox" id="deadline_checkbox" onClick={this.onDeadlineCheck}></input>
+                                                    <label className="checkbox_input" htmlFor="deadline_checkbox">Completion Deadline</label>
+                                                    <div id="sub_deadline_div" className="add_border_bottom" hidden>
+                                                        <input type="date" name="deadline_input" id="deadline_input" value={this.state.date}
+                                                            className="recipient_form_input" onChange={this.onDeadlineChange}></input>
+                                                    </div>
+                                                </div>
+                                                <div className="add_border_bottom" id="reminder_div" onClick={this.onReminderCheck}>
+                                                    <input type="checkbox" name="reminder_checkbox" id="reminder_checkbox"></input>
+                                                    <label className="checkbox_input" htmlFor="reminder_checkbox">Set Reminder</label>
+                                                    <div id="sub_reminder_div" className="add_border_bottom" hidden>
+                                                        <select id="reminder_dropdown" onChange={this.onReminderChange}>
+                                                            <option value="DAILY_UNTIL_SIGNED">Every day</option>
+                                                            <option value="WEEKLY_UNTIL_SIGNED">Every week</option>
+                                                            <option value="WEEKDAILY_UNTIL_SIGNED">Every business day</option>
+                                                            <option value="EVERY_OTHER_DAY_UNTIL_SIGNED">Every other day</option>
+                                                            <option value="EVERY_THIRD_DAY_UNTIL_SIGNED">Every third day</option>
+                                                            <option value="EVERY_FIFTH_DAY_UNTIL_SIGNED">Every fifth day</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-lg-12" id="form_submit">
+                                <button type="button" className="btn btn-primary btn-custom"
+                                    id="recipient_submit_button" onClick={this.onSubmit}>
+                                    Submit
                             </button>
-                        </div>
-                    </form>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
         );
     }
 }
