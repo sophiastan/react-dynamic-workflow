@@ -169,13 +169,16 @@ class AgreementForm extends Component {
                                         </div>
                                     )
                                 }
-                                <div id="cc_div_id" className="add_border_bottom">
-                                    <h3 className="recipient_label">CC</h3>
-                                    <input type="text" id="cc_id" className="recipient_form_input"
-                                        placeholder="Enter Cc's Email"
-                                        onChange={this.onTextChanged}>
-                                    </input>
-                                </div>
+                                {
+                                    this.state.workflow.ccsListInfo.map((cc, index) =>
+                                        <div className="add_border_bottom" id="cc_div_id" key={index}>
+                                            <h3 className="recipient_label">{cc.label}</h3>
+                                            <input type="text" id="cc_id" name="cc_id"
+                                                className="recipient_form_input" placeholder="Enter Cc's Email"
+                                                value={cc.defaultValue} onChange={this.onEmailChanged}></input>
+                                        </div>
+                                    )
+                                }
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">
                                 <div className="row">
@@ -202,22 +205,43 @@ class AgreementForm extends Component {
                                                 <h3 id="upload_header_label" className="recipient_label">Files</h3>
                                             </div>
                                             <div id="upload_body">
-                                                <div id="file_info_filename" className="file_info_div row">
-                                                    <div className="col-lg-4">
-                                                        <div className="custom-file" id="upload_filename">Upload Document</div>
-                                                    </div>
-                                                    <div className="col-lg-8">
-                                                        <input className="custom-file-input" id="logo_filename" type="file"></input>
-                                                        <h4 className="custom-file-label text-truncate">Please Upload A File</h4>
-                                                    </div>
-                                                </div>
+                                                {
+                                                    this.state.workflow.fileInfos.map((file, index) => 
+                                                        <div className="file_info_div row" id={`file_info_${file.name}`} key={index}>
+                                                            <div className="col-lg-4">
+                                                                <h3>{file.label}</h3>
+                                                            </div>
+                                                            <div className="col-lg-8">
+                                                                <div className="custom-file" id={`upload_${file.name}`}>
+                                                                    <input type="file" className="custom-file-input" 
+                                                                        id={`logo_${file.name}`}></input>
+                                                                    <h4 className="custom-file-label text-truncate">Please Upload A File</h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                }
                                             </div>
                                         </div>
                                         <div>
                                             <div id="merge_header">
                                                 <h3 id="merge_header_label" className="recipient_label">Fields</h3>
                                             </div>
-                                            <div id="merge_body"></div>
+                                            <div id="merge_body">
+                                            {
+                                                this.state.workflow.mergeFieldsInfo.map((merge, index) => 
+                                                    <div className="merge_div row" id={`merge_${merge.fieldName}`} key={index}>
+                                                        <div className="col-lg-4">
+                                                            <h3>{merge.displayName}</h3>
+                                                        </div>
+                                                        <div className="col-lg-8">
+                                                            <input type="text" className="merge_input" value={merge.defaultValue}
+                                                                id={`merge_input_${merge.fieldName}`} onChange={this.onTextChanged}></input>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="col-lg-5">
