@@ -15,6 +15,7 @@ class AgreementForm extends Component {
             hasPasswordChecked: false,
             hasDeadlineChecked: false,
             hasReminderChecked: false,
+            showPasswordChecked: false,
 
             date: new Date().toISOString().substr(0, 10),
 
@@ -46,6 +47,7 @@ class AgreementForm extends Component {
             this.setState({
                 workflow: workflow,
                 agreement_name: agreementName,
+                recipients_list: workflow.recipientsListInfo,
                 message: message
             });
         }
@@ -73,18 +75,6 @@ class AgreementForm extends Component {
             };
         }
         return null;
-    }
-
-    // Shows the password 
-    showPass = (event) => {
-        if (document.getElementById("input_checkbox").checked === false) {
-            document.getElementById('password').type = 'password';
-            document.getElementById('confirm_password').type = 'password';
-        }
-        else {
-            document.getElementById('password').type = 'text';
-            document.getElementById('confirm_password').type = 'text';
-        }
     }
 
     // Sets reminders
@@ -115,12 +105,23 @@ class AgreementForm extends Component {
         this.setState({ [event.target.name]: event.target.checked });
     }
 
-    // Event handler when an input text changed
-    onEmailChanged = (event) => {
-        // const name = event.target.name;
-        // const val = event.target.value;
+    // Event handler when an item in the list changed
+    onEmailChanged = (event, index) => {
+        const val = event.target.value;
+        this.setState(state => {
+            const list = state.recipients_list.map((item, i) => {
+                if (i === index) {
+                    item.defaultValue = val;
+                    return item;
+                } else {
+                    return item;
+                }
+            });
 
-        // this.setState({ [name]: val });
+            return {
+                recipients_list: list
+            }
+        });
     }
 
 
@@ -143,6 +144,7 @@ class AgreementForm extends Component {
 
     render() {
         const isSubmitEnabled = this.isPasswordValid();
+        const passwordType = this.state.showPasswordChecked ? "text" : "password";
         if (!this.state.workflow) {
             return (<div></div>);
         }
@@ -156,12 +158,14 @@ class AgreementForm extends Component {
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
                                 {
-                                    this.state.workflow.recipientsListInfo.map((recipient, index) =>
+                                    this.state.recipients_list.map((recipient, index) =>
                                         <div className="add_border_bottom" id="recipient_group_id" key={index}>
                                             <h3 className="recipient_label">{recipient.label}</h3>
                                             <input type="text" id="recipient_id" name="recipient_id"
                                                 className="recipient_form_input" placeholder="Enter Recipient's Email"
-                                                value={recipient.defaultValue} onChange={this.onEmailChanged}></input>
+                                                value={recipient.defaultValue} 
+                                                onChange={(event) => this.onEmailChanged(event, index)}>
+                                            </input>
                                         </div>
                                     )
                                 }
@@ -227,7 +231,7 @@ class AgreementForm extends Component {
                                                         <div id="sub_pass_div" className="add_border_bottom">
                                                             <h3 className="recipient_label">Password must contain 1 to 32 characters.</h3>
                                                             <input
-                                                                type="password"
+                                                                type={passwordType}
                                                                 name="pass_option"
                                                                 id="password"
                                                                 className="recipient_form_input"
@@ -236,7 +240,7 @@ class AgreementForm extends Component {
                                                                 onChange={this.onTextChanged}>
                                                             </input>
                                                             <input
-                                                                type="password"
+                                                                type={passwordType}
                                                                 name="confirm_pass_option"
                                                                 id="confirm_password"
                                                                 className="recipient_form_input"
@@ -244,7 +248,7 @@ class AgreementForm extends Component {
                                                                 placeholder="Confirm Password"
                                                                 onChange={this.onTextChanged}>
                                                             </input>
-                                                            <input type="checkbox" name="input_checkbox" value="true" id="input_checkbox" onClick={this.showPass}></input>
+                                                            <input type="checkbox" name="showPasswordChecked" id="input_checkbox" onClick={this.onCheckboxChanged}></input>
                                                             <label className="checkbox_input" htmlFor="input_checkbox">Show Password</label>
                                                             {
                                                                 !this.isPasswordValid() &&
