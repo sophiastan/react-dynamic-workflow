@@ -43,7 +43,7 @@ class SignService {
         const libraryId = await this.getLibraryDocuments();
     }
 
-    // Posts an agreement for a workflow
+    // Posts an agreement for a workflow -> /workflows/{workflowId}/agreements
     async postWorkflowAgreement(workflowId, body) {
         const url = `${this.baseUrl}/workflows/${workflowId}/agreements`;
         return await this.post(url, body);
