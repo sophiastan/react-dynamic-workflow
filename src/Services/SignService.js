@@ -30,11 +30,37 @@ class SignService {
         }
         return null;
     }
+    
+    // Gets library documents -> /libraryDocuments
+    async getLibraryDocuments() {
+        const url = `${this.baseUrl}/libraryDocuments`;
+        return await this.get(url);
+    }
+
+    // Get details of library document -> /libraryDocuments/{libraryDocumentId}
+    async getLibraryDocumentIds() {
+        const url = `${this.baseUrl}/libraryDocuments/:id`;
+        const libraryId = await this.getLibraryDocuments();
+    }
 
     // Posts an agreement for a workflow
-    async postAgreement(workflowId, body) {
+    async postWorkflowAgreement(workflowId, body) {
         const url = `${this.baseUrl}/workflows/${workflowId}/agreements`;
         return await this.post(url, body);
+    }
+
+    async postTransient(file) {
+        const url = `${this.baseUrl}/transientDocuments`;
+
+        // const selectedFile;
+        // const fileToLoad = selectedFile[0];
+
+        // const formData = new FormData();
+        // formData.append('File-Name', fileToLoad.name);
+        // formData.append('File', fileToLoad);
+        // formData.append('Mime-Type', fileToLoad.type);
+
+        // return await this.post(url, formData, this.postHeaders);
     }
  
     // Gets content from Sign API

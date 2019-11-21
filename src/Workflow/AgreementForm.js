@@ -21,6 +21,7 @@ class AgreementForm extends Component {
 
             // Agreement data
             workflow_id: props.workflowId,
+            transient_id: props.transientDocumentId,
             agreement_name: "",
             file_infos: [],
             recipients_list: [],
@@ -47,16 +48,17 @@ class AgreementForm extends Component {
             this.setState({
                 workflow: workflow,
                 agreement_name: agreementName,
-                recipients_list: workflow.recipientsListInfo,
-                message: message
+                message: message,
+                file_infos: workflow.fileInfos,
+                recipients_list: workflow.recipientsListInfo,   
+                merge_field_group: workflow.mergeFieldsInfo
             });
         }
         else {
             if (workflow !== this.state.workflow) {
                 this.setState({
-                    workflow: workflow
+                    workflow: workflow  
                 });
-
             }
         }
     }
@@ -108,12 +110,18 @@ class AgreementForm extends Component {
     // Event handler when an item in the list changed
     onEmailChanged = (event, index) => {
         const val = event.target.value;
+        const className = event.target.className;
         this.setState(state => {
             const list = state.recipients_list.map((item, i) => {
                 if (i === index) {
                     item.defaultValue = val;
                     return item;
-                } else {
+                } 
+                else if (item !== "undefined") {
+                    item.className = className + " predefined_input";
+                    return item;
+                }
+                else {
                     return item;
                 }
             });
@@ -124,6 +132,91 @@ class AgreementForm extends Component {
         });
     }
 
+    // Event handler when an item in the list changed
+    onFieldChanged = (event, index) => {
+        const val = event.target.value;
+        const className = event.target.className;
+        this.setState(state => {
+            const list = state.merge_field_group.map((item, i) => {
+                if (i === index) {
+                    item.defaultValue = val;
+                    return item;
+                } 
+                else if (item !== "undefined") {
+                    item.className = className + " predefined_input";
+                    return item;
+                }
+                else {
+                    return item;
+                }
+            });
+
+            return {
+                merge_field_group: list
+            }
+        });
+    }
+
+    onFileUpload = (event) => {
+        let file = event.target.files[0];
+        console.log(file.name);
+
+        let fileList = this.state.file_infos;
+        this.setState({ file_infos: this.state.file_infos.push([file]) });
+        console.log(fileList);
+        console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['workflowLibDoc']);
+        console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['label']);
+
+        // this.setState({ file_infos: this.state.file_infos.concat([file]) });
+        // this.setState({file_infos: file})
+        // console.log(this.state.file_infos);
+
+        // const docId = this.state.signService.postTransient(file).transientDocumentId;
+        // console.log(docId);
+
+        // const file_name = event.target.files[0].name;
+        // document.getElementById('upload_label').innerText = file_name;
+        // let file = event.target.files[0];
+        // this.setState(state => {
+        //     const list = state.file_infos.map((item, i) => {
+        //         if (i === index) {
+        //             // item = file;
+                    
+        //             // document.getElementById('upload_label').innerText = event.target.files[i].name;
+        //             return item;
+        //         } 
+        //         else {
+        //             return item;
+        //         }
+        //     });
+
+        //     return {
+        //         file_infos: list
+                
+        //     }
+        // });
+
+        // for (let i = 0; i < fileList; i++) {
+        //     if (fileList[i]['workflowLibraryDocumentSelectorList'] !== null) {
+        //         this.fileList.push(
+        //             {
+        //                 "name": fileList[i]['workflowLibraryDocumentSelectorList'][0]['label'],
+        //                 "workflowLibraryDocumentId": fileList[i]['workflowLibraryDocumentSelectorList'][0]['workflowLibDoc']
+        //             }
+        //         )
+        //     }
+
+        //     else if(fileList[i]['transient_id'] !== null) {
+        //         this.fileList.push(
+        //             {
+        //                 "name": fileList[i]['file_name'],
+        //                 "transientDocumentId": fileList[i].transient_id
+        //             }
+        //         )
+        //     }
+        // }
+    }
+
 
     // onClick event handler for submitting data
     onSubmit = async () => {
@@ -132,7 +225,7 @@ class AgreementForm extends Component {
         console.log(agreementData);
 
         // TODO: Uncomment to submit agreement to API server
-        // const response = await this.state.signService.postAgreement(
+        // const response = await this.state.signService.postWorkflowAgreement(
         //     this.state.workflow_id, agreementData);
         // if ('url' in response) {
         //     alert('Agreement sent');
@@ -175,7 +268,7 @@ class AgreementForm extends Component {
                                             <h3 className="recipient_label">{cc.label}</h3>
                                             <input type="text" id="cc_id" name="cc_id"
                                                 className="recipient_form_input" placeholder="Enter Cc's Email"
-                                                value={cc.defaultValue} onChange={this.onEmailChanged}></input>
+                                                value={cc.defaultValue} onChange={(event) => this.onEmailChanged(event, index)}></input>
                                         </div>
                                     )
                                 }
@@ -214,8 +307,8 @@ class AgreementForm extends Component {
                                                             <div className="col-lg-8">
                                                                 <div className="custom-file" id={`upload_${file.name}`}>
                                                                     <input type="file" className="custom-file-input" 
-                                                                        id={`logo_${file.name}`}></input>
-                                                                    <h4 className="custom-file-label text-truncate">Please Upload A File</h4>
+                                                                        id={`logo_${file.name}`} onChange={this.onFileUpload}></input>
+                                                                    <h4 id="upload_label" className="custom-file-label text-truncate">Please Upload A File</h4>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -236,7 +329,7 @@ class AgreementForm extends Component {
                                                         </div>
                                                         <div className="col-lg-8">
                                                             <input type="text" className="merge_input" value={merge.defaultValue}
-                                                                id={`merge_input_${merge.fieldName}`} onChange={this.onTextChanged}></input>
+                                                                id={`merge_input_${merge.fieldName}`} onChange={(event) => this.onFieldChanged(event, index)}></input>
                                                         </div>
                                                     </div>
                                                 )
