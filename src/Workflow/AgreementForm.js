@@ -169,13 +169,6 @@ class AgreementForm extends Component {
             const list = state.file_infos.map((item, i) => {
                 if (i === index) {
                     item.file = file;
-
-                    // if (list[i]['workflowLibraryDocumentSelectorList'] !== null) {
-                    //     this.state.file_label = list[i]['workflowLibraryDocumentSelectorList'][0]['label'];
-                    // }
-                    // else {
-                    //     this.state.file_label = file.name;
-                    // }
                     return item;
                 } 
                 else {
@@ -188,35 +181,6 @@ class AgreementForm extends Component {
                 
             }
         });
-
-        console.log(this.state.file_infos);
-
-        // const fileList = this.state.file_infos;
-        // console.log("Upload Document transientDocumentId: " + fileList[1]["transientDocumentId"]);
-        // console.log("Upload Document fileName: " + fileList[1]['file_name']);
-
-        // console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['workflowLibDoc']);
-        // console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['label']);
-
-        // for (let i = 0; i < fileList; i++) {
-        //     if (fileList[i]['workflowLibraryDocumentSelectorList'] !== null) {
-        //         this.fileList.push(
-        //             {
-        //                 "name": fileList[i]['workflowLibraryDocumentSelectorList'][0]['label'],
-        //                 "workflowLibraryDocumentId": fileList[i]['workflowLibraryDocumentSelectorList'][0]['workflowLibDoc']
-        //             }
-        //         )
-        //     }
-
-        //     else if(fileList[i]['transient_id'] !== null) {
-        //         this.fileList.push(
-        //             {
-        //                 "name": fileList[i]['file_name'],
-        //                 "transientDocumentId": fileList[i].transientDocumentId
-        //             }
-        //         )
-        //     }
-        // }
     }
 
 
@@ -229,17 +193,17 @@ class AgreementForm extends Component {
         console.log(agreementData);
 
         // TODO: Uncomment to submit agreement to API server
-        // const response = await this.state.signService.postWorkflowAgreement(
-        //     this.state.workflow_id, agreementData);
+        const response = await this.state.signService.postWorkflowAgreement(
+            this.state.workflow_id, agreementData);
 
-        // // const body = JSON.stringify(response.jsonData());
+        // const body = JSON.stringify(response.jsonData());
 
-        // if ('url' in response) {
-        //     alert('Agreement sent');
-        // }
-        // else {
-        //     alert(response.message);
-        // }
+        if ('url' in response) {
+            alert('Agreement sent');
+        }
+        else {
+            alert(response.message);
+        }
     }
 
     render() {

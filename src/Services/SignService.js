@@ -44,7 +44,20 @@ class SignService {
     // Posts an agreement for a workflow -> /workflows/{workflowId}/agreements
     async postWorkflowAgreement(workflowId, body) {
         const url = `${this.baseUrl}/workflows/${workflowId}/agreements`;
-        return await this.post(url, body);
+
+        const headers = {
+            'Access-Token': this.integration,
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        };
+
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(body)
+        });
+
+        return await resp.json();
     }
 
     async postTransient(file) {
@@ -83,7 +96,7 @@ class SignService {
         const resp = await fetch(url, {
             method: 'POST',
             headers: this.headers,
-            body: JSON.stringify(body)
+            body: body
         });
 
         return await resp.json();
