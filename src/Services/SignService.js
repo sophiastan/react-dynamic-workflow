@@ -33,10 +33,12 @@ class SignService {
     }
 
     // Get details of library document -> /libraryDocuments/{libraryDocumentId}
-    async getLibraryDocumentIds() {
-        const url = `${this.baseUrl}/libraryDocuments/:id`;
-        // const libraryId = await this.getLibraryDocuments();
-        return await this.get(url);
+    async getLibraryDocumentIds(libraryDocumentId) {
+        if (libraryDocumentId) {
+            const url = `${this.baseUrl}/libraryDocuments/${libraryDocumentId}`;
+            return await this.get(url);
+        }
+        return null;     
     }
 
     // Posts an agreement for a workflow -> /workflows/{workflowId}/agreements

@@ -18,6 +18,7 @@ class AgreementForm extends Component {
             showPasswordChecked: false,
 
             date: new Date().toISOString().substr(0, 10),
+            file_label: "Please Upload A File",
 
             // Agreement data
             workflow_id: props.workflowId,
@@ -164,17 +165,19 @@ class AgreementForm extends Component {
         const transientDocumentId = transientDocument.transientDocumentId;
 
         console.log(`transientDocId = ${transientDocumentId}`);
-
-        // let fileList = this.state.file_infos;
-        // this.setState({ file_infos: this.state.file_infos.push([file]) });
-        // console.log(fileList);
-        // console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['workflowLibDoc']);
-        // console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['label']);
        
         this.setState(state => {
             const list = state.file_infos.map((item, i) => {
                 if (i === index) {
                     item.file = file;
+                    this.state.file_label = file.name;
+
+                    // if (list[i]['workflowLibraryDocumentSelectorList'] !== null) {
+                    //     this.state.file_label = list[i]['workflowLibraryDocumentSelectorList'][0]['label'];
+                    // }
+                    // else {
+                    //     this.state.file_label = file.name;
+                    // }
                     return item;
                 } 
                 else {
@@ -190,6 +193,13 @@ class AgreementForm extends Component {
 
         console.log(this.state.file_infos);
 
+        // const fileList = this.state.file_infos;
+        // console.log("Upload Document transientDocumentId: " + fileList[1]["transientDocumentId"]);
+        // console.log("Upload Document fileName: " + fileList[1]['file_name']);
+
+        // console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['workflowLibDoc']);
+        // console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['label']);
+
         // for (let i = 0; i < fileList; i++) {
         //     if (fileList[i]['workflowLibraryDocumentSelectorList'] !== null) {
         //         this.fileList.push(
@@ -204,7 +214,7 @@ class AgreementForm extends Component {
         //         this.fileList.push(
         //             {
         //                 "name": fileList[i]['file_name'],
-        //                 "transientDocumentId": fileList[i].transient_id
+        //                 "transientDocumentId": fileList[i].transientDocumentId
         //             }
         //         )
         //     }
@@ -307,7 +317,7 @@ class AgreementForm extends Component {
                                                                 <div className="custom-file" id={`upload_${file.name}`}>
                                                                     <input type="file" className="custom-file-input" 
                                                                         id={`logo_${file.name}`} onChange={(event) => this.onFileUpload(event, index)}></input>
-                                                                    <h4 id="upload_label" className="custom-file-label text-truncate">Please Upload A File</h4>
+                                                                    <h4 id="upload_label" className="custom-file-label text-truncate">{this.state.file_label}</h4>
                                                                 </div>
                                                             </div>
                                                         </div>
