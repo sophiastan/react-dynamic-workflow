@@ -18,7 +18,6 @@ class AgreementForm extends Component {
             showPasswordChecked: false,
 
             date: new Date().toISOString().substr(0, 10),
-            file_label: "Please Upload A File",
 
             // Agreement data
             workflow_id: props.workflowId,
@@ -170,7 +169,6 @@ class AgreementForm extends Component {
             const list = state.file_infos.map((item, i) => {
                 if (i === index) {
                     item.file = file;
-                    this.state.file_label = file.name;
 
                     // if (list[i]['workflowLibraryDocumentSelectorList'] !== null) {
                     //     this.state.file_label = list[i]['workflowLibraryDocumentSelectorList'][0]['label'];
@@ -225,6 +223,8 @@ class AgreementForm extends Component {
     // onClick event handler for submitting data
     onSubmit = async () => {
         const agreementData = this.state.workflowService.createAgreementData(this.state);
+        console.log("State:");
+        console.log(this.state);
         console.log('Agreement data to be submitted: ');
         console.log(agreementData);
 
@@ -308,16 +308,26 @@ class AgreementForm extends Component {
                                             </div>
                                             <div id="upload_body">
                                                 {
-                                                    this.state.workflow.fileInfos.map((file, index) => 
-                                                        <div className="file_info_div row" id={`file_info_${file.name}`} key={index}>
+                                                    this.state.file_infos.map((item, index) => 
+                                                        <div className="file_info_div row" id={`file_info_${item.name}`} key={index}>
                                                             <div className="col-lg-4">
-                                                                <h3>{file.label}</h3>
+                                                                <h3>{item.label}</h3>
                                                             </div>
                                                             <div className="col-lg-8">
-                                                                <div className="custom-file" id={`upload_${file.name}`}>
-                                                                    <input type="file" className="custom-file-input" 
-                                                                        id={`logo_${file.name}`} onChange={(event) => this.onFileUpload(event, index)}></input>
-                                                                    <h4 id="upload_label" className="custom-file-label text-truncate">{this.state.file_label}</h4>
+                                                                <div className="custom-file" id={`upload_${item.name}`}>
+                                                                    {item.workflowLibraryDocumentSelectorList ?
+                                                                    <div>
+                                                                        <h4>
+                                                                            {item.workflowLibraryDocumentSelectorList[0].label}
+                                                                        </h4>
+                                                                    </div> : 
+                                                                    <div>
+                                                                        <input type="file" className="custom-file-input" 
+                                                                            id={`logo_${item.name}`} onChange={(event) => this.onFileUpload(event, index)}></input>
+                                                                        <h4 className="custom-file-label text-truncate">
+                                                                            {item.file? item.file.name:"Please Upload A File"}</h4>
+                                                                    </div>
+                                                                    }
                                                                 </div>
                                                             </div>
                                                         </div>
