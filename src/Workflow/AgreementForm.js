@@ -169,13 +169,6 @@ class AgreementForm extends Component {
             const list = state.file_infos.map((item, i) => {
                 if (i === index) {
                     item.file = file;
-
-                    // if (list[i]['workflowLibraryDocumentSelectorList'] !== null) {
-                    //     this.state.file_label = list[i]['workflowLibraryDocumentSelectorList'][0]['label'];
-                    // }
-                    // else {
-                    //     this.state.file_label = file.name;
-                    // }
                     return item;
                 } 
                 else {
@@ -190,33 +183,6 @@ class AgreementForm extends Component {
         });
 
         console.log(this.state.file_infos);
-
-        // const fileList = this.state.file_infos;
-        // console.log("Upload Document transientDocumentId: " + fileList[1]["transientDocumentId"]);
-        // console.log("Upload Document fileName: " + fileList[1]['file_name']);
-
-        // console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['workflowLibDoc']);
-        // console.log(fileList[0]['workflowLibraryDocumentSelectorList'][0]['label']);
-
-        // for (let i = 0; i < fileList; i++) {
-        //     if (fileList[i]['workflowLibraryDocumentSelectorList'] !== null) {
-        //         this.fileList.push(
-        //             {
-        //                 "name": fileList[i]['workflowLibraryDocumentSelectorList'][0]['label'],
-        //                 "workflowLibraryDocumentId": fileList[i]['workflowLibraryDocumentSelectorList'][0]['workflowLibDoc']
-        //             }
-        //         )
-        //     }
-
-        //     else if(fileList[i]['transient_id'] !== null) {
-        //         this.fileList.push(
-        //             {
-        //                 "name": fileList[i]['file_name'],
-        //                 "transientDocumentId": fileList[i].transientDocumentId
-        //             }
-        //         )
-        //     }
-        // }
     }
 
 
@@ -229,17 +195,17 @@ class AgreementForm extends Component {
         console.log(agreementData);
 
         // TODO: Uncomment to submit agreement to API server
-        // const response = await this.state.signService.postWorkflowAgreement(
-        //     this.state.workflow_id, agreementData);
+        const response = await this.state.signService.postWorkflowAgreement(
+            this.state.workflow_id, agreementData);
 
-        // // const body = JSON.stringify(response.jsonData());
+        // const body = JSON.stringify(response.jsonData());
 
-        // if ('url' in response) {
-        //     alert('Agreement sent');
-        // }
-        // else {
-        //     alert(response.message);
-        // }
+        if ('url' in response) {
+            alert('Agreement sent');
+        }
+        else {
+            alert(response.message);
+        }
     }
 
     render() {
@@ -259,9 +225,9 @@ class AgreementForm extends Component {
                                 </div>
                                 {
                                     this.state.recipients_list.map((recipient, index) =>
-                                        <div className="add_border_bottom" id="recipient_group_id" key={index}>
+                                        <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
                                             <h3 className="recipient_label">{recipient.label}</h3>
-                                            <input type="text" id="recipient_id" name="recipient_id"
+                                            <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
                                                 className="recipient_form_input" placeholder="Enter Recipient's Email"
                                                 value={recipient.defaultValue} 
                                                 onChange={(event) => this.onEmailChanged(event, index)}>
@@ -271,9 +237,9 @@ class AgreementForm extends Component {
                                 }
                                 {
                                     this.state.workflow.ccsListInfo.map((cc, index) =>
-                                        <div className="add_border_bottom" id="cc_div_id" key={index}>
+                                        <div className="add_border_bottom" id={`cc_div_${index}`} key={index}>
                                             <h3 className="recipient_label">{cc.label}</h3>
-                                            <input type="text" id="cc_id" name="cc_id"
+                                            <input type="text" id={`cc_${index}`} name={`cc_${index}`}
                                                 className="recipient_form_input" placeholder="Enter Cc's Email"
                                                 value={cc.defaultValue} 
                                                 onChange={(event) => this.onEmailChanged(event, index)}>

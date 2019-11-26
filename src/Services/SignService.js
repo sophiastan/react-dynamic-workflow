@@ -83,7 +83,7 @@ class SignService {
         const resp = await fetch(url, {
             method: 'POST',
             headers: this.headers,
-            body: JSON.stringify(body)
+            body: body
         });
 
         return await resp.json();
