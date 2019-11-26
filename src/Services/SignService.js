@@ -1,17 +1,12 @@
 // Service for commmunicating with Sign API
 class SignService {
     constructor() {
-        this.integration = "3AAABLblqZhDW_2g8E7Mn0ENMEOOSPx1m-264qAe5ppbNaoUOjkcXeASUPCIDHjIuIIeP3BBcY6u9bXKzNMJ6SEbunNmjRFBR";
+        this.integration = "3AAABLblqZhDW_2g8E7Mn0ENMEOOSPx1m-264qAe5ppbNaoUOjkcXeASUPCIDHjIuIIeP3BBcY6u9bXKzNMJ6SEbunNmjRFBR";
         this.host = "https://api.na2.echosign.com:443";
         this.endpoint = "/api/rest/v5";
         this.baseUrl = `${this.host}${this.endpoint}`;
-        this.getHeaders = {
+        this.headers = {
             'Access-Token': this.integration
-        }
-        this.postHeaders = {
-            'Access-Token': this.integration,
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
         }
     }
 
@@ -38,9 +33,12 @@ class SignService {
     }
 
     // Get details of library document -> /libraryDocuments/{libraryDocumentId}
-    async getLibraryDocumentIds() {
-        const url = `${this.baseUrl}/libraryDocuments/:id`;
-        const libraryId = await this.getLibraryDocuments();
+    async getLibraryDocumentIds(libraryDocumentId) {
+        if (libraryDocumentId) {
+            const url = `${this.baseUrl}/libraryDocuments/${libraryDocumentId}`;
+            return await this.get(url);
+        }
+        return null;     
     }
 
     // Posts an agreement for a workflow -> /workflows/{workflowId}/agreements
@@ -52,22 +50,29 @@ class SignService {
     async postTransient(file) {
         const url = `${this.baseUrl}/transientDocuments`;
 
-        // const selectedFile;
-        // const fileToLoad = selectedFile[0];
+        const formData = new FormData();
+        formData.append('File-Name', file.name);
+        formData.append('File', file);
+        formData.append('Mime-Type', file.type);
 
-        // const formData = new FormData();
-        // formData.append('File-Name', fileToLoad.name);
-        // formData.append('File', fileToLoad);
-        // formData.append('Mime-Type', fileToLoad.type);
+        const resp = await fetch(url, {
+            method: 'POST',
+            headers: this.headers,
+            body: formData
+        });
 
-        // return await this.post(url, formData, this.postHeaders);
+        const data = await resp.json();
+
+        console.log(data);
+
+        return data;
     }
  
     // Gets content from Sign API
     async get(url) {
         const resp = await fetch(url, {
             method: 'GET',
-            headers: this.getHeaders
+            headers: this.headers
         });
 
         return await resp.json();
@@ -77,7 +82,7 @@ class SignService {
     async post(url, body) {
         const resp = await fetch(url, {
             method: 'POST',
-            headers: this.postHeaders,
+            headers: this.headers,
             body: JSON.stringify(body)
         });
 
