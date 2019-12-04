@@ -199,8 +199,6 @@ class AgreementForm extends Component {
 
             }
         });
-
-        console.log(this.state.file_infos);
     }
 
 
@@ -215,7 +213,6 @@ class AgreementForm extends Component {
         // TODO: Uncomment to submit agreement to API server
         const response = await this.state.signService.postWorkflowAgreement(
             this.state.workflow_id, agreementData);
-
 
         if ('url' in response) {
             alert('Agreement sent');
