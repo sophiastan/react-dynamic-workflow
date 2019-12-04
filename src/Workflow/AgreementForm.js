@@ -228,6 +228,7 @@ class AgreementForm extends Component {
         if (!this.state.workflow) {
             return (<div></div>);
         }
+        console.log(this.state);
         return (
             <div id="dynamic_form">
                 <div className="row">
@@ -238,6 +239,7 @@ class AgreementForm extends Component {
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
                                 {
+                                    this.state.recipients_list &&
                                     this.state.recipients_list.map((recipient, index) =>
                                         <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
                                             <h3 className="recipient_label">{recipient.label}</h3>
@@ -250,15 +252,25 @@ class AgreementForm extends Component {
                                     )
                                 }
                                 {
+                                    this.state.carbon_copy_group &&
                                     this.state.carbon_copy_group.map((cc, index) =>
-                                        <div className="add_border_bottom" id={`cc_div_${index}`} key={index}>
-                                            <h3 className="recipient_label">{cc.label}</h3>
-                                            <input type="text" id={`cc_${index}`} name={`cc_${index}`}
-                                                className="recipient_form_input" placeholder="Enter Cc's Email"
-                                                value={cc.defaultValue}
-                                                onChange={(event) => this.onCcChanged(event, index)}>
-                                            </input>
-                                        </div>
+                                        {
+                                            const items = [];
+                                            for (let i = 0; i < cc.maxListCount; i++) {
+                                                const defaultValue = i === 0 ? cc.defaultValue : "";
+                                                items.push (
+                                                    <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
+                                                        <h3 className="recipient_label">{cc.label}</h3>
+                                                        <input type="text" id={`cc_${i}`} name={`cc_${i}`}
+                                                            className="recipient_form_input" placeholder="Enter Cc's Email"
+                                                            value={defaultValue}
+                                                            onChange={(event) => this.onCcChanged(event, i)}>
+                                                        </input>
+                                                    </div>
+                                                );
+                                            }
+                                            return items;
+                                        }
                                     )
                                 }
                             </div>
@@ -316,24 +328,28 @@ class AgreementForm extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <div id="merge_header">
-                                                <h3 id="merge_header_label" className="recipient_label">Fields</h3>
-                                            </div>
-                                            <div id="merge_body">
-                                                {
-                                                    this.state.merge_field_group.map((item, index) =>
-                                                        <div className="merge_div row" id={`merge_${item.fieldName}`} key={index}>
-                                                            <div className="col-lg-4">
-                                                                <h3>{item.displayName}</h3>
-                                                            </div>
-                                                            <div className="col-lg-8">
-                                                                <input type="text" className="merge_input" value={item.defaultValue}
-                                                                    id={`merge_input_${item.fieldName}`} onChange={(event) => this.onFieldChanged(event, index)}></input>
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                }
-                                            </div>
+                                            {this.state.merge_field_group &&
+                                                <div>
+                                                    <div id="merge_header">
+                                                        <h3 id="merge_header_label" className="recipient_label">Fields</h3>
+                                                    </div>
+                                                    <div id="merge_body">
+                                                        {
+                                                            this.state.merge_field_group.map((item, index) =>
+                                                                <div className="merge_div row" id={`merge_${item.fieldName}`} key={index}>
+                                                                    <div className="col-lg-4">
+                                                                        <h3>{item.displayName}</h3>
+                                                                    </div>
+                                                                    <div className="col-lg-8">
+                                                                        <input type="text" className="merge_input" value={item.defaultValue}
+                                                                            id={`merge_input_${item.fieldName}`} onChange={(event) => this.onFieldChanged(event, index)}></input>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                     <div className="col-lg-5">
