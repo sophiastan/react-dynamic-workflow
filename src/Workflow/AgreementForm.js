@@ -111,17 +111,19 @@ class AgreementForm extends Component {
     // Event handler when an item in the list changed
     onEmailChanged = (event, index) => {
         const val = event.target.value;
-        const className = event.target.className;
         this.setState(state => {
             const list = state.recipients_list.map((item, i) => {
                 if (i === index) {
                     item.defaultValue = val;
                     return item;
                 }
-                else if (item !== "undefined") {
-                    item.className = className + " predefined_input";
-                    return item;
-                }
+                // if (i === index) {
+                //     if (item.defaultValue !== "") {
+                //         item.className = item.className + " predefined_input";
+                //     }
+                //     item.defaultValue = val;
+                //     return item;
+                // }
                 else {
                     return item;
                 }
@@ -239,7 +241,7 @@ class AgreementForm extends Component {
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
                                 {
-                                    this.state.workflow.recipientsListInfo.map((recipient, index) =>
+                                    this.state.recipients_list.map((recipient, index) =>
                                         <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
                                             <h3 className="recipient_label">{recipient.label}</h3>
                                             <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
@@ -251,7 +253,7 @@ class AgreementForm extends Component {
                                     )
                                 }
                                 {
-                                    this.state.workflow.ccsListInfo.map((cc, index) =>
+                                    this.state.carbon_copy_group.map((cc, index) =>
                                         <div className="add_border_bottom" id={`cc_div_${index}`} key={index}>
                                             <h3 className="recipient_label">{cc.label}</h3>
                                             <input type="text" id={`cc_${index}`} name={`cc_${index}`}
@@ -322,7 +324,7 @@ class AgreementForm extends Component {
                                             </div>
                                             <div id="merge_body">
                                                 {
-                                                    this.state.workflow.mergeFieldsInfo.map((item, index) =>
+                                                    this.state.merge_field_group.map((item, index) =>
                                                         <div className="merge_div row" id={`merge_${item.fieldName}`} key={index}>
                                                             <div className="col-lg-4">
                                                                 <h3>{item.displayName}</h3>
