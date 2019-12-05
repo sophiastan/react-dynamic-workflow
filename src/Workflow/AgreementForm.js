@@ -83,6 +83,7 @@ class AgreementForm extends Component {
     // Sets reminders
     onReminderChanged = (event) => {
         this.setState({ reminders: event.target.value });
+        console.log(this.state.reminders);
     }
 
     // Checks if password is required and is valid.
@@ -92,6 +93,7 @@ class AgreementForm extends Component {
             passwordValid = this.state.pass_option === this.state.confirm_pass_option &&
                 this.state.pass_option.length > 0;
         }
+
         return passwordValid;
     }
 
@@ -101,6 +103,27 @@ class AgreementForm extends Component {
         const val = event.target.value;
 
         this.setState({ [name]: val });
+    }
+
+    onDeadlineChanged = (event) => {
+        const date = event.target.value;
+        this.setState({ deadline: date });
+        // console.log(this.state.deadline);
+        console.log(date);
+    }
+
+    // Event hander when password changed
+    onPassChanged = (event) => {
+        const name = event.target.name;
+        const val = event.target.value;
+
+        const passData = {
+            "openPassword": val,
+            "protectOpen": this.isPasswordValid
+        }
+
+        console.log(this.state.pass_option);
+        this.setState({ [name]: passData });
     }
 
     // Event handler when checkbox changed
@@ -145,14 +168,14 @@ class AgreementForm extends Component {
             "email": val
         }
 
-        console.log("ccData: ");
-        console.log(ccData);
-
         this.setState(state => {
             const list = state.carbon_copy_group.map((item, i) => {
                 if (i === index) {
-                    item.defaultValue = val;
-                    return item;
+                    const cc = {
+                        "name": item.name,
+                        "emails": [ccData]
+                    }
+                    return cc;
                 }
                 else {
                     return item;
@@ -171,19 +194,13 @@ class AgreementForm extends Component {
     onFieldChanged = (event, index) => {
         const val = event.target.value;
         
-        const fieldData = {
-            "defaultValue": val,
-            "fieldName": event.target.fieldName
-        }
-
-        console.log("fieldData: ");
-        console.log(fieldData);
-
         this.setState(state => {
             const list = state.merge_field_group.map((item, i) => {
                 if (i === index) {
-                    // item.defaultValue = val;
-                    // return item;
+                    const fieldData = {
+                        "defaultValue": val,
+                        "fieldName": item.fieldName
+                    }
                     return fieldData;
                 }
                 else {
@@ -201,8 +218,11 @@ class AgreementForm extends Component {
         const file = event.target.files[0];
         const transientDocument = await this.state.signService.postTransient(file);
         const transientDocumentId = transientDocument.transientDocumentId;
+
         this.setState(state => {
             const list = state.file_infos.map((item, i) => {
+                // console.log("workflowLibDoc: ");
+                // console.log(item.workflowLibraryDocumentSelectorList[i].workflowLibDoc);
                 if (i === index) {
                     const transientData = {
                         "name": item.name,
@@ -213,6 +233,26 @@ class AgreementForm extends Component {
                 else {
                     return item;
                 }
+
+                // if (i === index) {
+                //     if (item.workflowLibraryDocumentSelectorList !== "") {
+                //         const fileData = {
+                //             "name": item.name,
+                //             "workflowLibraryDocumentId": item.workflowLibraryDocumentSelectorList[i].workflowLibDoc
+                //         }
+                //         return fileData;
+                //     }
+                //     else {
+                //         const fileData = {
+                //             "name": item.name,
+                //             "transientDocumentId": transientDocumentId
+                //         } 
+                //         return fileData;
+                //     }
+                // }
+                // else {
+                //     return item;
+                // }
             });
 
             return {
@@ -417,7 +457,7 @@ class AgreementForm extends Component {
                                                         this.state.hasDeadlineChecked &&
                                                         <div id="sub_deadline_div" className="add_border_bottom">
                                                             <input type="date" name="deadline" id="deadline_input" value={this.state.date}
-                                                                className="recipient_form_input" onChange={this.onTextChanged}></input>
+                                                                className="recipient_form_input" onChange={this.onDeadlineChanged}></input>
                                                         </div>
                                                     }
                                                 </div>
