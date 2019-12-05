@@ -111,19 +111,18 @@ class AgreementForm extends Component {
     // Event handler when an item in the list changed
     onEmailChanged = (event, index) => {
         const val = event.target.value;
-
         const emailData = {
             "email": val
         }
 
-        console.log("emailData: ");
-        console.log(emailData);
-
         this.setState(state => {
             const list = state.recipients_list.map((item, i) => {
                 if (i === index) {
-                    item.defaultValue = val;
-                    return item;
+                    const recipient = {
+                        "name": item.name,
+                        "recipients": [emailData]
+                    }
+                    return recipient;
                 }
                 else {
                     return item;
@@ -200,27 +199,16 @@ class AgreementForm extends Component {
 
     onFileUpload = async (event, index) => {
         const file = event.target.files[0];
-
         const transientDocument = await this.state.signService.postTransient(file);
         const transientDocumentId = transientDocument.transientDocumentId;
-        const transientData = {
-            "name": file.name,
-            "transientDocumentId": transientDocumentId
-        }
-
-        console.log("file: ");
-        console.log(file);
-        console.log("transientData: ");
-        console.log(transientData);
-
-        console.log(`transientDocId = ${transientDocumentId}`);
-
         this.setState(state => {
             const list = state.file_infos.map((item, i) => {
                 if (i === index) {
-                    item.file = file;
-                    // return transientData;
-                    return item;
+                    const transientData = {
+                        "name": item.name,
+                        "transientDocumentId": transientDocumentId
+                    }            
+                    return transientData;
                 }
                 else {
                     return item;
