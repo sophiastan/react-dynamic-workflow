@@ -49,10 +49,10 @@ class AgreementForm extends Component {
                 workflow: workflow,
                 agreement_name: agreementName,
                 message: message,
-                file_infos: workflow.fileInfos,
-                recipients_list: workflow.recipientsListInfo,
-                carbon_copy_group: workflow.ccsListInfo,
-                merge_field_group: workflow.mergeFieldsInfo
+                file_infos: workflow.fileInfos ? workflow.fileInfos : [],
+                recipients_list: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
+                carbon_copy_group: workflow.ccsListInfo ? workflow.ccsListInfo : [],
+                merge_field_group: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
             });
         }
         else {
@@ -111,19 +111,20 @@ class AgreementForm extends Component {
     // Event handler when an item in the list changed
     onEmailChanged = (event, index) => {
         const val = event.target.value;
+
+        const emailData = {
+            "email": val
+        }
+
+        console.log("emailData: ");
+        console.log(emailData);
+
         this.setState(state => {
             const list = state.recipients_list.map((item, i) => {
                 if (i === index) {
                     item.defaultValue = val;
                     return item;
                 }
-                // if (i === index) {
-                //     if (item.defaultValue !== "") {
-                //         item.className = item.className + " predefined_input";
-                //     }
-                //     item.defaultValue = val;
-                //     return item;
-                // }
                 else {
                     return item;
                 }
@@ -133,11 +134,21 @@ class AgreementForm extends Component {
                 recipients_list: list
             }
         });
+
+        console.log(this.state.recipients_list);
     }
 
     // Event handler when an item in the list changed
     onCcChanged = (event, index) => {
         const val = event.target.value;
+
+        const ccData = {
+            "email": val
+        }
+
+        console.log("ccData: ");
+        console.log(ccData);
+
         this.setState(state => {
             const list = state.carbon_copy_group.map((item, i) => {
                 if (i === index) {
@@ -153,16 +164,28 @@ class AgreementForm extends Component {
                 carbon_copy_group: list
             }
         });
+
+        console.log(this.state.carbon_copy_group);
     }
 
     // Event handler when an item in the list changed
     onFieldChanged = (event, index) => {
         const val = event.target.value;
+        
+        const fieldData = {
+            "defaultValue": val,
+            "fieldName": event.target.fieldName
+        }
+
+        console.log("fieldData: ");
+        console.log(fieldData);
+
         this.setState(state => {
             const list = state.merge_field_group.map((item, i) => {
                 if (i === index) {
-                    item.defaultValue = val;
-                    return item;
+                    // item.defaultValue = val;
+                    // return item;
+                    return fieldData;
                 }
                 else {
                     return item;
@@ -180,6 +203,15 @@ class AgreementForm extends Component {
 
         const transientDocument = await this.state.signService.postTransient(file);
         const transientDocumentId = transientDocument.transientDocumentId;
+        const transientData = {
+            "name": file.name,
+            "transientDocumentId": transientDocumentId
+        }
+
+        console.log("file: ");
+        console.log(file);
+        console.log("transientData: ");
+        console.log(transientData);
 
         console.log(`transientDocId = ${transientDocumentId}`);
 
@@ -187,6 +219,7 @@ class AgreementForm extends Component {
             const list = state.file_infos.map((item, i) => {
                 if (i === index) {
                     item.file = file;
+                    // return transientData;
                     return item;
                 }
                 else {
@@ -228,7 +261,7 @@ class AgreementForm extends Component {
         if (!this.state.workflow) {
             return (<div></div>);
         }
-        console.log(this.state);
+        // console.log(this.state);
         return (
             <div id="dynamic_form">
                 <div className="row">
