@@ -49,15 +49,16 @@ class AgreementForm extends Component {
                 workflow: workflow,
                 agreement_name: agreementName,
                 message: message,
-                file_infos: workflow.fileInfos,
-                recipients_list: workflow.recipientsListInfo,   
-                merge_field_group: workflow.mergeFieldsInfo
+                file_infos: workflow.fileInfos ? workflow.fileInfos : [],
+                recipients_list: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
+                carbon_copy_group: workflow.ccsListInfo ? workflow.ccsListInfo : [],
+                merge_field_group: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
             });
         }
         else {
             if (workflow !== this.state.workflow) {
                 this.setState({
-                    workflow: workflow  
+                    workflow: workflow
                 });
             }
         }
@@ -110,16 +111,18 @@ class AgreementForm extends Component {
     // Event handler when an item in the list changed
     onEmailChanged = (event, index) => {
         const val = event.target.value;
-        const className = event.target.className;
+        const emailData = {
+            "email": val
+        }
+
         this.setState(state => {
             const list = state.recipients_list.map((item, i) => {
                 if (i === index) {
-                    item.defaultValue = val;
-                    return item;
-                } 
-                else if (item !== "undefined") {
-                    item.className = className + " predefined_input";
-                    return item;
+                    const recipient = {
+                        "name": item.name,
+                        "recipients": [emailData]
+                    }
+                    return recipient;
                 }
                 else {
                     return item;
@@ -130,21 +133,58 @@ class AgreementForm extends Component {
                 recipients_list: list
             }
         });
+
+        console.log(this.state.recipients_list);
+    }
+
+    // Event handler when an item in the list changed
+    onCcChanged = (event, index) => {
+        const val = event.target.value;
+
+        const ccData = {
+            "email": val
+        }
+
+        console.log("ccData: ");
+        console.log(ccData);
+
+        this.setState(state => {
+            const list = state.carbon_copy_group.map((item, i) => {
+                if (i === index) {
+                    item.defaultValue = val;
+                    return item;
+                }
+                else {
+                    return item;
+                }
+            });
+
+            return {
+                carbon_copy_group: list
+            }
+        });
+
+        console.log(this.state.carbon_copy_group);
     }
 
     // Event handler when an item in the list changed
     onFieldChanged = (event, index) => {
         const val = event.target.value;
-        const className = event.target.className;
+        
+        const fieldData = {
+            "defaultValue": val,
+            "fieldName": event.target.fieldName
+        }
+
+        console.log("fieldData: ");
+        console.log(fieldData);
+
         this.setState(state => {
             const list = state.merge_field_group.map((item, i) => {
                 if (i === index) {
-                    item.defaultValue = val;
-                    return item;
-                } 
-                else if (item !== "undefined") {
-                    item.className = className + " predefined_input";
-                    return item;
+                    // item.defaultValue = val;
+                    // return item;
+                    return fieldData;
                 }
                 else {
                     return item;
@@ -159,18 +199,17 @@ class AgreementForm extends Component {
 
     onFileUpload = async (event, index) => {
         const file = event.target.files[0];
-
         const transientDocument = await this.state.signService.postTransient(file);
         const transientDocumentId = transientDocument.transientDocumentId;
-
-        console.log(`transientDocId = ${transientDocumentId}`);
-       
         this.setState(state => {
             const list = state.file_infos.map((item, i) => {
                 if (i === index) {
-                    item.file = file;
-                    return item;
-                } 
+                    const transientData = {
+                        "name": item.name,
+                        "transientDocumentId": transientDocumentId
+                    }            
+                    return transientData;
+                }
                 else {
                     return item;
                 }
@@ -178,7 +217,7 @@ class AgreementForm extends Component {
 
             return {
                 file_infos: list
-                
+
             }
         });
     }
@@ -187,16 +226,14 @@ class AgreementForm extends Component {
     // onClick event handler for submitting data
     onSubmit = async () => {
         const agreementData = this.state.workflowService.createAgreementData(this.state);
-        console.log("State:");
-        console.log(this.state);
+        // console.log("State:");
+        // console.log(this.state);
         console.log('Agreement data to be submitted: ');
         console.log(agreementData);
 
         // TODO: Uncomment to submit agreement to API server
         const response = await this.state.signService.postWorkflowAgreement(
             this.state.workflow_id, agreementData);
-
-        // const body = JSON.stringify(response.jsonData());
 
         if ('url' in response) {
             alert('Agreement sent');
@@ -212,6 +249,7 @@ class AgreementForm extends Component {
         if (!this.state.workflow) {
             return (<div></div>);
         }
+        // console.log(this.state);
         return (
             <div id="dynamic_form">
                 <div className="row">
@@ -222,27 +260,38 @@ class AgreementForm extends Component {
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
                                 {
+                                    this.state.recipients_list &&
                                     this.state.recipients_list.map((recipient, index) =>
-                                        <div className="add_border_bottom" id="recipient_group_id" key={index}>
+                                        <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
                                             <h3 className="recipient_label">{recipient.label}</h3>
-                                            <input type="text" id="recipient_id" name="recipient_id"
+                                            <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
                                                 className="recipient_form_input" placeholder="Enter Recipient's Email"
-                                                value={recipient.defaultValue} 
+                                                value={recipient.defaultValue}
                                                 onChange={(event) => this.onEmailChanged(event, index)}>
                                             </input>
                                         </div>
                                     )
                                 }
                                 {
-                                    this.state.workflow.ccsListInfo.map((cc, index) =>
-                                        <div className="add_border_bottom" id="cc_div_id" key={index}>
-                                            <h3 className="recipient_label">{cc.label}</h3>
-                                            <input type="text" id="cc_id" name="cc_id"
-                                                className="recipient_form_input" placeholder="Enter Cc's Email"
-                                                value={cc.defaultValue} 
-                                                onChange={(event) => this.onEmailChanged(event, index)}>
-                                            </input>
-                                        </div>
+                                    this.state.carbon_copy_group &&
+                                    this.state.carbon_copy_group.map((cc, index) =>
+                                        {
+                                            const items = [];
+                                            for (let i = 0; i < cc.maxListCount; i++) {
+                                                const defaultValue = i === 0 ? cc.defaultValue : "";
+                                                items.push (
+                                                    <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
+                                                        <h3 className="recipient_label">{cc.label}</h3>
+                                                        <input type="text" id={`cc_${i}`} name={`cc_${i}`}
+                                                            className="recipient_form_input" placeholder="Enter Cc's Email"
+                                                            value={defaultValue}
+                                                            onChange={(event) => this.onCcChanged(event, i)}>
+                                                        </input>
+                                                    </div>
+                                                );
+                                            }
+                                            return items;
+                                        }
                                     )
                                 }
                             </div>
@@ -272,7 +321,7 @@ class AgreementForm extends Component {
                                             </div>
                                             <div id="upload_body">
                                                 {
-                                                    this.state.file_infos.map((item, index) => 
+                                                    this.state.file_infos.map((item, index) =>
                                                         <div className="file_info_div row" id={`file_info_${item.name}`} key={index}>
                                                             <div className="col-lg-4">
                                                                 <h3>{item.label}</h3>
@@ -280,17 +329,17 @@ class AgreementForm extends Component {
                                                             <div className="col-lg-8">
                                                                 <div className="custom-file" id={`upload_${item.name}`}>
                                                                     {item.workflowLibraryDocumentSelectorList ?
-                                                                    <div>
-                                                                        <h4>
-                                                                            {item.workflowLibraryDocumentSelectorList[0].label}
-                                                                        </h4>
-                                                                    </div> : 
-                                                                    <div>
-                                                                        <input type="file" className="custom-file-input" 
-                                                                            id={`logo_${item.name}`} onChange={(event) => this.onFileUpload(event, index)}></input>
-                                                                        <h4 className="custom-file-label text-truncate">
-                                                                            {item.file? item.file.name:"Please Upload A File"}</h4>
-                                                                    </div>
+                                                                        <div>
+                                                                            <h4>
+                                                                                {item.workflowLibraryDocumentSelectorList[0].label}
+                                                                            </h4>
+                                                                        </div> :
+                                                                        <div>
+                                                                            <input type="file" className="custom-file-input"
+                                                                                id={`logo_${item.name}`} onChange={(event) => this.onFileUpload(event, index)}></input>
+                                                                            <h4 className="custom-file-label text-truncate">
+                                                                                {item.file ? item.file.name : "Please Upload A File"}</h4>
+                                                                        </div>
                                                                     }
                                                                 </div>
                                                             </div>
@@ -300,24 +349,28 @@ class AgreementForm extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <div id="merge_header">
-                                                <h3 id="merge_header_label" className="recipient_label">Fields</h3>
-                                            </div>
-                                            <div id="merge_body">
-                                            {
-                                                this.state.workflow.mergeFieldsInfo.map((merge, index) => 
-                                                    <div className="merge_div row" id={`merge_${merge.fieldName}`} key={index}>
-                                                        <div className="col-lg-4">
-                                                            <h3>{merge.displayName}</h3>
-                                                        </div>
-                                                        <div className="col-lg-8">
-                                                            <input type="text" className="merge_input" value={merge.defaultValue}
-                                                                id={`merge_input_${merge.fieldName}`} onChange={(event) => this.onFieldChanged(event, index)}></input>
-                                                        </div>
+                                            {this.state.merge_field_group &&
+                                                <div>
+                                                    <div id="merge_header">
+                                                        <h3 id="merge_header_label" className="recipient_label">Fields</h3>
                                                     </div>
-                                                )
+                                                    <div id="merge_body">
+                                                        {
+                                                            this.state.merge_field_group.map((item, index) =>
+                                                                <div className="merge_div row" id={`merge_${item.fieldName}`} key={index}>
+                                                                    <div className="col-lg-4">
+                                                                        <h3>{item.displayName}</h3>
+                                                                    </div>
+                                                                    <div className="col-lg-8">
+                                                                        <input type="text" className="merge_input" value={item.defaultValue}
+                                                                            id={`merge_input_${item.fieldName}`} onChange={(event) => this.onFieldChanged(event, index)}></input>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
                                             }
-                                            </div>
                                         </div>
                                     </div>
                                     <div className="col-lg-5">

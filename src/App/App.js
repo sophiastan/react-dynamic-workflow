@@ -8,6 +8,7 @@ import Selector_SpecificWorkflow from '../Workflow/Selector_SpecificWorkflow';
 import ConfigService from '../Services/ConfigService';
 
 function App() {
+  require('dotenv').config();
   const configService = new ConfigService();
 
   if (configService.hideSelector) {
