@@ -10,16 +10,17 @@ class PassOption extends Component {
             getParentState: props.getParentState,
             hasPasswordChecked: false,
             showPasswordChecked: false,
+            pass_option: "",
             confirm_pass_option: ""
         };
     }
 
     // Checks if password is required and is valid.
-    isPasswordValid = () => {
+    isPasswordValid = (password, confirmPassword) => {
         let passwordValid = true;
         if (this.state.hasPasswordChecked) {
-            passwordValid = this.state.getParentState().pass_option === this.state.confirm_pass_option &&
-            this.state.getParentState().pass_option.length > 0;
+            passwordValid = password === confirmPassword &&
+            password.length > 0;
         }
 
         return passwordValid;
@@ -27,37 +28,43 @@ class PassOption extends Component {
 
     // Event handler when checkbox changed
     onCheckboxChanged = (event) => {
-        this.setState({ [event.target.name]: event.target.checked });
+        const isChecked = event.target.checked;
+        this.setState({ [event.target.name]: isChecked });
+        this.state.setParentState({isPasswordValid: !isChecked});
     }
 
 
-    // Event handler when an input text changed
-    onTextChanged = (event) => {
+    // Event handler when password changed
+    onPassChanged = (event) => {
+        // Update state
         const name = event.target.name;
         const val = event.target.value;
 
+        const passObject = {};
+        passObject.pass_option = this.state.pass_option;
+        passObject.confirm_pass_option = this.state.confirm_pass_option;
+        passObject[name] = val;
+
         this.setState({ [name]: val });
+
+        // Update password state
+        const isPassValid = this.isPasswordValid(passObject.pass_option, passObject.confirm_pass_option);
+        console.log(`isPassValid = ${isPassValid}`);
+        this.state.setParentState({
+            isPasswordValid: isPassValid
+        });
+
+        if (isPassValid) {
+            const passData = {
+                "openPassword": val,
+                "protectOpen": isPassValid
+            };
+
+            this.state.setParentState({
+                pass_option: passData
+            });    
+        }
     }
-
-    // // Event handler when password changed
-    // onPassChanged = (event) => {
-    //     const name = event.target.name;
-    //     const val = event.target.value;
-
-    //     this.setState({ [name]: val });
-
-    //     if (this.state.pass_option !== "" && this.isPasswordValid) {
-    //         val = this.state.pass_option;
-
-    //         const passData = {
-    //             "openPassword": val,
-    //             "protectOpen": this.isPasswordValid
-    //         }
-
-    //         this.setState({ pass_option: passData });
-    //         console.log(this.state.pass_option);
-    //     }
-    // }
 
     render() {
         const passwordType = this.state.showPasswordChecked ? "text" : "password";
@@ -76,7 +83,7 @@ class PassOption extends Component {
                             className="recipient_form_input"
                             maxLength="32"
                             placeholder="Password"
-                            onChange={this.onTextChanged}>
+                            onChange={this.onPassChanged}>
                         </input>
                         <input
                             type={passwordType}
@@ -85,12 +92,12 @@ class PassOption extends Component {
                             className="recipient_form_input"
                             maxLength="32"
                             placeholder="Confirm Password"
-                            onChange={this.onTextChanged}>
+                            onChange={this.onPassChanged}>
                         </input>
                         <input type="checkbox" name="showPasswordChecked" id="input_checkbox" onClick={this.onCheckboxChanged}></input>
                         <label className="checkbox_input" htmlFor="input_checkbox">Show Password</label>
                         {
-                            !this.isPasswordValid() &&
+                            !this.state.getParentState().isPasswordValid &&
                             <h3 className="recipient_label error_msg">Password Requirement Not Met</h3>
                         }
                     </div>
