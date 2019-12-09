@@ -8,7 +8,6 @@ class Reminder extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            onCheckboxChanged: props.onCheckboxChanged,
             hasReminderChecked: false
         };
     }

@@ -8,7 +8,6 @@ class Deadline extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            onCheckboxChanged: props.onCheckboxChanged,
             hasDeadlineChecked: false,
             date: new Date().toISOString().substr(0, 10)
         };
