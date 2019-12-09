@@ -19,8 +19,8 @@ class CarbonCopy extends Component {
             "email": val
         }
 
-        this.setParentState(state => {
-            const list = this.getParentState().carbon_copy_group.map((item, i) => {
+        this.state.setParentState(state => {
+            const list = this.state.getParentState().carbon_copy_group.map((item, i) => {
                 if (i === index) {
                     const cc = {
                         "name": item.name,
@@ -38,7 +38,7 @@ class CarbonCopy extends Component {
             }
         });
 
-        console.log(this.getParentState().carbon_copy_group);
+        console.log(this.state.getParentState().carbon_copy_group);
     }
 
     render() {

@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import SignService from '../Services/SignService';
 import WorkflowService from '../Services/WorkflowService';
 
-import RecipientsList from '../Workflow/RecipientsList';
+import RecipientsList from './RecipientsList';
 import CarbonCopy from './CarbonCopy';
+import FileList from './FileList';
 
 class AgreementForm extends Component {
     constructor(props) {
@@ -207,55 +208,6 @@ class AgreementForm extends Component {
         });
     }
 
-    onFileUpload = async (event, index) => {
-        const file = event.target.files[0];
-        const transientDocument = await this.state.signService.postTransient(file);
-        const transientDocumentId = transientDocument.transientDocumentId;
-
-        this.setState(state => {
-            const list = state.file_infos.map((item, i) => {
-                // console.log("workflowLibDoc: ");
-                // console.log(item.workflowLibraryDocumentSelectorList[i].workflowLibDoc);
-                if (i === index) {
-                    const transientData = {
-                        "name": item.name,
-                        "transientDocumentId": transientDocumentId
-                    }
-                    return transientData;
-                }
-                else {
-                    return item;
-                }
-
-                // if (i === index) {
-                //     if (item.workflowLibraryDocumentSelectorList !== "") {
-                //         const fileData = {
-                //             "name": item.name,
-                //             "workflowLibraryDocumentId": item.workflowLibraryDocumentSelectorList[i].workflowLibDoc
-                //         }
-                //         return fileData;
-                //     }
-                //     else {
-                //         const fileData = {
-                //             "name": item.name,
-                //             "transientDocumentId": transientDocumentId
-                //         } 
-                //         return fileData;
-                //     }
-                // }
-                // else {
-                //     return item;
-                // }
-            });
-
-            return {
-                file_infos: list
-
-            }
-        });
-    }
-
-
     // onClick event handler for submitting data
     onSubmit = async () => {
         const agreementData = this.state.workflowService.createAgreementData(this.state);
@@ -315,39 +267,7 @@ class AgreementForm extends Component {
                                                 onChange={this.onTextChanged}>
                                             </textarea>
                                         </div>
-                                        <div>
-                                            <div id="upload_header">
-                                                <h3 id="upload_header_label" className="recipient_label">Files</h3>
-                                            </div>
-                                            <div id="upload_body">
-                                                {
-                                                    this.state.file_infos.map((item, index) =>
-                                                        <div className="file_info_div row" id={`file_info_${item.name}`} key={index}>
-                                                            <div className="col-lg-4">
-                                                                <h3>{item.label}</h3>
-                                                            </div>
-                                                            <div className="col-lg-8">
-                                                                <div className="custom-file" id={`upload_${item.name}`}>
-                                                                    {item.workflowLibraryDocumentSelectorList ?
-                                                                        <div>
-                                                                            <h4>
-                                                                                {item.workflowLibraryDocumentSelectorList[0].label}
-                                                                            </h4>
-                                                                        </div> :
-                                                                        <div>
-                                                                            <input type="file" className="custom-file-input"
-                                                                                id={`logo_${item.name}`} onChange={(event) => this.onFileUpload(event, index)}></input>
-                                                                            <h4 className="custom-file-label text-truncate">
-                                                                                {item.file ? item.file.name : "Please Upload A File"}</h4>
-                                                                        </div>
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                }
-                                            </div>
-                                        </div>
+                                        <FileList setParentState={this.setParentState} getParentState={this.getParentState} />
                                         <div>
                                             {this.state.merge_field_group &&
                                                 <div>
