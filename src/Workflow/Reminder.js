@@ -21,7 +21,6 @@ class Reminder extends Component {
     // Sets reminders
     onReminderChanged = (event) => {
         this.state.setParentState({ reminders: event.target.value });
-        console.log(this.state.getParentState().reminders);
     }
 
     render() {

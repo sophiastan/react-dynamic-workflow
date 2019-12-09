@@ -36,16 +36,18 @@ class MergeField extends Component {
     }
 
     render() {
+        const merge_field_group = this.state.getParentState().merge_field_group;
+        const showMergeField = merge_field_group && merge_field_group.length >  0;
         return (
             <div>
-                {this.state.getParentState().merge_field_group &&
+                { showMergeField &&
                     <div>
                         <div id="merge_header">
                             <h3 id="merge_header_label" className="recipient_label">Fields</h3>
                         </div>
                         <div id="merge_body">
                             {
-                                this.state.getParentState().merge_field_group.map((item, index) =>
+                                merge_field_group.map((item, index) =>
                                     <div className="merge_div row" id={`merge_${item.fieldName}`} key={index}>
                                         <div className="col-lg-4">
                                             <h3>{item.displayName}</h3>
