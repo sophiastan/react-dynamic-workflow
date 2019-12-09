@@ -6,6 +6,7 @@ import WorkflowService from '../Services/WorkflowService';
 import RecipientsList from './RecipientsList';
 import CarbonCopy from './CarbonCopy';
 import FileList from './FileList';
+import MergeField from './MergeField';
 
 class AgreementForm extends Component {
     constructor(props) {
@@ -184,30 +185,6 @@ class AgreementForm extends Component {
         this.setState({ [event.target.name]: event.target.checked });
     }
 
-    // Event handler when an item in the list changed
-    onFieldChanged = (event, index) => {
-        const val = event.target.value;
-
-        this.setState(state => {
-            const list = state.merge_field_group.map((item, i) => {
-                if (i === index) {
-                    const fieldData = {
-                        "defaultValue": val,
-                        "fieldName": item.fieldName
-                    }
-                    return fieldData;
-                }
-                else {
-                    return item;
-                }
-            });
-
-            return {
-                merge_field_group: list
-            }
-        });
-    }
-
     // onClick event handler for submitting data
     onSubmit = async () => {
         const agreementData = this.state.workflowService.createAgreementData(this.state);
@@ -268,30 +245,7 @@ class AgreementForm extends Component {
                                             </textarea>
                                         </div>
                                         <FileList setParentState={this.setParentState} getParentState={this.getParentState} />
-                                        <div>
-                                            {this.state.merge_field_group &&
-                                                <div>
-                                                    <div id="merge_header">
-                                                        <h3 id="merge_header_label" className="recipient_label">Fields</h3>
-                                                    </div>
-                                                    <div id="merge_body">
-                                                        {
-                                                            this.state.merge_field_group.map((item, index) =>
-                                                                <div className="merge_div row" id={`merge_${item.fieldName}`} key={index}>
-                                                                    <div className="col-lg-4">
-                                                                        <h3>{item.displayName}</h3>
-                                                                    </div>
-                                                                    <div className="col-lg-8">
-                                                                        <input type="text" className="merge_input" value={item.defaultValue}
-                                                                            id={`merge_input_${item.fieldName}`} onChange={(event) => this.onFieldChanged(event, index)}></input>
-                                                                    </div>
-                                                                </div>
-                                                            )
-                                                        }
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
+                                        <MergeField setParentState={this.setParentState} getParentState={this.getParentState} />
                                     </div>
                                     <div className="col-lg-5">
                                         <div className="option_wrapper">
