@@ -7,6 +7,8 @@ import RecipientsList from './RecipientsList';
 import CarbonCopy from './CarbonCopy';
 import FileList from './FileList';
 import MergeField from './MergeField';
+import Deadline from './Deadline';
+import Reminder from './Reminder';
 
 class AgreementForm extends Component {
     constructor(props) {
@@ -18,11 +20,7 @@ class AgreementForm extends Component {
             workflowService: new WorkflowService(),
 
             hasPasswordChecked: false,
-            hasDeadlineChecked: false,
-            hasReminderChecked: false,
             showPasswordChecked: false,
-
-            date: new Date().toISOString().substr(0, 10),
 
             // Agreement data
             workflow_id: props.workflowId,
@@ -95,12 +93,6 @@ class AgreementForm extends Component {
         return null;
     }
 
-    // Sets reminders
-    onReminderChanged = (event) => {
-        this.setState({ reminders: event.target.value });
-        console.log(this.state.reminders);
-    }
-
     // Checks if password is required and is valid.
     isPasswordValid = () => {
         let passwordValid = true;
@@ -112,52 +104,12 @@ class AgreementForm extends Component {
         return passwordValid;
     }
 
-    getDateFormat = (date) => {
-        /***
-         * This function will formate the date for input
-         * @param {Date} date The date object we wish to formate
-         */
-
-        // Create the day, month, and year variables
-        var dd = date.getDate();
-        var mm = date.getMonth() + 1;
-        var y = date.getFullYear();
-
-        // Month under 10 add leading 0
-        if (dd < 10) {
-            dd = '0' + dd
-        }
-        if (mm < 10) {
-            mm = '0' + mm
-        }
-
-        // Format
-        var date_format = y + '-' + mm + '-' + dd;
-
-        return date_format;
-    }
-
     // Event handler when an input text changed
     onTextChanged = (event) => {
         const name = event.target.name;
         const val = event.target.value;
 
         this.setState({ [name]: val });
-    }
-
-    // Event handler when deadline changed
-    onDeadlineChanged = (event) => {
-        const date_input = event.target.value;
-
-        const today_date = new Date();
-        const selected_date = new Date(date_input);
-
-        const diffTime = Math.abs(selected_date - today_date);
-        const daysUntilSigningDeadline = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        console.log("daysUntilSigningDeadline: " + daysUntilSigningDeadline);
-
-        this.setState({ deadline: daysUntilSigningDeadline });
-        console.log("deadline: " + this.state.deadline);
     }
 
     // // Event handler when password changed
@@ -284,34 +236,8 @@ class AgreementForm extends Component {
                                                         </div>
                                                     }
                                                 </div>
-                                                <div className="add_border_bottom" id="deadline_div">
-                                                    <input type="checkbox" name="hasDeadlineChecked" id="deadline_checkbox" onClick={this.onCheckboxChanged}></input>
-                                                    <label className="checkbox_input" htmlFor="deadline_checkbox">Completion Deadline</label>
-                                                    {
-                                                        this.state.hasDeadlineChecked &&
-                                                        <div id="sub_deadline_div" className="add_border_bottom">
-                                                            <input type="date" name="deadline" id="deadline_input" value={this.state.date}
-                                                                className="recipient_form_input" onChange={this.onDeadlineChanged}></input>
-                                                        </div>
-                                                    }
-                                                </div>
-                                                <div className="add_border_bottom" id="reminder_div" onClick={this.onCheckboxChanged}>
-                                                    <input type="checkbox" name="hasReminderChecked" id="reminder_checkbox"></input>
-                                                    <label className="checkbox_input" htmlFor="reminder_checkbox">Set Reminder</label>
-                                                    {
-                                                        this.state.hasReminderChecked &&
-                                                        <div id="sub_reminder_div" className="add_border_bottom">
-                                                            <select id="reminder_dropdown" onChange={this.onReminderChanged}>
-                                                                <option value="DAILY_UNTIL_SIGNED">Every day</option>
-                                                                <option value="WEEKLY_UNTIL_SIGNED">Every week</option>
-                                                                <option value="WEEKDAILY_UNTIL_SIGNED">Every business day</option>
-                                                                <option value="EVERY_OTHER_DAY_UNTIL_SIGNED">Every other day</option>
-                                                                <option value="EVERY_THIRD_DAY_UNTIL_SIGNED">Every third day</option>
-                                                                <option value="EVERY_FIFTH_DAY_UNTIL_SIGNED">Every fifth day</option>
-                                                            </select>
-                                                        </div>
-                                                    }
-                                                </div>
+                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState} />
+                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState} />
                                             </div>
                                         </div>
                                     </div>
