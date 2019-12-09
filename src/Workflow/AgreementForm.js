@@ -159,7 +159,8 @@ class AgreementForm extends Component {
                                                 onChange={this.onTextChanged}>
                                             </textarea>
                                         </div>
-                                        <FileList setParentState={this.setParentState} getParentState={this.getParentState} />
+                                        <FileList setParentState={this.setParentState} getParentState={this.getParentState}
+                                            fileInfos={this.state.workflow.fileInfos} />
                                         <MergeField setParentState={this.setParentState} getParentState={this.getParentState} />
                                     </div>
                                     <div className="col-lg-5">

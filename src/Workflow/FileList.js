@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
-import SignService from '../Services/SignService';
-
-// Component for managing a list of carbon copy groups
+// Component for managing a list of uploaded files or library documents.
 class FileList extends Component {
     constructor(props) {
         super(props);
@@ -10,19 +8,36 @@ class FileList extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            signService: new SignService()
+            fileInfos: props.fileInfos ? props.fileInfos : []
         };
     }
 
     onFileUpload = async (event, index) => {
         const file = event.target.files[0];
-        const transientDocument = await this.state.signService.postTransient(file);
+        const transientDocument = await this.state.getParentState().signService.postTransient(file);
         const transientDocumentId = transientDocument.transientDocumentId;
 
+        // Update file item - local state
+        this.setState(state => {
+            const list = this.state.getParentState().file_infos.map((item, i) => {
+                if (i === index) {
+                    item.file = file;
+                    return item;
+                }
+                else {
+                    return item;
+                }
+            });
+
+            return {
+                file_infos: list
+
+            }
+        });
+
+        // Update upload file info - parent state
         this.state.setParentState(state => {
             const list = this.state.getParentState().file_infos.map((item, i) => {
-                // console.log("workflowLibDoc: ");
-                // console.log(item.workflowLibraryDocumentSelectorList[i].workflowLibDoc);
                 if (i === index) {
                     const transientData = {
                         "name": item.name,
@@ -33,33 +48,55 @@ class FileList extends Component {
                 else {
                     return item;
                 }
-
-                // if (i === index) {
-                //     if (item.workflowLibraryDocumentSelectorList !== "") {
-                //         const fileData = {
-                //             "name": item.name,
-                //             "workflowLibraryDocumentId": item.workflowLibraryDocumentSelectorList[i].workflowLibDoc
-                //         }
-                //         return fileData;
-                //     }
-                //     else {
-                //         const fileData = {
-                //             "name": item.name,
-                //             "transientDocumentId": transientDocumentId
-                //         } 
-                //         return fileData;
-                //     }
-                // }
-                // else {
-                //     return item;
-                // }
             });
 
             return {
                 file_infos: list
-
             }
         });
+
+
+        // this.state.setParentState(state => {
+        //     const list = this.state.getParentState().file_infos.map((item, i) => {
+        //         // console.log("workflowLibDoc: ");
+        //         // console.log(item.workflowLibraryDocumentSelectorList[i].workflowLibDoc);
+        //         if (i === index) {
+        //             const transientData = {
+        //                 "name": item.name,
+        //                 "transientDocumentId": transientDocumentId
+        //             }
+        //             return transientData;
+        //         }
+        //         else {
+        //             return item;
+        //         }
+
+        //         // if (i === index) {
+        //         //     if (item.workflowLibraryDocumentSelectorList !== "") {
+        //         //         const fileData = {
+        //         //             "name": item.name,
+        //         //             "workflowLibraryDocumentId": item.workflowLibraryDocumentSelectorList[i].workflowLibDoc
+        //         //         }
+        //         //         return fileData;
+        //         //     }
+        //         //     else {
+        //         //         const fileData = {
+        //         //             "name": item.name,
+        //         //             "transientDocumentId": transientDocumentId
+        //         //         } 
+        //         //         return fileData;
+        //         //     }
+        //         // }
+        //         // else {
+        //         //     return item;
+        //         // }
+        //     });
+
+        //     return {
+        //         file_infos: list
+
+        //     }
+        // });
     }
 
     render() {
@@ -70,7 +107,7 @@ class FileList extends Component {
                 </div>
                 <div id="upload_body">
                     {
-                         this.state.getParentState().file_infos.map((item, index) =>
+                        this.state.fileInfos.map((item, index) =>
                             <div className="file_info_div row" id={`file_info_${item.name}`} key={index}>
                                 <div className="col-lg-4">
                                     <h3>{item.label}</h3>
