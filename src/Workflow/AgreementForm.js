@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import SignService from '../Services/SignService';
 import WorkflowService from '../Services/WorkflowService';
 
+import RecipientsList from '../Workflow/RecipientsList';
+
 class AgreementForm extends Component {
     constructor(props) {
         super(props);
@@ -33,6 +35,16 @@ class AgreementForm extends Component {
             reminders: "",
             message: ""
         };
+    }
+
+    // Set data to parent state
+    setParentState = (state) => {
+        this.setState(state);
+    }
+
+    // Get parent state
+    getParentState = () => {
+        return this.state;
     }
 
     async componentDidMount() {
@@ -140,7 +152,7 @@ class AgreementForm extends Component {
         const diffTime = Math.abs(selected_date - today_date);
         const daysUntilSigningDeadline = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         console.log("daysUntilSigningDeadline: " + daysUntilSigningDeadline);
-        
+
         this.setState({ deadline: daysUntilSigningDeadline });
         console.log("deadline: " + this.state.deadline);
     }
@@ -159,7 +171,7 @@ class AgreementForm extends Component {
     //             "openPassword": val,
     //             "protectOpen": this.isPasswordValid
     //         }
-    
+
     //         this.setState({ pass_option: passData });
     //         console.log(this.state.pass_option);
     //     }
@@ -171,35 +183,6 @@ class AgreementForm extends Component {
     }
 
     // Event handler when an item in the list changed
-    onEmailChanged = (event, index) => {
-        const val = event.target.value;
-        const emailData = {
-            "email": val
-        }
-
-        this.setState(state => {
-            const list = state.recipients_list.map((item, i) => {
-                if (i === index) {
-                    const recipient = {
-                        "name": item.name,
-                        "recipients": [emailData]
-                    }
-                    return recipient;
-                }
-                else {
-                    return item;
-                }
-            });
-
-            return {
-                recipients_list: list
-            }
-        });
-
-        console.log(this.state.recipients_list);
-    }
-
-    // Event handler when an item in the list changed
     onCcChanged = (event, index) => {
         const val = event.target.value;
 
@@ -207,8 +190,8 @@ class AgreementForm extends Component {
             "email": val
         }
 
-        this.setState(state => {
-            const list = state.carbon_copy_group.map((item, i) => {
+        this.setParentState(state => {
+            const list = this.getParentState().carbon_copy_group.map((item, i) => {
                 if (i === index) {
                     const cc = {
                         "name": item.name,
@@ -226,13 +209,13 @@ class AgreementForm extends Component {
             }
         });
 
-        console.log(this.state.carbon_copy_group);
+        console.log(this.getParentState().carbon_copy_group);
     }
 
     // Event handler when an item in the list changed
     onFieldChanged = (event, index) => {
         const val = event.target.value;
-        
+
         this.setState(state => {
             const list = state.merge_field_group.map((item, i) => {
                 if (i === index) {
@@ -266,7 +249,7 @@ class AgreementForm extends Component {
                     const transientData = {
                         "name": item.name,
                         "transientDocumentId": transientDocumentId
-                    }            
+                    }
                     return transientData;
                 }
                 else {
@@ -310,16 +293,16 @@ class AgreementForm extends Component {
         console.log('Agreement data to be submitted: ');
         console.log(agreementData);
 
-        // TODO: Uncomment to submit agreement to API server
-        const response = await this.state.signService.postWorkflowAgreement(
-            this.state.workflow_id, agreementData);
+        // // TODO: Uncomment to submit agreement to API server
+        // const response = await this.state.signService.postWorkflowAgreement(
+        //     this.state.workflow_id, agreementData);
 
-        if ('url' in response) {
-            alert('Agreement sent');
-        }
-        else {
-            alert(response.message);
-        }
+        // if ('url' in response) {
+        //     alert('Agreement sent');
+        // }
+        // else {
+        //     alert(response.message);
+        // }
     }
 
     render() {
@@ -338,27 +321,15 @@ class AgreementForm extends Component {
                                 <div>
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
-                                {
-                                    this.state.recipients_list &&
-                                    this.state.recipients_list.map((recipient, index) =>
-                                        <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
-                                            <h3 className="recipient_label">{recipient.label}</h3>
-                                            <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
-                                                className="recipient_form_input" placeholder="Enter Recipient's Email"
-                                                value={recipient.defaultValue}
-                                                onChange={(event) => this.onEmailChanged(event, index)}>
-                                            </input>
-                                        </div>
-                                    )
-                                }
-                                {
-                                    this.state.carbon_copy_group &&
-                                    this.state.carbon_copy_group.map((cc, index) =>
-                                        {
+                                <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState} />
+                                <div>
+                                    {
+                                        this.state.carbon_copy_group &&
+                                        this.state.carbon_copy_group.map((cc, index) => {
                                             const items = [];
                                             for (let i = 0; i < cc.maxListCount; i++) {
                                                 const defaultValue = i === 0 ? cc.defaultValue : "";
-                                                items.push (
+                                                items.push(
                                                     <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
                                                         <h3 className="recipient_label">{cc.label}</h3>
                                                         <input type="text" id={`cc_${i}`} name={`cc_${i}`}
@@ -371,8 +342,9 @@ class AgreementForm extends Component {
                                             }
                                             return items;
                                         }
-                                    )
-                                }
+                                        )
+                                    }
+                                </div>
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">
                                 <div className="row">
