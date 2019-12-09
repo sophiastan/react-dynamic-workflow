@@ -83,6 +83,7 @@ class AgreementForm extends Component {
     // Sets reminders
     onReminderChanged = (event) => {
         this.setState({ reminders: event.target.value });
+        console.log(this.state.reminders);
     }
 
     // Checks if password is required and is valid.
@@ -92,7 +93,33 @@ class AgreementForm extends Component {
             passwordValid = this.state.pass_option === this.state.confirm_pass_option &&
                 this.state.pass_option.length > 0;
         }
+
         return passwordValid;
+    }
+
+    getDateFormat = (date) => {
+        /***
+         * This function will formate the date for input
+         * @param {Date} date The date object we wish to formate
+         */
+
+        // Create the day, month, and year variables
+        var dd = date.getDate();
+        var mm = date.getMonth() + 1;
+        var y = date.getFullYear();
+
+        // Month under 10 add leading 0
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        // Format
+        var date_format = y + '-' + mm + '-' + dd;
+
+        return date_format;
     }
 
     // Event handler when an input text changed
@@ -102,6 +129,41 @@ class AgreementForm extends Component {
 
         this.setState({ [name]: val });
     }
+
+    // Event handler when deadline changed
+    onDeadlineChanged = (event) => {
+        const date_input = event.target.value;
+
+        const today_date = new Date();
+        const selected_date = new Date(date_input);
+
+        const diffTime = Math.abs(selected_date - today_date);
+        const daysUntilSigningDeadline = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        console.log("daysUntilSigningDeadline: " + daysUntilSigningDeadline);
+        
+        this.setState({ deadline: daysUntilSigningDeadline });
+        console.log("deadline: " + this.state.deadline);
+    }
+
+    // // Event handler when password changed
+    // onPassChanged = (event) => {
+    //     const name = event.target.name;
+    //     const val = event.target.value;
+
+    //     this.setState({ [name]: val });
+
+    //     if (this.state.pass_option !== "" && this.isPasswordValid) {
+    //         val = this.state.pass_option;
+
+    //         const passData = {
+    //             "openPassword": val,
+    //             "protectOpen": this.isPasswordValid
+    //         }
+    
+    //         this.setState({ pass_option: passData });
+    //         console.log(this.state.pass_option);
+    //     }
+    // }
 
     // Event handler when checkbox changed
     onCheckboxChanged = (event) => {
@@ -145,14 +207,14 @@ class AgreementForm extends Component {
             "email": val
         }
 
-        console.log("ccData: ");
-        console.log(ccData);
-
         this.setState(state => {
             const list = state.carbon_copy_group.map((item, i) => {
                 if (i === index) {
-                    item.defaultValue = val;
-                    return item;
+                    const cc = {
+                        "name": item.name,
+                        "emails": [ccData]
+                    }
+                    return cc;
                 }
                 else {
                     return item;
@@ -171,19 +233,13 @@ class AgreementForm extends Component {
     onFieldChanged = (event, index) => {
         const val = event.target.value;
         
-        const fieldData = {
-            "defaultValue": val,
-            "fieldName": event.target.fieldName
-        }
-
-        console.log("fieldData: ");
-        console.log(fieldData);
-
         this.setState(state => {
             const list = state.merge_field_group.map((item, i) => {
                 if (i === index) {
-                    // item.defaultValue = val;
-                    // return item;
+                    const fieldData = {
+                        "defaultValue": val,
+                        "fieldName": item.fieldName
+                    }
                     return fieldData;
                 }
                 else {
@@ -201,8 +257,11 @@ class AgreementForm extends Component {
         const file = event.target.files[0];
         const transientDocument = await this.state.signService.postTransient(file);
         const transientDocumentId = transientDocument.transientDocumentId;
+
         this.setState(state => {
             const list = state.file_infos.map((item, i) => {
+                // console.log("workflowLibDoc: ");
+                // console.log(item.workflowLibraryDocumentSelectorList[i].workflowLibDoc);
                 if (i === index) {
                     const transientData = {
                         "name": item.name,
@@ -213,6 +272,26 @@ class AgreementForm extends Component {
                 else {
                     return item;
                 }
+
+                // if (i === index) {
+                //     if (item.workflowLibraryDocumentSelectorList !== "") {
+                //         const fileData = {
+                //             "name": item.name,
+                //             "workflowLibraryDocumentId": item.workflowLibraryDocumentSelectorList[i].workflowLibDoc
+                //         }
+                //         return fileData;
+                //     }
+                //     else {
+                //         const fileData = {
+                //             "name": item.name,
+                //             "transientDocumentId": transientDocumentId
+                //         } 
+                //         return fileData;
+                //     }
+                // }
+                // else {
+                //     return item;
+                // }
             });
 
             return {
@@ -417,7 +496,7 @@ class AgreementForm extends Component {
                                                         this.state.hasDeadlineChecked &&
                                                         <div id="sub_deadline_div" className="add_border_bottom">
                                                             <input type="date" name="deadline" id="deadline_input" value={this.state.date}
-                                                                className="recipient_form_input" onChange={this.onTextChanged}></input>
+                                                                className="recipient_form_input" onChange={this.onDeadlineChanged}></input>
                                                         </div>
                                                     }
                                                 </div>
