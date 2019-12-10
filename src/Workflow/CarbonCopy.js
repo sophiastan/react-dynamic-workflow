@@ -5,22 +5,42 @@ class CarbonCopy extends Component {
     constructor(props) {
         super(props);
 
+        const items = [];
+        if (props.ccsListInfo) {
+            props.ccsListInfo.map((cc, index) => {
+                for (let i = 0; i < cc.maxListCount; i++) {
+                    const defaultValue = i === 0 ? cc.defaultValue : "";
+                    const item = {
+                        "label": cc.label,
+                        "name": cc.name,
+                        "defaultValue": defaultValue
+                    }
+                    items.push(item);
+                }
+                return items;
+            });    
+        }
+
         this.state = {
             setParentState: props.setParentState,
-            getParentState: props.getParentState
+            getParentState: props.getParentState,
+            carbon_copy_group: items
         };
+    }
+
+    componentDidMount() {
     }
 
     // Event handler when an item in the list changed
     onCcChanged = (event, index) => {
         const val = event.target.value;
-
         const ccData = {
             "email": val
         }
 
+        // Update cc data for submit (TODO: group emails by name)
         this.state.setParentState(state => {
-            const list = this.state.getParentState().carbon_copy_group.map((item, i) => {
+            const list = this.state.carbon_copy_group.map((item, i) => {
                 if (i === index) {
                     const cc = {
                         "name": item.name,
@@ -38,31 +58,39 @@ class CarbonCopy extends Component {
             }
         });
 
-        console.log(this.state.getParentState().carbon_copy_group);
-    }
+        // Update cc for local edit
+        this.setState(state => {
+            const list = this.state.carbon_copy_group.map((item, i) => {
+                if (i === index) {
+                    item.defaultValue = val;
+                    return item;
+                }
+                else {
+                    return item;
+                }
+            });
+
+            return {
+                carbon_copy_group: list
+            }
+        });
+
+     }
 
     render() {
         return (
             <div>
                 {
-                    this.state.getParentState().carbon_copy_group &&
-                    this.state.getParentState().carbon_copy_group.map((cc, index) => {
-                        const items = [];
-                        for (let i = 0; i < cc.maxListCount; i++) {
-                            const defaultValue = i === 0 ? cc.defaultValue : "";
-                            items.push(
-                                <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
-                                    <h3 className="recipient_label">{cc.label}</h3>
-                                    <input type="text" id={`cc_${i}`} name={`cc_${i}`}
-                                        className="recipient_form_input" placeholder="Enter Cc's Email"
-                                        value={defaultValue}
-                                        onChange={(event) => this.onCcChanged(event, i)}>
-                                    </input>
-                                </div>
-                            );
-                        }
-                        return items;
-                    }
+                    this.state.carbon_copy_group &&
+                    this.state.carbon_copy_group.map((cc, i) => 
+                        <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
+                            <h3 className="recipient_label">{cc.label}</h3>
+                            <input type="text" id={`cc_${i}`} name={`cc_${i}`}
+                                className="recipient_form_input" placeholder="Enter Cc's Email"
+                                value={cc.defaultValue}
+                                onChange={(event) => this.onCcChanged(event, i)}>
+                            </input>
+                        </div>
                     )
                 }
             </div>

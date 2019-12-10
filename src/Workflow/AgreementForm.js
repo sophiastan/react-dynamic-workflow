@@ -138,7 +138,8 @@ class AgreementForm extends Component {
                                 </div>
                                 <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState} 
                                     recipientsListInfo={this.state.workflow.recipientsListInfo} />
-                                <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState} />
+                                <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
+                                    ccsListInfo={this.state.workflow.ccsListInfo} />
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">
                                 <div className="row">
