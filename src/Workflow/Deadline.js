@@ -9,7 +9,9 @@ class Deadline extends Component {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
             hasDeadlineChecked: false,
-            date: new Date().toISOString().substr(0, 10)
+            date: new Date().toISOString().substr(0, 10),
+            today_date: "",
+            default_value: ""
         };
     }
 
@@ -37,6 +39,32 @@ class Deadline extends Component {
 
         return date_format;
     }
+
+    // setDateValues = (target_input) => {
+    //     // Create Date objects
+    //     var today = new Date();
+    //     var max_days = new Date();
+    //     var predefine_date = new Date();
+
+    //     // Set max days and get string outputs
+    //     this.state.today_date = this.getDateFormat(today);
+    //     today.setDate(today.getDate() + 1);
+    //     max_days.setDate(today.getDate() + this.max_days);
+    //     var max_days_date = this.getDateFormat(max_days);
+
+    //     // Set range of dates
+    //     if(typeof this.state.default_value !== 'undefined'){
+    //         predefine_date.setDate(today.getDate() + Number(this.state.default_value));
+    //         let predefine_date_format = this.getDateFormat(predefine_date)
+    //         target_input.value = predefine_date_format;
+    //     }
+    //     else{
+    //         target_input.value = this.state.today_date;
+    //     }
+
+    //     target_input.min = this.state.today_date;
+    //     target_input.max = max_days_date;
+    // }
 
     // Event handler when checkbox changed
     onCheckboxChanged = (event) => {

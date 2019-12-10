@@ -7,7 +7,8 @@ class RecipientsList extends Component {
 
         this.state = {
             setParentState: props.setParentState,
-            getParentState: props.getParentState
+            getParentState: props.getParentState,
+            recipientsListInfo: props.recipientsListInfo ? props.recipientsListInfo : []
         };
     }
 
@@ -17,6 +18,23 @@ class RecipientsList extends Component {
         const emailData = {
             "email": val
         }
+
+        this.setState(state => {
+            const list = this.state.getParentState().recipients_list.map((item, i) => {
+                if (i === index) {
+                    // item = emailData;
+                    item = val;
+                    return item;
+                }
+                else {
+                    return item;
+                }
+            });
+
+            return {
+                recipients_list: list
+            }
+        });
 
         this.state.setParentState(state => {
             const list = this.state.getParentState().recipients_list.map((item, i) => {
@@ -37,7 +55,7 @@ class RecipientsList extends Component {
             }
         });
 
-        console.log(this.state.getParentState().recipients_list);
+        console.log(this.state.recipientsListInfo);
     }
 
 
@@ -45,8 +63,8 @@ class RecipientsList extends Component {
         return (
             <div>
                 {
-                    this.state.getParentState().recipients_list &&
-                    this.state.getParentState().recipients_list.map((recipient, index) =>
+                    this.state.recipientsListInfo &&
+                    this.state.recipientsListInfo.map((recipient, index) =>
                         <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
                             <h3 className="recipient_label">{recipient.label}</h3>
                             <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
