@@ -55,6 +55,8 @@ class AgreementForm extends Component {
 
     // Sets workflow data
     setWorkflow(workflow) {
+        console.log('workflow: ');
+        console.log(workflow);
         if (workflow) {
             const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
@@ -109,16 +111,16 @@ class AgreementForm extends Component {
         console.log('Agreement data to be submitted: ');
         console.log(agreementData);
 
-        // // TODO: Uncomment to submit agreement to API server
-        // const response = await this.state.signService.postWorkflowAgreement(
-        //     this.state.workflow_id, agreementData);
+        // TODO: Uncomment to submit agreement to API server
+        const response = await this.state.signService.postWorkflowAgreement(
+            this.state.workflow_id, agreementData);
 
-        // if ('url' in response) {
-        //     alert('Agreement sent');
-        // }
-        // else {
-        //     alert(response.message);
-        // }
+        if ('url' in response) {
+            alert('Agreement sent');
+        }
+        else {
+            alert(response.message);
+        }
     }
 
     render() {
