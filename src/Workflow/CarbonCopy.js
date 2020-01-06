@@ -21,6 +21,34 @@ class CarbonCopy extends Component {
             });    
         }
 
+        // Check ccList if there is diff name, add to item. 
+        const nameList = [];
+        if (props.ccsListInfo) {
+            props.ccsListInfo.map((cc, index) => {
+                for (let i = 0; i < cc.maxListCount; i++) {
+                    if (x => x.name !== cc.name) {
+                        nameList.push(cc.name);
+                    }
+                }
+                return nameList;
+            });
+        }
+
+        console.log(nameList);
+
+        // if email has same name, add to that item
+        const ccList = [];
+        if (props.ccsListInfo) {
+            props.ccsListInfo.map((cc, index) => {
+                for (let i = 0; i < cc.maxListCount; i++) {
+                    if (x => x.name !== cc.name) {
+                        nameList.push(cc.name);
+                    }
+                }
+                return ccList;
+            });
+        }
+
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
