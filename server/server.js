@@ -15,6 +15,7 @@ const express = require('express');
 const async = require('express-async-await');
 const fetch = require('node-fetch');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 // Form Data, Multer, & Uploads
 const FormData = require('form-data');
@@ -39,6 +40,7 @@ var endpoint = config['server']['endpoint'];
 var url = host + endpoint;
 var port = process.env.PORT || config.port || 80;
 
+app.use(cors());
 app.use(express.static(__dirname + '/static'));
 app.use(bodyParser.urlencoded({
   extended: true
