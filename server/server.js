@@ -101,27 +101,6 @@ app.get('/api/getWorkflowById/:id', async function(req, res, next){
     res.json(data);
 });
 
-// GET /libraryDocuments/{libraryDocumentId}/documents
-app.get('/api/getLibraryDocuments/:id', async function(req, res, next) {
-
-    function getLibraryDocuments() {
-        /***
-         * This function gets library documents by ID
-         */
-        const endpoint = "/libraryDocuments/" + req.params.id + "/documents";
-        const headers = {
-            'Access-Token': integration
-        };
-
-        return fetch(url + endpoint, {method: 'GET', headers: headers})
-    }
-
-    const library_document = await getLibraryDocuments();
-    const data = await library_document.json();
-
-    es.json(data);
-});
-
 // POST /workflows/{workflowId}/agreements
 app.post('/api/postAgreement/:id', async function(req, res, next){
 

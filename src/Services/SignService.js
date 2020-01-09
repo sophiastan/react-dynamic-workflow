@@ -17,6 +17,13 @@ class SignService {
         return data['userWorkflowList'];
     }
 
+    // Gets a list of workflows - server.js
+    getWorkflows = async () => {
+        const resp = await fetch('/api/getWorkflows');
+        const body = await resp.json();
+        return body;
+    }
+
     // Gets a workflow detail
     async getWorkflowById(workflow_id) {
         if (workflow_id) {
@@ -25,20 +32,15 @@ class SignService {
         }
         return null;
     }
-    
-    // Gets library documents -> /libraryDocuments
-    async getLibraryDocuments() {
-        const url = `${this.baseUrl}/libraryDocuments`;
-        return await this.get(url);
-    }
 
-    // Get details of library document -> /libraryDocuments/{libraryDocumentId}
-    async getLibraryDocumentIds(libraryDocumentId) {
-        if (libraryDocumentId) {
-            const url = `${this.baseUrl}/libraryDocuments/${libraryDocumentId}`;
-            return await this.get(url);
+    // Gets workflow detail - server.js
+    getWorkflowById = async (workflow_id) => {
+        if (workflow_id) {
+            const resp = await fetch(`/api/getWorkflowById/${workflow_id}`);
+            const body = await resp.json();
+            return body;
         }
-        return null;     
+        return null;
     }
 
     // Posts an agreement for a workflow -> /workflows/{workflowId}/agreements
@@ -58,6 +60,11 @@ class SignService {
         });
 
         return await resp.json();
+    }
+
+    // talk to server
+    postWorkflowAgreement = async (workflowId, body) => {
+        const resp = await fetch()
     }
 
     async postTransient(file) {
