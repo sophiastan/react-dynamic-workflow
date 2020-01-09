@@ -10,34 +10,40 @@ class SignService {
         }
     }
 
-    // Gets a list of workflows
-    async getWorkflows() {
-        const url = `${this.baseUrl}/workflows`;
-        const data = await this.get(url);
-        return data['userWorkflowList'];
-    }
+    // // Gets a list of workflows
+    // async getWorkflows() {
+    //     const url = `${this.baseUrl}/workflows`;
+    //     const data = await this.get(url);
+    //     return data['userWorkflowList'];
+    // }
 
     // Gets a list of workflows - server.js
     getWorkflows = async () => {
-        const resp = await fetch('/api/getWorkflows');
+        const url = "http://localhost:3200/api/getWorkflows";
+        const resp = await fetch(url);
         const body = await resp.json();
+        console.log("getWorkflows returns:");
+        console.log(body);
         return body;
     }
 
-    // Gets a workflow detail
-    async getWorkflowById(workflow_id) {
-        if (workflow_id) {
-            const url = `${this.baseUrl}/workflows/${workflow_id}`;
-            return await this.get(url);        
-        }
-        return null;
-    }
+    // // Gets a workflow detail
+    // async getWorkflowById(workflow_id) {
+    //     if (workflow_id) {
+    //         const url = `${this.baseUrl}/workflows/${workflow_id}`;
+    //         return await this.get(url);        
+    //     }
+    //     return null;
+    // }
 
     // Gets workflow detail - server.js
     getWorkflowById = async (workflow_id) => {
         if (workflow_id) {
-            const resp = await fetch(`/api/getWorkflowById/${workflow_id}`);
+            const url = `http://localhost:3200/getWorkflowById/${workflow_id}`;
+            const resp = await fetch(url);
             const body = await resp.json();
+            console.log("getWorkflowById returns:");
+            console.log(body);
             return body;
         }
         return null;
@@ -62,10 +68,10 @@ class SignService {
         return await resp.json();
     }
 
-    // talk to server
-    postWorkflowAgreement = async (workflowId, body) => {
-        const resp = await fetch()
-    }
+    // // talk to server
+    // postWorkflowAgreement = async (workflowId, body) => {
+    //     const resp = await fetch()
+    // }
 
     async postTransient(file) {
         const url = `${this.baseUrl}/transientDocuments`;
