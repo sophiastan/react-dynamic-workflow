@@ -55,8 +55,6 @@ class AgreementForm extends Component {
 
     // Sets workflow data
     setWorkflow(workflow) {
-        console.log('workflow: ');
-        console.log(workflow);
         if (workflow) {
             const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';

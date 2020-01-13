@@ -62,9 +62,6 @@ class CarbonCopy extends Component {
             return ccItem;
         });
 
-        console.log('createCcList(). list =');
-        console.log(list);
-
         return list;
     }
 

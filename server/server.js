@@ -10,6 +10,8 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
+// import dotenv from 'dotenv';
+
 // Express, Async, Fetch, & Body Parser
 const express = require('express');
 const async = require('express-async-await');
@@ -17,28 +19,49 @@ const fetch = require('node-fetch');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+// const dotEnvOptions = {
+//     path: '.env'
+// }
+
+require('dotenv').config();
+// dotenv.config(dotEnvOptions);
+
 // Form Data, Multer, & Uploads
 const FormData = require('form-data');
 const fs = require('fs');
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
-// HTTPS & Path
+// HTTPS & Path - delete
 const path = require('path');
 
-// js-yaml
+// js-yaml - delete
 const yaml = require('js-yaml');
 const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'config', 'config.yaml'), 'utf-8'));
 
 // Main App
 const app = express();
 
-// Configuration
+// Configuration - delete
 var integration = config['enterprise']['integration'];
 var host = config['server']['host'];
 var endpoint = config['server']['endpoint'];
 var url = host + endpoint;
-var port = process.env.PORT || config.port || 80;
+var port = process.env.PORT || config.port || 3200;
+
+// Configuration
+// var integration = process.env.REACT_APP_SIGN_API_INTEGRATION;
+// var host = process.env.REACT_APP_SIGN_API_HOST;
+// var endpoint = process.env.REACT_APP_SIGN_API_ENDPOINT;
+// var url = host + endpoint;
+// var port = process.env.REACT_APP_PORT || 3200;
+
+// console.log("process env " + process.env);
+console.log("integration " + integration);
+console.log("host " + host);
+console.log("endpoint " + endpoint);
+console.log("url " + url);
+console.log("port " + port);
 
 app.use(cors());
 app.use(express.static(__dirname + '/static'));
