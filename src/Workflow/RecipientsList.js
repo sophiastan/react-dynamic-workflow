@@ -8,7 +8,7 @@ class RecipientsList extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            recipients_list: props.recipientsListInfo ? props.recipientsListInfo : []
+            recipientsList: props.recipientsListInfo ? props.recipientsListInfo : []
         };
     }
 
@@ -21,7 +21,7 @@ class RecipientsList extends Component {
 
         // Update email text for recipient
         this.setState(state => {
-            const list = this.state.getParentState().recipients_list.map((item, i) => {
+            const list = this.state.getParentState().recipientsList.map((item, i) => {
                 if (i === index) {
                     item.defaultValue = val;
                     return item;
@@ -32,13 +32,13 @@ class RecipientsList extends Component {
             });
 
             return {
-                recipients_list: list
+                recipientsList: list
             }
         });
 
         // Update recipient for submission
         this.state.setParentState(state => {
-            const list = this.state.getParentState().recipients_list.map((item, i) => {
+            const list = this.state.getParentState().recipientsList.map((item, i) => {
                 if (i === index) {
                     const recipient = {
                         "name": item.name,
@@ -52,7 +52,7 @@ class RecipientsList extends Component {
             });
 
             return {
-                recipients_list: list
+                recipientsList: list
             }
         });
     }
@@ -62,8 +62,8 @@ class RecipientsList extends Component {
         return (
             <div>
                 {
-                    this.state.recipients_list &&
-                    this.state.recipients_list.map((recipient, index) =>
+                    this.state.recipientsList &&
+                    this.state.recipientsList.map((recipient, index) =>
                         <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
                             <h3 className="recipient_label">{recipient.label}</h3>
                             <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}

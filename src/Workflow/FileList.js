@@ -8,12 +8,12 @@ class FileList extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            file_infos: props.fileInfos ? props.fileInfos : []
+            fileInfos: props.fileInfos ? props.fileInfos : []
         };
     }
 
     componentDidMount() {
-        const list = this.state.file_infos.map((item, i) => {
+        const list = this.state.fileInfos.map((item, i) => {
             if (item.workflowLibraryDocumentSelectorList) {
                 const fileData = {
                     "name": item.name,
@@ -31,7 +31,7 @@ class FileList extends Component {
         });
 
         this.state.setParentState({
-            file_infos: list
+            fileInfos: list
         });
     }
 
@@ -42,7 +42,7 @@ class FileList extends Component {
 
         // Update file item - local state
         this.setState(state => {
-            const list = this.state.file_infos.map((item, i) => {
+            const list = this.state.fileInfos.map((item, i) => {
                 if (i === index) {
                     item.file = file;
                     return item;
@@ -53,13 +53,13 @@ class FileList extends Component {
             });
 
             return {
-                file_infos: list
+                fileInfos: list
             }
         });
 
         // Update upload file info - parent state
         this.state.setParentState(state => {
-            const list = this.state.getParentState().file_infos.map((item, i) => {
+            const list = this.state.getParentState().fileInfos.map((item, i) => {
                 if (i === index) {
                     if (item.workflowLibraryDocumentSelectorList) {
                         const fileData = {
@@ -82,7 +82,7 @@ class FileList extends Component {
             });
 
             return {
-                file_infos: list
+                fileInfos: list
             }
         });
     }
@@ -95,7 +95,7 @@ class FileList extends Component {
                 </div>
                 <div id="upload_body">
                     {
-                        this.state.file_infos.map((item, index) =>
+                        this.state.fileInfos.map((item, index) =>
                             <div className="file_info_div row" id={`file_info_${item.name}`} key={index}>
                                 <div className="col-lg-4">
                                     <h3>{item.label}</h3>

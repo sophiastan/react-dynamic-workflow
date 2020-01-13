@@ -10,8 +10,8 @@ class PassOption extends Component {
             getParentState: props.getParentState,
             hasPasswordChecked: false,
             showPasswordChecked: false,
-            pass_option: "",
-            confirm_pass_option: ""
+            passOption: "",
+            confirmPassOption: ""
         };
     }
 
@@ -41,14 +41,14 @@ class PassOption extends Component {
         const val = event.target.value;
 
         const passObject = {};
-        passObject.pass_option = this.state.pass_option;
-        passObject.confirm_pass_option = this.state.confirm_pass_option;
+        passObject.passOption = this.state.passOption;
+        passObject.confirmPassOption = this.state.confirmPassOption;
         passObject[name] = val;
 
         this.setState({ [name]: val });
 
         // Update password state
-        const isPassValid = this.isPasswordValid(passObject.pass_option, passObject.confirm_pass_option);
+        const isPassValid = this.isPasswordValid(passObject.passOption, passObject.confirmPassOption);
         console.log(`isPassValid = ${isPassValid}`);
         this.state.setParentState({
             isPasswordValid: isPassValid
@@ -61,7 +61,7 @@ class PassOption extends Component {
             };
 
             this.state.setParentState({
-                pass_option: passData
+                passOption: passData
             });    
         }
     }
@@ -78,7 +78,7 @@ class PassOption extends Component {
                         <h3 className="recipient_label">Password must contain 1 to 32 characters.</h3>
                         <input
                             type={passwordType}
-                            name="pass_option"
+                            name="passOption"
                             id="password"
                             className="recipient_form_input"
                             maxLength="32"
@@ -87,7 +87,7 @@ class PassOption extends Component {
                         </input>
                         <input
                             type={passwordType}
-                            name="confirm_pass_option"
+                            name="confirmPassOption"
                             id="confirm_password"
                             className="recipient_form_input"
                             maxLength="32"

@@ -25,12 +25,12 @@ class CarbonCopy extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            carbon_copy_group: items
+            carbonCopyGroup: items
         };
 
         props.setParentState(state => {
             return {
-                carbon_copy_group: this.createCcList(items)
+                carbonCopyGroup: this.createCcList(items)
             }
         });
     }
@@ -69,7 +69,7 @@ class CarbonCopy extends Component {
     onCcChanged = (event, index) => {
         const val = event.target.value;
 
-        const localCCList = this.state.carbon_copy_group.map((item, i) => {
+        const localCCList = this.state.carbonCopyGroup.map((item, i) => {
             if (i === index) {
                 item.defaultValue = val;
                 return item;
@@ -82,7 +82,7 @@ class CarbonCopy extends Component {
         // Update cc for local edit
         this.setState(state => {
             return {
-                carbon_copy_group: localCCList
+                carbonCopyGroup: localCCList
             }
         });
         
@@ -91,7 +91,7 @@ class CarbonCopy extends Component {
         // Update cc list for submit
         this.state.setParentState(state => {
             return {
-                carbon_copy_group: parentCCList
+                carbonCopyGroup: parentCCList
             }
         });
      }
@@ -100,8 +100,8 @@ class CarbonCopy extends Component {
         return (
             <div>
                 {
-                    this.state.carbon_copy_group &&
-                    this.state.carbon_copy_group.map((cc, i) => 
+                    this.state.carbonCopyGroup &&
+                    this.state.carbonCopyGroup.map((cc, i) => 
                         <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
                             <h3 className="recipient_label">{cc.label}</h3>
                             <input type="text" id={`cc_${i}`} name={`cc_${i}`}

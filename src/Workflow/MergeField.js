@@ -16,7 +16,7 @@ class MergeField extends Component {
         const val = event.target.value;
 
         this.state.setParentState(state => {
-            const list = this.state.getParentState().merge_field_group.map((item, i) => {
+            const list = this.state.getParentState().mergeFieldGroup.map((item, i) => {
                 if (i === index) {
                     const fieldData = {
                         "defaultValue": val,
@@ -30,14 +30,14 @@ class MergeField extends Component {
             });
 
             return {
-                merge_field_group: list
+                mergeFieldGroup: list
             }
         });
     }
 
     render() {
-        const merge_field_group = this.state.getParentState().merge_field_group;
-        const showMergeField = merge_field_group && merge_field_group.length >  0;
+        const mergeFieldGroup = this.state.getParentState().mergeFieldGroup;
+        const showMergeField = mergeFieldGroup && mergeFieldGroup.length >  0;
         return (
             <div>
                 { showMergeField &&
@@ -47,7 +47,7 @@ class MergeField extends Component {
                         </div>
                         <div id="merge_body">
                             {
-                                merge_field_group.map((item, index) =>
+                                mergeFieldGroup.map((item, index) =>
                                     <div className="merge_div row" id={`merge_${item.fieldName}`} key={index}>
                                         <div className="col-lg-4">
                                             <h3>{item.displayName}</h3>

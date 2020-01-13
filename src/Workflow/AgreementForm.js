@@ -23,15 +23,15 @@ class AgreementForm extends Component {
             isPasswordValid: true,
 
             // Agreement data
-            workflow_id: props.workflowId,
-            transient_id: props.transientDocumentId,
-            agreement_name: "",
-            file_infos: [],
-            recipients_list: [],
-            recipient_group: [],
-            carbon_copy_group: [],
-            merge_field_group: [],
-            pass_option: "",
+            workflowId: props.workflowId,
+            transientId: props.transientDocumentId,
+            agreementName: "",
+            fileInfos: [],
+            recipientsList: [],
+            recipientGroup: [],
+            carbonCopyGroup: [],
+            mergeFieldGroup: [],
+            passOption: "",
             deadline: "",
             reminders: "",
             message: ""
@@ -49,7 +49,7 @@ class AgreementForm extends Component {
     }
 
     async componentDidMount() {
-        const workflow = await this.state.signService.getWorkflowById(this.state.workflow_id);
+        const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
         this.setWorkflow(workflow);
     }
 
@@ -60,12 +60,12 @@ class AgreementForm extends Component {
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
             this.setState({
                 workflow: workflow,
-                agreement_name: agreementName,
+                agreementName: agreementName,
                 message: message,
-                file_infos: workflow.fileInfos ? workflow.fileInfos : [],
-                recipients_list: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
-                carbon_copy_group: workflow.ccsListInfo ? workflow.ccsListInfo : [],
-                merge_field_group: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
+                fileInfos: workflow.fileInfos ? workflow.fileInfos : [],
+                recipientsList: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
+                carbonCopyGroup: workflow.ccsListInfo ? workflow.ccsListInfo : [],
+                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
             });
         }
         else {
@@ -78,16 +78,18 @@ class AgreementForm extends Component {
     }
 
     async componentDidUpdate(prevProps, prevState) {
-        if (prevProps.workflow_id !== this.state.workflow_id) {
-            const workflow = await this.state.signService.getWorkflowById(this.state.workflow_id);
+        if (prevProps.workflowId !== this.state.workflowId) {
+            const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
+            console.log(`Workflow for workflowId = ${this.state.workflowId}`);
+            console.log(workflow);
             this.setWorkflow(workflow);
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (state.workflow_id !== props.workflow_id) {
+        if (state.workflowId !== props.workflowId) {
             return {
-                workflow_id: props.workflow_id
+                workflowId: props.workflowId
             };
         }
         return null;
@@ -104,14 +106,12 @@ class AgreementForm extends Component {
     // onClick event handler for submitting data
     onSubmit = async () => {
         const agreementData = this.state.workflowService.createAgreementData(this.state);
-        // console.log("State:");
-        // console.log(this.state);
         console.log('Agreement data to be submitted: ');
         console.log(agreementData);
 
-        // TODO: Uncomment to submit agreement to API server
+        // Submit agreement to API server
         const response = await this.state.signService.postWorkflowAgreement(
-            this.state.workflow_id, agreementData);
+            this.state.workflowId, agreementData);
 
         if ('url' in response) {
             alert('Agreement sent');
@@ -146,10 +146,10 @@ class AgreementForm extends Component {
                                     <div className="col-lg-7">
                                         <div>
                                             <h3 className="recipient_label">Document Name</h3>
-                                            <input type="text" id="agreement_name" name="agreement_name"
+                                            <input type="text" id="agreement_name" name="agreementName"
                                                 placeholder="Enter Agreement Name" className="recipient_form_input"
                                                 required
-                                                value={this.state.agreement_name}
+                                                value={this.state.agreementName}
                                                 onChange={this.onTextChanged}>
                                             </input>
                                         </div>
