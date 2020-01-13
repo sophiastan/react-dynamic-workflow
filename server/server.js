@@ -10,8 +10,6 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-// import dotenv from 'dotenv';
-
 // Express, Async, Fetch, & Body Parser
 const express = require('express');
 const async = require('express-async-await');
@@ -19,12 +17,12 @@ const fetch = require('node-fetch');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// const dotEnvOptions = {
-//     path: '.env'
-// }
+const dotEnvOptions = {
+    path: __dirname + '../../.env'
+}
 
-require('dotenv').config();
-// dotenv.config(dotEnvOptions);
+require('dotenv').config(dotEnvOptions);
+// require('dotenv').config();
 
 // Form Data, Multer, & Uploads
 const FormData = require('form-data');
@@ -33,35 +31,34 @@ const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 // HTTPS & Path - delete
-const path = require('path');
+// const path = require('path');
 
 // js-yaml - delete
-const yaml = require('js-yaml');
-const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'config', 'config.yaml'), 'utf-8'));
+// const yaml = require('js-yaml');
+// const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'config', 'config.yaml'), 'utf-8'));
 
 // Main App
 const app = express();
 
 // Configuration - delete
-var integration = config['enterprise']['integration'];
-var host = config['server']['host'];
-var endpoint = config['server']['endpoint'];
-var url = host + endpoint;
-var port = process.env.PORT || config.port || 3200;
+// var integration = config['enterprise']['integration'];
+// var host = config['server']['host'];
+// var endpoint = config['server']['endpoint'];
+// var url = host + endpoint;
+// var port = process.env.PORT || config.port || 3200;
 
 // Configuration
-// var integration = process.env.REACT_APP_SIGN_API_INTEGRATION;
-// var host = process.env.REACT_APP_SIGN_API_HOST;
-// var endpoint = process.env.REACT_APP_SIGN_API_ENDPOINT;
-// var url = host + endpoint;
-// var port = process.env.REACT_APP_PORT || 3200;
+var integration = process.env.REACT_APP_SIGN_API_INTEGRATION;
+var host = process.env.REACT_APP_SIGN_API_HOST;
+var endpoint = process.env.REACT_APP_SIGN_API_ENDPOINT;
+var url = host + endpoint;
+var port = process.env.REACT_APP_PORT || 3200;
 
-// console.log("process env " + process.env);
-console.log("integration " + integration);
-console.log("host " + host);
-console.log("endpoint " + endpoint);
-console.log("url " + url);
-console.log("port " + port);
+// console.log("integration " + integration);
+// console.log("host " + host);
+// console.log("endpoint " + endpoint);
+// console.log("url " + url);
+// console.log("port " + port);
 
 app.use(cors());
 app.use(express.static(__dirname + '/static'));
@@ -75,9 +72,15 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/static/test.html');
 });
 
-// Get features from config files
-app.get('/features', function (req, res){
-    res.json(config['features'])
+// // Get features from config files - delete
+// app.get('/features', function (req, res){
+//     res.json(config['features'])
+// })
+
+app.get('/features', function(req, res) {
+    console.log("process.env from server: ");
+    console.log(process.env);
+    res.json(process.env);
 })
 
 // GET /workflows
@@ -186,6 +189,6 @@ app.post('/api/postTransient', upload.single('myfile'), async function (req, res
     });
 
     res.json(data)
-  })
+})
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

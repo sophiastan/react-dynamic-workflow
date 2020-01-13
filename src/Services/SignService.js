@@ -9,10 +9,6 @@ class SignService {
         const url = this.baseUrl + "/api/getWorkflows";
         const resp = await fetch(url);
         const body = await resp.json();
-        console.log("getWorkflows returns:");
-        console.log(body);
-
-        // console.log(process.env);
         return body;
     }
 
