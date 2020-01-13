@@ -7,8 +7,18 @@ class MergeField extends Component {
 
         this.state = {
             setParentState: props.setParentState,
-            getParentState: props.getParentState
+            getParentState: props.getParentState,
+            workflowId: props.workflowId
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId) {
+            return {
+                workflowId: props.workflowId    
+            };
+        }
+        return null;
     }
 
     // Event handler when an item in the list changed

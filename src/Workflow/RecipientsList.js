@@ -8,8 +8,20 @@ class RecipientsList extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            recipientsList: props.recipientsListInfo ? props.recipientsListInfo : []
+            recipientsList: props.recipientsListInfo ? props.recipientsListInfo : [],
+            workflowId: props.workflowId
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId &&
+            props.recipientsListInfo !== state.recipientsList) {
+            return {
+                workflowId: props.workflowId,
+                recipientsList: props.recipientsListInfo
+            };
+        }
+        return null;
     }
 
     // Event handler when an item in the list changed

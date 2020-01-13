@@ -5,26 +5,12 @@ class CarbonCopy extends Component {
     constructor(props) {
         super(props);
 
-        // Create a list of ccs for editing
-        const items = [];
-        if (props.ccsListInfo) {
-            props.ccsListInfo.map((cc, index) => {
-                for (let i = 0; i < cc.maxListCount; i++) {
-                    const defaultValue = i === 0 ? cc.defaultValue : "";
-                    const item = {
-                        "label": cc.label,
-                        "name": cc.name,
-                        "defaultValue": defaultValue
-                    }
-                    items.push(item);
-                }
-                return items;
-            });    
-        }
-
+        const items = CarbonCopy.createCCGroup(props.ccsListInfo);
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
+            workflowId: props.workflowId,
+            ccsListInfo: props.ccsListInfo,
             carbonCopyGroup: items
         };
 
@@ -35,7 +21,37 @@ class CarbonCopy extends Component {
         });
     }
 
-    componentDidMount() {
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId &&
+            props.ccsListInfo !== state.ccsListInfo) {
+            return {
+                workflowId: props.workflowId,
+                ccsListInfo: props.ccsListInfo,
+                carbonCopyGroup: CarbonCopy.createCCGroup(props.ccsListInfo)
+            };
+        }
+        return null;
+    }
+
+     // Create a list of ccs for editing
+    static createCCGroup(ccsListInfo) {
+       const items = [];
+       if (ccsListInfo) {
+           ccsListInfo.map((cc, index) => {
+               for (let i = 0; i < cc.maxListCount; i++) {
+                   const defaultValue = i === 0 ? cc.defaultValue : "";
+                   const item = {
+                       "label": cc.label,
+                       "name": cc.name,
+                       "defaultValue": defaultValue
+                   }
+                   items.push(item);
+               }
+               return items;
+           });    
+       }
+
+       return items;
     }
 
     // Creates cc data for submit and group emails by name field

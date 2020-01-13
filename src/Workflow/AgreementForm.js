@@ -55,6 +55,8 @@ class AgreementForm extends Component {
 
     // Sets workflow data
     setWorkflow(workflow) {
+        console.log('AgreementForm.setWorkflow()');
+        console.log(workflow);
         if (workflow) {
             const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
@@ -64,7 +66,7 @@ class AgreementForm extends Component {
                 message: message,
                 fileInfos: workflow.fileInfos ? workflow.fileInfos : [],
                 recipientsList: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
-                carbonCopyGroup: workflow.ccsListInfo ? workflow.ccsListInfo : [],
+                carbonCopyGroup: [],
                 mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
             });
         }
@@ -80,8 +82,6 @@ class AgreementForm extends Component {
     async componentDidUpdate(prevProps, prevState) {
         if (prevProps.workflowId !== this.state.workflowId) {
             const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
-            console.log(`Workflow for workflowId = ${this.state.workflowId}`);
-            console.log(workflow);
             this.setWorkflow(workflow);
         }
     }
@@ -136,9 +136,11 @@ class AgreementForm extends Component {
                                 <div>
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
-                                <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState} 
+                                <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
+                                    workflowId={this.state.workflowId} 
                                     recipientsListInfo={this.state.workflow.recipientsListInfo} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
+                                    workflowId={this.state.workflowId} 
                                     ccsListInfo={this.state.workflow.ccsListInfo} />
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">
@@ -162,15 +164,19 @@ class AgreementForm extends Component {
                                             </textarea>
                                         </div>
                                         <FileList setParentState={this.setParentState} getParentState={this.getParentState}
-                                            fileInfos={this.state.workflow.fileInfos} />
-                                        <MergeField setParentState={this.setParentState} getParentState={this.getParentState} />
+                                            workflowId={this.state.workflowId} fileInfos={this.state.workflow.fileInfos} />
+                                        <MergeField setParentState={this.setParentState} getParentState={this.getParentState}
+                                            workflowId={this.state.workflowId} />
                                     </div>
                                     <div className="col-lg-5">
                                         <div className="option_wrapper">
                                             <div id="options" className="col-lg-12">
-                                                <PassOption setParentState={this.setParentState} getParentState={this.getParentState} />
-                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState} />
-                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState} />
+                                                <PassOption setParentState={this.setParentState} getParentState={this.getParentState}
+                                                    workflowId={this.state.workflowId} />
+                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState} 
+                                                    workflowId={this.state.workflowId} />
+                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState} 
+                                                    workflowId={this.state.workflowId} />
                                             </div>
                                         </div>
                                     </div>

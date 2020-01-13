@@ -11,8 +11,22 @@ class PassOption extends Component {
             hasPasswordChecked: false,
             showPasswordChecked: false,
             passOption: "",
-            confirmPassOption: ""
+            confirmPassOption: "",
+            workflowId: props.workflowId
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId) {
+            return {
+                workflowId: props.workflowId,
+                hasPasswordChecked: false,
+                showPasswordChecked: false,
+                passOption: "",
+                confirmPassOption: ""
+            };
+        }
+        return null;
     }
 
     // Checks if password is required and is valid.
@@ -20,7 +34,7 @@ class PassOption extends Component {
         let passwordValid = true;
         if (this.state.hasPasswordChecked) {
             passwordValid = password === confirmPassword &&
-            password.length > 0;
+                password.length > 0;
         }
 
         return passwordValid;
@@ -30,7 +44,7 @@ class PassOption extends Component {
     onCheckboxChanged = (event) => {
         const isChecked = event.target.checked;
         this.setState({ [event.target.name]: isChecked });
-        this.state.setParentState({isPasswordValid: !isChecked});
+        this.state.setParentState({ isPasswordValid: !isChecked });
     }
 
 
@@ -49,7 +63,6 @@ class PassOption extends Component {
 
         // Update password state
         const isPassValid = this.isPasswordValid(passObject.passOption, passObject.confirmPassOption);
-        console.log(`isPassValid = ${isPassValid}`);
         this.state.setParentState({
             isPasswordValid: isPassValid
         });
@@ -62,15 +75,16 @@ class PassOption extends Component {
 
             this.state.setParentState({
                 passOption: passData
-            });    
+            });
         }
     }
 
     render() {
-        const passwordType = this.state.showPasswordChecked ? "text" : "password";
+       const passwordType = this.state.showPasswordChecked ? "text" : "password";
         return (
             <div className="add_border_bottom" id="pass_div">
-                <input type="checkbox" name="hasPasswordChecked" id="pass_checkbox" onClick={this.onCheckboxChanged}></input>
+                <input type="checkbox" name="hasPasswordChecked" id="pass_checkbox"
+                    checked={this.state.hasPasswordChecked} onChange={this.onCheckboxChanged}></input>
                 <label className="checkbox_input" id="pass_checkbox">Password Required</label>
                 {
                     this.state.hasPasswordChecked &&
@@ -94,7 +108,8 @@ class PassOption extends Component {
                             placeholder="Confirm Password"
                             onChange={this.onPassChanged}>
                         </input>
-                        <input type="checkbox" name="showPasswordChecked" id="input_checkbox" onClick={this.onCheckboxChanged}></input>
+                        <input type="checkbox" name="showPasswordChecked" id="input_checkbox" 
+                            checked={this.state.showPasswordChecked} onChange={this.onCheckboxChanged}></input>
                         <label className="checkbox_input" htmlFor="input_checkbox">Show Password</label>
                         {
                             !this.state.getParentState().isPasswordValid &&

@@ -8,11 +8,25 @@ class Deadline extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
+            workflowId: props.workflowId,
             hasDeadlineChecked: false,
             date: new Date().toISOString().substr(0, 10),
             todayDate: "",
             defaultValue: ""
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId) {
+            return {
+                workflowId: props.workflowId,
+                hasDeadlineChecked: false,
+                date: new Date().toISOString().substr(0, 10),
+                todayDate: "",
+                defaultValue: ""    
+            };
+        }
+        return null;
     }
 
     getDateFormat = (date) => {
@@ -90,7 +104,8 @@ class Deadline extends Component {
     render() {
         return (
             <div className="add_border_bottom" id="deadline_div">
-                <input type="checkbox" name="hasDeadlineChecked" id="deadline_checkbox" onClick={this.onCheckboxChanged}></input>
+                <input type="checkbox" name="hasDeadlineChecked" id="deadline_checkbox" 
+                    checked={this.state.hasDeadlineChecked} onChange={this.onCheckboxChanged}></input>
                 <label className="checkbox_input" htmlFor="deadline_checkbox">Completion Deadline</label>
                 {
                     this.state.hasDeadlineChecked &&

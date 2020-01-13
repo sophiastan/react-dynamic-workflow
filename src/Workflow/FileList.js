@@ -8,6 +8,7 @@ class FileList extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
+            workflowId: props.workflowId,
             fileInfos: props.fileInfos ? props.fileInfos : []
         };
     }
@@ -33,6 +34,17 @@ class FileList extends Component {
         this.state.setParentState({
             fileInfos: list
         });
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId &&
+            props.fileInfos !== state.fileInfos) {
+            return {
+                workflowId: props.workflowId,
+                fileInfos: props.fileInfos
+            };
+        }
+        return null;
     }
 
     onFileUpload = async (event, index) => {
