@@ -8,8 +8,19 @@ class Reminder extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            hasReminderChecked: false
+            hasReminderChecked: false,
+            workflowId: props.workflowId
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId) {
+            return {
+                workflowId: props.workflowId,
+                hasReminderChecked: false   
+            };
+        }
+        return null;
     }
 
     // Event handler when checkbox changed
@@ -25,8 +36,9 @@ class Reminder extends Component {
 
     render() {
         return (
-            <div className="add_border_bottom" id="reminder_div" onClick={this.onCheckboxChanged}>
-                <input type="checkbox" name="hasReminderChecked" id="reminder_checkbox"></input>
+            <div className="add_border_bottom" id="reminder_div">
+                <input type="checkbox" name="hasReminderChecked" id="reminder_checkbox"
+                    checked={this.state.hasReminderChecked} onChange={this.onCheckboxChanged}></input>
                 <label className="checkbox_input" htmlFor="reminder_checkbox">Set Reminder</label>
                 {
                     this.state.hasReminderChecked &&

@@ -15,7 +15,7 @@ class SpecificWorkflow extends Component {
         this.state = {
             workflows: [],
             workflowName: workflowName,
-            workflow_id: null,
+            workflowId: null,
             signService: new SignService(),
             workflowService: new WorkflowService(),
         };
@@ -23,11 +23,11 @@ class SpecificWorkflow extends Component {
 
     async componentDidMount() {
         const workflows = await this.state.signService.getWorkflows();
-        const workflow_id = this.state.workflowService.getWorkflowId(workflows, this.state.workflowName);
+        const workflowId = this.state.workflowService.getWorkflowId(workflows, this.state.workflowName);
         if (workflows) {
             this.setState({
                 workflows: workflows,
-                workflow_id: workflow_id
+                workflowId: workflowId
             });
         }
     }
@@ -39,7 +39,7 @@ class SpecificWorkflow extends Component {
                     <div id="workflow_form">
                         <div id="workflow_form_bottom">
                             <div id="workflow_form_bot_wrapper">
-                                <AgreementForm workflow_id={this.state.workflow_id}></AgreementForm>
+                                <AgreementForm workflowId={this.state.workflowId}></AgreementForm>
                             </div>
                         </div>
                     </div>

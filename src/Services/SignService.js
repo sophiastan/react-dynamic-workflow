@@ -13,9 +13,9 @@ class SignService {
     }
 
     // Gets workflow detail
-    getWorkflowById = async (workflow_id) => {
-        if (workflow_id) {
-            const url = this.baseUrl + `/api/getWorkflowById/${workflow_id}`;
+    getWorkflowById = async (workflowId) => {
+        if (workflowId) {
+            const url = this.baseUrl + `/api/getWorkflowById/${workflowId}`;
             const resp = await fetch(url);
             const body = await resp.json();
             return body;

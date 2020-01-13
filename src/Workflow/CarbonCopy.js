@@ -5,37 +5,53 @@ class CarbonCopy extends Component {
     constructor(props) {
         super(props);
 
-        // Create a list of ccs for editing
-        const items = [];
-        if (props.ccsListInfo) {
-            props.ccsListInfo.map((cc, index) => {
-                for (let i = 0; i < cc.maxListCount; i++) {
-                    const defaultValue = i === 0 ? cc.defaultValue : "";
-                    const item = {
-                        "label": cc.label,
-                        "name": cc.name,
-                        "defaultValue": defaultValue
-                    }
-                    items.push(item);
-                }
-                return items;
-            });    
-        }
-
+        const items = CarbonCopy.createCCGroup(props.ccsListInfo);
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            carbon_copy_group: items
+            workflowId: props.workflowId,
+            ccsListInfo: props.ccsListInfo,
+            carbonCopyGroup: items
         };
 
         props.setParentState(state => {
             return {
-                carbon_copy_group: this.createCcList(items)
+                carbonCopyGroup: this.createCcList(items)
             }
         });
     }
 
-    componentDidMount() {
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId &&
+            props.ccsListInfo !== state.ccsListInfo) {
+            return {
+                workflowId: props.workflowId,
+                ccsListInfo: props.ccsListInfo,
+                carbonCopyGroup: CarbonCopy.createCCGroup(props.ccsListInfo)
+            };
+        }
+        return null;
+    }
+
+     // Create a list of ccs for editing
+    static createCCGroup(ccsListInfo) {
+       const items = [];
+       if (ccsListInfo) {
+           ccsListInfo.map((cc, index) => {
+               for (let i = 0; i < cc.maxListCount; i++) {
+                   const defaultValue = i === 0 ? cc.defaultValue : "";
+                   const item = {
+                       "label": cc.label,
+                       "name": cc.name,
+                       "defaultValue": defaultValue
+                   }
+                   items.push(item);
+               }
+               return items;
+           });    
+       }
+
+       return items;
     }
 
     // Creates cc data for submit and group emails by name field
@@ -69,7 +85,7 @@ class CarbonCopy extends Component {
     onCcChanged = (event, index) => {
         const val = event.target.value;
 
-        const localCCList = this.state.carbon_copy_group.map((item, i) => {
+        const localCCList = this.state.carbonCopyGroup.map((item, i) => {
             if (i === index) {
                 item.defaultValue = val;
                 return item;
@@ -82,7 +98,7 @@ class CarbonCopy extends Component {
         // Update cc for local edit
         this.setState(state => {
             return {
-                carbon_copy_group: localCCList
+                carbonCopyGroup: localCCList
             }
         });
         
@@ -91,7 +107,7 @@ class CarbonCopy extends Component {
         // Update cc list for submit
         this.state.setParentState(state => {
             return {
-                carbon_copy_group: parentCCList
+                carbonCopyGroup: parentCCList
             }
         });
      }
@@ -100,8 +116,8 @@ class CarbonCopy extends Component {
         return (
             <div>
                 {
-                    this.state.carbon_copy_group &&
-                    this.state.carbon_copy_group.map((cc, i) => 
+                    this.state.carbonCopyGroup &&
+                    this.state.carbonCopyGroup.map((cc, i) => 
                         <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
                             <h3 className="recipient_label">{cc.label}</h3>
                             <input type="text" id={`cc_${i}`} name={`cc_${i}`}

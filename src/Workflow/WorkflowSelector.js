@@ -8,7 +8,7 @@ class WorkflowSelector extends Component {
         super(props);
         this.state = {
             signService: new SignService(),
-            workflow_id: null,
+            workflowId: null,
             workflows: []
         };
     }
@@ -22,9 +22,9 @@ class WorkflowSelector extends Component {
     }
 
     onWorkflowChanged = (event) => {
-        const workflow_id = event.target.value;
+        const workflowId = event.target.value;
         this.setState({
-            workflow_id: workflow_id
+            workflowId: workflowId
         })
     }
 
@@ -65,7 +65,7 @@ class WorkflowSelector extends Component {
                         </div>
                         <div id="workflow_form_bottom">
                             <div id="workflow_form_bot_wrapper">
-                                <AgreementForm workflow_id={this.state.workflow_id}></AgreementForm>
+                                <AgreementForm workflowId={this.state.workflowId}></AgreementForm>
                             </div>
                         </div>
                     </div>
