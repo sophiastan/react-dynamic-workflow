@@ -11,7 +11,9 @@ class CarbonCopy extends Component {
             getParentState: props.getParentState,
             workflowId: props.workflowId,
             ccsListInfo: props.ccsListInfo,
-            carbonCopyGroup: items
+            carbonCopyGroup: items,
+            hideCC: props.features.hideCC,
+            hideCCWorkflowList: props.features.hideCCWorkflowList
         };
 
         props.setParentState(state => {
@@ -22,6 +24,8 @@ class CarbonCopy extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
+        console.log(state.hideCC);
+        console.log(state.hideCCWorkflowList);
         if (props.workflowId !== state.workflowId &&
             props.ccsListInfo !== state.ccsListInfo) {
             return {

@@ -3,15 +3,17 @@ import { Switch, Route } from 'react-router-dom';
 
 import Home from './Home';
 import WorkflowSelector from '../Workflow/WorkflowSelector';
-import SpecificWorkflow from '../Workflow/SpecificWorkflow';
+import SpecificWorkflow from '../Workflow/SpecificWorkflow'; 
 import Selector_SpecificWorkflow from '../Workflow/Selector_SpecificWorkflow';
 import ConfigService from '../Services/ConfigService';
 
 function App() {
   const configService = new ConfigService();
-
-  const hideSelector = configService.getFeatures();
+  const hideSelector = configService.getHideSelector();
+  // const hideSelector = configService.getFeatures().hideSelector;
   console.log(hideSelector);
+
+  // if (hideSelector === true) { 
 
   if (configService.hideSelector) {
 

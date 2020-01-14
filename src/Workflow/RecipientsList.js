@@ -9,11 +9,15 @@ class RecipientsList extends Component {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
             recipientsList: props.recipientsListInfo ? props.recipientsListInfo : [],
-            workflowId: props.workflowId
+            workflowId: props.workflowId,
+            hidePredefined: props.features.hidePredefined,
+            hideWorkflowList: props.features.hideWorkflowList
         };
     }
 
     static getDerivedStateFromProps(props, state) {
+        // console.log(state.hidePredefined);
+        // console.log(state.hideWorkflowList);
         if (props.workflowId !== state.workflowId &&
             props.recipientsListInfo !== state.recipientsList) {
             return {

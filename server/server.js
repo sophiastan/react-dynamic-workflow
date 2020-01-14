@@ -30,29 +30,23 @@ const fs = require('fs');
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
-// HTTPS & Path - delete
-// const path = require('path');
-
-// js-yaml - delete
-// const yaml = require('js-yaml');
-// const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'config', 'config.yaml'), 'utf-8'));
-
 // Main App
 const app = express();
 
-// Configuration - delete
-// var integration = config['enterprise']['integration'];
-// var host = config['server']['host'];
-// var endpoint = config['server']['endpoint'];
-// var url = host + endpoint;
-// var port = process.env.PORT || config.port || 3200;
-
 // Configuration
-var integration = process.env.REACT_APP_SIGN_API_INTEGRATION;
-var host = process.env.REACT_APP_SIGN_API_HOST;
-var endpoint = process.env.REACT_APP_SIGN_API_ENDPOINT;
+const features = require('../key.js');
+
+var integration = features.integration;
+var host = features.host;
+var endpoint = features.endpoint;
 var url = host + endpoint;
-var port = process.env.REACT_APP_PORT || 3200;
+var port = features.port || 3200;
+
+// var integration = process.env.REACT_APP_SIGN_API_INTEGRATION;
+// var host = process.env.REACT_APP_SIGN_API_HOST;
+// var endpoint = process.env.REACT_APP_SIGN_API_ENDPOINT;
+// var url = host + endpoint;
+// var port = process.env.REACT_APP_PORT || 3200;
 
 // console.log("integration " + integration);
 // console.log("host " + host);
@@ -72,15 +66,9 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/static/test.html');
 });
 
-// // Get features from config files - delete
-// app.get('/features', function (req, res){
-//     res.json(config['features'])
-// })
-
-app.get('/features', function(req, res) {
-    console.log("process.env from server: ");
-    console.log(process.env);
-    res.json(process.env);
+// Get features from key file
+app.get('/features', async function(req, res) {
+    res.json(features);
 })
 
 // GET /workflows

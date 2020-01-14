@@ -10,6 +10,7 @@ import MergeField from './MergeField';
 import Deadline from './Deadline';
 import Reminder from './Reminder';
 import PassOption from './PassOption';
+import ConfigService from '../Services/ConfigService';
 
 class AgreementForm extends Component {
     constructor(props) {
@@ -18,9 +19,11 @@ class AgreementForm extends Component {
         this.state = {
             workflow: null,
             signService: new SignService(),
+            configService: new ConfigService(),
             workflowService: new WorkflowService(),
 
             isPasswordValid: true,
+            features: null,
 
             // Agreement data
             workflowId: props.workflowId,
@@ -54,12 +57,12 @@ class AgreementForm extends Component {
     }
 
     // Sets workflow data
-    setWorkflow(workflow) {
-        console.log('AgreementForm.setWorkflow()');
-        console.log(workflow);
+    async setWorkflow(workflow) {
         if (workflow) {
             const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
+            const features = await this.state.configService.getFeatures();
+            console.log(features);
             this.setState({
                 workflow: workflow,
                 agreementName: agreementName,
@@ -67,7 +70,8 @@ class AgreementForm extends Component {
                 fileInfos: workflow.fileInfos ? workflow.fileInfos : [],
                 recipientsList: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
                 carbonCopyGroup: [],
-                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
+                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : [],
+                features: features
             });
         }
         else {
@@ -137,10 +141,10 @@ class AgreementForm extends Component {
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
                                 <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
-                                    workflowId={this.state.workflowId} 
+                                    workflowId={this.state.workflowId} features={this.state.features}
                                     recipientsListInfo={this.state.workflow.recipientsListInfo} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
-                                    workflowId={this.state.workflowId} 
+                                    workflowId={this.state.workflowId} features={this.state.features}
                                     ccsListInfo={this.state.workflow.ccsListInfo} />
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">
