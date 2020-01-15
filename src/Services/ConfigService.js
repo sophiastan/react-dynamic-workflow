@@ -8,19 +8,35 @@ class ConfigService {
 
     hideSelector = false;
 
-     // Get application features
-     getFeatures = async () => {
+    getFeatures = () => {
         const url = this.baseUrl + "/features";
-        const resp = await fetch(url);
-        const body = await resp.json();
+        const body = fetch(url)
+        .then(resp => resp.json())
         return body;
     }
 
-    getHideSelector = async () => {
-        const features = await this.getFeatures();
-        const hideSelector = features.hideSelector;
-        return hideSelector;
-    }
+    // getHideSelector = () => {
+    //     const features = this.getFeatures();
+    //     const hideSelector = features.hideSelector;
+    //     return hideSelector;
+    // }
+
+     // Get application features - TODO: make it a sync fetch not async
+     // fetch(url) .then(resp => resp.json())
+    //  getFeatures = async () => {
+    //     const url = this.baseUrl + "/features";
+    //     const resp = await fetch(url);
+    //     const body = await resp.json();
+    //     return body;
+    // }
+
+    // getHideSelector = async () => {
+    //     const features = await this.getFeatures();
+    //     const hideSelector = features.hideSelector;
+    //     return hideSelector;
+    // }
+
+
 }
 
 export default ConfigService;

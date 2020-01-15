@@ -125,8 +125,8 @@ class CarbonCopy extends Component {
                         <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
                             <h3 className="recipient_label">{cc.label}</h3>
                             <input type="text" id={`cc_${i}`} name={`cc_${i}`}
-                                className="recipient_form_input" placeholder="Enter Cc's Email"
-                                value={cc.defaultValue}
+                                className={cc.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"} 
+                                placeholder="Enter Cc's Email" value={cc.defaultValue}
                                 onChange={(event) => this.onCcChanged(event, i)}>
                             </input>
                         </div>

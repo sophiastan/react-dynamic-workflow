@@ -6,8 +6,8 @@ module.exports = {
     host: process.env.REACT_APP_SIGN_API_HOST,
     endpoint: process.env.REACT_APP_SIGN_API_ENDPOINT,
     port: process.env.REACT_APP_PORT,
-    hideSelector: (process.env.REACT_APP_HIDE_SELECTOR == 'true'),
-    hidePredefined: (process.env.REACT_APP_HIDE_PREDEFINED == 'true'),
+    hideSelector: (process.env.REACT_APP_HIDE_SELECTOR === 'true'),
+    hidePredefined: (process.env.REACT_APP_HIDE_PREDEFINED === 'true'),
     hideWorkflowList: process.env.REACT_APP_HIDE_WORKFLOW_LIST,
     hideCC: (process.env.REACT_APP_HIDE_CC === 'true'),
     hideCCWorkflowList: process.env.REACT_APP_HIDE_CC_WORKFLOW_LIST

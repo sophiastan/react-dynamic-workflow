@@ -83,8 +83,8 @@ class RecipientsList extends Component {
                         <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
                             <h3 className="recipient_label">{recipient.label}</h3>
                             <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
-                                className="recipient_form_input" placeholder="Enter Recipient's Email"
-                                value={recipient.defaultValue}
+                                className={recipient.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"}
+                                placeholder="Enter Recipient's Email" value={recipient.defaultValue}
                                 onChange={(event) => this.onEmailChanged(event, index)}>
                             </input>
                         </div>

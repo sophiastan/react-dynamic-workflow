@@ -54,15 +54,20 @@ class AgreementForm extends Component {
     async componentDidMount() {
         const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
         this.setWorkflow(workflow);
+
+        const features = this.state.configService.getFeatures();
+        this.setState({
+            features: features
+        })
+
+        console.log(this.state.features);
     }
 
     // Sets workflow data
-    async setWorkflow(workflow) {
+    setWorkflow(workflow) {
         if (workflow) {
             const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
-            const features = await this.state.configService.getFeatures();
-            console.log(features);
             this.setState({
                 workflow: workflow,
                 agreementName: agreementName,
@@ -70,8 +75,7 @@ class AgreementForm extends Component {
                 fileInfos: workflow.fileInfos ? workflow.fileInfos : [],
                 recipientsList: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
                 carbonCopyGroup: [],
-                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : [],
-                features: features
+                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
             });
         }
         else {

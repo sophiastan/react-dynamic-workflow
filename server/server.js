@@ -66,7 +66,7 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/static/test.html');
 });
 
-// Get features from key file
+// Get features from key file - try to not make it async funciton
 app.get('/features', async function(req, res) {
     res.json(features);
 })
