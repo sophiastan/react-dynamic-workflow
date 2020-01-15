@@ -24,8 +24,8 @@ class CarbonCopy extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        console.log(state.hideCC);
-        console.log(state.hideCCWorkflowList);
+        // console.log(state.hideCC);
+        // console.log(state.hideCCWorkflowList);
         if (props.workflowId !== state.workflowId &&
             props.ccsListInfo !== state.ccsListInfo) {
             return {

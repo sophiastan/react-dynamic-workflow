@@ -10,24 +10,57 @@ class WorkflowService {
     }
 
     createAgreementData(source) {
-        const agreement =  {
-            "documentCreationInfo": {
-                "fileInfos": source.fileInfos,
-                "name": source.agreementName,
-                "recipientsListInfo": source.recipientsList,
-                "ccs": source.carbonCopyGroup,
-                "securityOptions": source.passOption,
-                "mergeFieldInfo": source.mergeFieldGroup,
-                "reminderFrequency": source.reminders, 
-                "message": source.message
-            }
-        };
+        // const agreement =  {
+        //     "documentCreationInfo": {
+        //         "fileInfos": source.fileInfos,
+        //         "name": source.agreementName,
+        //         "recipientsListInfo": source.recipientsList,
+        //         "ccs": source.carbonCopyGroup,
+        //         "securityOptions": source.passOption,
+        //         "mergeFieldInfo": source.mergeFieldGroup,
+        //         "reminderFrequency": source.reminders, 
+        //         "message": source.message
+        //     }
+        // };
         
-        if (source.deadline !== "") {
-            agreement.documenCreationInfo.daysUntilSigningDeadline = source.deadline;
-        }
+        // if (source.deadline !== "") {
+        //     agreement.documentCreationInfo.daysUntilSigningDeadline = source.deadline;
+        // }
 
-        return agreement;
+
+        // return agreement; 
+
+        if (source.deadline === "") {
+            const agreement = {
+                "documentCreationInfo": {
+                    "fileInfos": source.fileInfos,
+                    "name": source.agreementName,
+                    "recipientsListInfo": source.recipientsList,
+                    "ccs": source.carbonCopyGroup,
+                    "securityOptions": source.passOption,
+                    "mergeFieldInfo": source.mergeFieldGroup,
+                    "reminderFrequency": source.reminders, 
+                    "message": source.message
+                }
+            };
+            return agreement;
+        }
+        else {
+            const agreement = {
+                "documentCreationInfo": {
+                    "fileInfos": source.fileInfos,
+                    "name": source.agreementName,
+                    "recipientsListInfo": source.recipientsList,
+                    "ccs": source.carbonCopyGroup,
+                    "securityOptions": source.passOption,
+                    "mergeFieldInfo": source.mergeFieldGroup,
+                    "daysUntilSigningDeadline": source.deadline,
+                    "reminderFrequency": source.reminders, 
+                    "message": source.message
+                }
+            };
+            return agreement;
+        }
     }
 }
 
