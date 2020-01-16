@@ -39,7 +39,7 @@ class SpecificWorkflow extends Component {
                     <div id="workflow_form">
                         <div id="workflow_form_bottom">
                             <div id="workflow_form_bot_wrapper">
-                                <AgreementForm workflowId={this.state.workflowId}></AgreementForm>
+                                <AgreementForm workflowId={this.state.workflowId} workflowName={this.state.workflowName}></AgreementForm>
                             </div>
                         </div>
                     </div>

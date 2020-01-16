@@ -22,6 +22,7 @@ class AgreementForm extends Component {
             configService: new ConfigService(),
             workflowService: new WorkflowService(),
 
+            workflowName: props.workflowName,
             isPasswordValid: true,
             features: null,
 
@@ -145,10 +146,10 @@ class AgreementForm extends Component {
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
                                 <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
-                                    workflowId={this.state.workflowId} features={this.state.features}
+                                    workflowId={this.state.workflowId} features={this.state.features} workflowName={this.state.workflowName}
                                     recipientsListInfo={this.state.workflow.recipientsListInfo} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
-                                    workflowId={this.state.workflowId} features={this.state.features}
+                                    workflowId={this.state.workflowId} features={this.state.features} workflowName={this.state.workflowName}
                                     ccsListInfo={this.state.workflow.ccsListInfo} />
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">

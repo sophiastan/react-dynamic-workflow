@@ -13,7 +13,8 @@ class CarbonCopy extends Component {
             ccsListInfo: props.ccsListInfo,
             carbonCopyGroup: items,
             hideCC: props.features.hideCC,
-            hideCCWorkflowList: props.features.hideCCWorkflowList
+            hideCCWorkflowList: props.features.hideCCWorkflowList,
+            workflowName: props.workflowName
         };
 
         props.setParentState(state => {
@@ -85,6 +86,21 @@ class CarbonCopy extends Component {
         return list;
     }
 
+    hideWorkflowList = () => {
+        console.log(this.state.workflowName);
+        const hideWorkflowList = this.state.hideWorkflowList;
+        const workflowName = this.state.workflowName;
+
+        if (hideWorkflowList.includes(workflowName)) {
+            console.log('true');
+            return true;
+        }
+        else {
+            console.log('false');
+            return false;
+        }
+    }
+
     // Event handler when an item in the list changed
     onCcChanged = (event, index) => {
         const val = event.target.value;
@@ -122,14 +138,17 @@ class CarbonCopy extends Component {
                 {
                     this.state.carbonCopyGroup &&
                     this.state.carbonCopyGroup.map((cc, i) => 
-                        <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
-                            <h3 className="recipient_label">{cc.label}</h3>
-                            <input type="text" id={`cc_${i}`} name={`cc_${i}`}
-                                className={cc.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"} 
-                                placeholder="Enter Cc's Email" value={cc.defaultValue}
-                                onChange={(event) => this.onCcChanged(event, i)}>
-                            </input>
-                        </div>
+                    this.state.hideCC && cc.defaultValue ? (<div></div>) : 
+                        (
+                            <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
+                                <h3 className="recipient_label">{cc.label}</h3>
+                                <input type="text" id={`cc_${i}`} name={`cc_${i}`}
+                                    className={cc.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"} 
+                                    placeholder="Enter Cc's Email" value={cc.defaultValue}
+                                    onChange={(event) => this.onCcChanged(event, i)}>
+                                </input>
+                            </div>
+                        )
                     )
                 }
             </div>

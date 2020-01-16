@@ -11,13 +11,15 @@ class RecipientsList extends Component {
             recipientsList: props.recipientsListInfo ? props.recipientsListInfo : [],
             workflowId: props.workflowId,
             hidePredefined: props.features.hidePredefined,
-            hideWorkflowList: props.features.hideWorkflowList
+            hideWorkflowList: props.features.hideWorkflowList,
+            workflowName: props.workflowName
         };
     }
 
     static getDerivedStateFromProps(props, state) {
-        console.log(state.hidePredefined);
-        console.log(state.hideWorkflowList);
+        // console.log(state.hidePredefined);
+        // console.log(state.hideWorkflowList);
+        // console.log(state.workflowName);
         if (props.workflowId !== state.workflowId &&
             props.recipientsListInfo !== state.recipientsList) {
             return {
@@ -26,6 +28,21 @@ class RecipientsList extends Component {
             };
         }
         return null;
+    }
+
+    hideWorkflowList() {
+        console.log(this.state.workflowName);
+        const hideWorkflowList = this.state.hideWorkflowList;
+        const workflowName = this.state.workflowName;
+
+        if (hideWorkflowList.includes(workflowName)) {
+            console.log('true');
+            return true;
+        }
+        else {
+            console.log('false');
+            return false;
+        }
     }
 
     // Event handler when an item in the list changed
@@ -79,15 +96,18 @@ class RecipientsList extends Component {
             <div>
                 {
                     this.state.recipientsList &&
-                    this.state.recipientsList.map((recipient, index) =>
-                        <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
-                            <h3 className="recipient_label">{recipient.label}</h3>
-                            <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
-                                className={recipient.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"}
-                                placeholder="Enter Recipient's Email" value={recipient.defaultValue}
-                                onChange={(event) => this.onEmailChanged(event, index)}>
-                            </input>
-                        </div>
+                    this.state.recipientsList.map((recipient, index) => 
+                    this.state.hidePredefined && recipient.defaultValue ? (<div></div>) :
+                        (
+                            <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
+                                <h3 className="recipient_label">{recipient.label}</h3>
+                                <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
+                                    className={recipient.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"}
+                                    placeholder="Enter Recipient's Email" value={recipient.defaultValue}
+                                    onChange={(event) => this.onEmailChanged(event, index)}>
+                                </input>
+                            </div>
+                        )
                     )
                 }
             </div>
