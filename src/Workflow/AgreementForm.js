@@ -63,7 +63,6 @@ class AgreementForm extends Component {
 
     // Sets workflow data
     setWorkflow(workflow) {
-        console.log(workflow);
         if (workflow) {
             const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
@@ -143,10 +142,10 @@ class AgreementForm extends Component {
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
                                 <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
-                                    workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflowName}
+                                    workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflow.displayName}
                                     recipientsListInfo={this.state.workflow.recipientsListInfo} workflow={this.state.workflow} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
-                                    workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflowName}
+                                    workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflow.displayName}
                                     ccsListInfo={this.state.workflow.ccsListInfo} />
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">

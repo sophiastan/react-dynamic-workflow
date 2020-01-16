@@ -30,8 +30,6 @@ class App extends Component {
       
     if (this.state.features.hideSelector) { 
 
-    // if (this.state.configService.hideSelector) {
-
       // Create routes that show specific workflow via a route url
       return (
         <Switch>

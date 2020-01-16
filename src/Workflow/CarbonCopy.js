@@ -25,37 +25,38 @@ class CarbonCopy extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        // console.log(state.hideCC);
-        // console.log(state.hideCCWorkflowList);
         if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
                 ccsListInfo: props.ccsListInfo,
-                carbonCopyGroup: CarbonCopy.createCCGroup(props.ccsListInfo)
+                carbonCopyGroup: CarbonCopy.createCCGroup(props.ccsListInfo),
+                hideCC: props.features.hideCC,
+                hideCCWorkflowList: props.features.hideCCWorkflowList,
+                workflowName: props.workflowName
             };
         }
         return null;
     }
 
-     // Create a list of ccs for editing
+    // Create a list of ccs for editing
     static createCCGroup(ccsListInfo) {
-       const items = [];
-       if (ccsListInfo) {
-           ccsListInfo.map((cc, index) => {
-               for (let i = 0; i < cc.maxListCount; i++) {
-                   const defaultValue = i === 0 ? cc.defaultValue : "";
-                   const item = {
-                       "label": cc.label,
-                       "name": cc.name,
-                       "defaultValue": defaultValue
-                   }
-                   items.push(item);
-               }
-               return items;
-           });    
-       }
+        const items = [];
+        if (ccsListInfo) {
+            ccsListInfo.map((cc, index) => {
+                for (let i = 0; i < cc.maxListCount; i++) {
+                    const defaultValue = i === 0 ? cc.defaultValue : "";
+                    const item = {
+                        "label": cc.label,
+                        "name": cc.name,
+                        "defaultValue": defaultValue
+                    }
+                    items.push(item);
+                }
+                return items;
+            });
+        }
 
-       return items;
+        return items;
     }
 
     // Creates cc data for submit and group emails by name field
@@ -76,7 +77,7 @@ class CarbonCopy extends Component {
                         "name": item.name,
                         "emails": ccData
                     }
-                    list.push(ccItem);    
+                    list.push(ccItem);
                 }
             }
             return ccItem;
@@ -85,17 +86,14 @@ class CarbonCopy extends Component {
         return list;
     }
 
-    hideWorkflowList = () => {
-        console.log(this.state.workflowName);
-        const hideWorkflowList = this.state.hideWorkflowList;
+    hideCCWorkflowList = () => {
+        const hideCCWorkflowList = this.state.hideCCWorkflowList;
         const workflowName = this.state.workflowName;
 
-        if (hideWorkflowList.includes(workflowName)) {
-            console.log('true');
+        if (hideCCWorkflowList.includes(workflowName)) {
             return true;
         }
         else {
-            console.log('false');
             return false;
         }
     }
@@ -120,7 +118,7 @@ class CarbonCopy extends Component {
                 carbonCopyGroup: localCCList
             }
         });
-        
+
         const parentCCList = this.createCcList(localCCList);
 
         // Update cc list for submit
@@ -129,25 +127,32 @@ class CarbonCopy extends Component {
                 carbonCopyGroup: parentCCList
             }
         });
-     }
+    }
 
     render() {
+        const hideCC = this.state.hideCC;
+        const hideCCWorkflows = this.state.hideCCWorkflowList.includes(this.state.workflowName) ? true : false;
+        const hideAll = this.state.hideCCWorkflowList === "" ? true : false;
+        // console.log("hideCC " + hideCC);
+        // console.log("hideCCWorkflowList " + this.state.hideCCWorkflowList);
+        // console.log("hideCCWorkflows " + hideCCWorkflows);
         return (
             <div>
                 {
                     this.state.carbonCopyGroup &&
-                    this.state.carbonCopyGroup.map((cc, i) => 
-                    this.state.hideCC && cc.defaultValue ? (<div key={i}></div>) : 
-                        (
-                            <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
-                                <h3 className="recipient_label">{cc.label}</h3>
-                                <input type="text" id={`cc_${i}`} name={`cc_${i}`}
-                                    className={cc.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"} 
-                                    placeholder="Enter Cc's Email" value={cc.defaultValue}
-                                    onChange={(event) => this.onCcChanged(event, i)}>
-                                </input>
-                            </div>
-                        )
+                    this.state.carbonCopyGroup.map((cc, i) =>
+                        <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
+                            <h3 className="recipient_label">{cc.label}</h3>
+                            <input type="text" id={`cc_${i}`} name={`cc_${i}`}
+                                // className={cc.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"} 
+                                className={(cc.defaultValue && hideCC && hideCCWorkflows) ? "recipient_hidden" :
+                                    (cc.defaultValue && hideCC && hideAll) ? "recipient_hidden" :
+                                        cc.defaultValue ? "recipient_form_input predefined_input" :
+                                            "recipient_form_input"}
+                                placeholder="Enter Cc's Email" value={cc.defaultValue}
+                                onChange={(event) => this.onCcChanged(event, i)}>
+                            </input>
+                        </div>
                     )
                 }
             </div>

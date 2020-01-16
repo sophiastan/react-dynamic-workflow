@@ -42,18 +42,6 @@ var endpoint = features.endpoint;
 var url = host + endpoint;
 var port = features.port || 3200;
 
-// var integration = process.env.REACT_APP_SIGN_API_INTEGRATION;
-// var host = process.env.REACT_APP_SIGN_API_HOST;
-// var endpoint = process.env.REACT_APP_SIGN_API_ENDPOINT;
-// var url = host + endpoint;
-// var port = process.env.REACT_APP_PORT || 3200;
-
-// console.log("integration " + integration);
-// console.log("host " + host);
-// console.log("endpoint " + endpoint);
-// console.log("url " + url);
-// console.log("port " + port);
-
 app.use(cors());
 app.use(express.static(__dirname + '/static'));
 app.use(bodyParser.urlencoded({
