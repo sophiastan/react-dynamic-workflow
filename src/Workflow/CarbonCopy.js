@@ -27,8 +27,7 @@ class CarbonCopy extends Component {
     static getDerivedStateFromProps(props, state) {
         // console.log(state.hideCC);
         // console.log(state.hideCCWorkflowList);
-        if (props.workflowId !== state.workflowId &&
-            props.ccsListInfo !== state.ccsListInfo) {
+        if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
                 ccsListInfo: props.ccsListInfo,
@@ -138,7 +137,7 @@ class CarbonCopy extends Component {
                 {
                     this.state.carbonCopyGroup &&
                     this.state.carbonCopyGroup.map((cc, i) => 
-                    this.state.hideCC && cc.defaultValue ? (<div></div>) : 
+                    this.state.hideCC && cc.defaultValue ? (<div key={i}></div>) : 
                         (
                             <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
                                 <h3 className="recipient_label">{cc.label}</h3>

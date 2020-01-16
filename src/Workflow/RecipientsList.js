@@ -20,9 +20,7 @@ class RecipientsList extends Component {
         // console.log(state.hidePredefined);
         // console.log(state.hideWorkflowList);
         // console.log(state.workflowName);
-        console.log(state.workflow);
-        if (props.workflowId !== state.workflowId &&
-            props.recipientsListInfo !== state.recipientsList) {
+        if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
                 recipientsList: props.recipientsListInfo
@@ -55,7 +53,7 @@ class RecipientsList extends Component {
 
         // Update email text for recipient
         this.setState(state => {
-            const list = this.state.getParentState().recipientsList.map((item, i) => {
+            const list = this.state.recipientsList.map((item, i) => {
                 if (i === index) {
                     item.defaultValue = val;
                     return item;
@@ -98,7 +96,7 @@ class RecipientsList extends Component {
                 {
                     this.state.recipientsList &&
                     this.state.recipientsList.map((recipient, index) => 
-                    this.state.hidePredefined && recipient.defaultValue ? (<div></div>) :
+                    this.state.hidePredefined && recipient.defaultValue ? (<div key={index}></div>) :
                         (
                             <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
                                 <h3 className="recipient_label">{recipient.label}</h3>

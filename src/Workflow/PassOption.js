@@ -10,19 +10,11 @@ class PassOption extends Component {
             getParentState: props.getParentState,
             hasPasswordChecked: false,
             showPasswordChecked: false,
-            visible: null,
+            visible: props.passwordVisible,
             passOption: "",
             confirmPassOption: "",
-            workflowId: props.workflowId,
-            workflow: props.workflow
+            workflowId: props.workflowId
         };
-    }
-
-    // Set visible after intiating workflow
-    componentDidMount() {
-        this.setState({
-            visible: this.state.workflow.passwordInfo.visible
-        })
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -30,11 +22,10 @@ class PassOption extends Component {
             return {
                 hasPasswordChecked: false,
                 showPasswordChecked: false,
-                visible: null,
+                visible: props.passwordVisible,
                 passOption: "",
                 confirmPassOption: "",
-                workflowId: props.workflowId,
-                workflow: props.workflow
+                workflowId: props.workflowId
             };
         }
         return null;

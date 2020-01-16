@@ -13,8 +13,7 @@ class App extends Component {
 
     this.state = {
       configService: new ConfigService(),
-      features: null,
-      hideSelector: null
+      features: null
     }
   }
 
@@ -23,14 +22,13 @@ class App extends Component {
     this.setState({
       features: features
     })
-    const hideSelector = this.state.features.hideSelector;
-    this.setState({
-      hideSelector: hideSelector
-    })
   }
 
   render() {
-    if (this.state.hideSelector) { 
+    if (!this.state.features) 
+      return (<div></div>);
+      
+    if (this.state.features.hideSelector) { 
 
     // if (this.state.configService.hideSelector) {
 

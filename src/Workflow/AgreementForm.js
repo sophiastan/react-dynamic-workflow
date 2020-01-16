@@ -55,7 +55,6 @@ class AgreementForm extends Component {
     async componentDidMount() {
         const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
         this.setWorkflow(workflow);
-
         const features = await this.state.configService.getFeatures();
         this.setState({
             features: features
@@ -64,6 +63,7 @@ class AgreementForm extends Component {
 
     // Sets workflow data
     setWorkflow(workflow) {
+        console.log(workflow);
         if (workflow) {
             const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
@@ -133,7 +133,6 @@ class AgreementForm extends Component {
         if (!this.state.workflow) {
             return (<div></div>);
         }
-        // console.log(this.state);
         return (
             <div id="dynamic_form">
                 <div className="row">
@@ -144,10 +143,10 @@ class AgreementForm extends Component {
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
                                 <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
-                                    workflowId={this.state.workflowId} features={this.state.features} workflowName={this.state.workflowName}
+                                    workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflowName}
                                     recipientsListInfo={this.state.workflow.recipientsListInfo} workflow={this.state.workflow} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
-                                    workflowId={this.state.workflowId} features={this.state.features} workflowName={this.state.workflowName}
+                                    workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflowName}
                                     ccsListInfo={this.state.workflow.ccsListInfo} />
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">
@@ -171,19 +170,21 @@ class AgreementForm extends Component {
                                             </textarea>
                                         </div>
                                         <FileList setParentState={this.setParentState} getParentState={this.getParentState}
-                                            workflowId={this.state.workflowId} fileInfos={this.state.workflow.fileInfos} />
+                                            workflowId={this.state.workflow.name} fileInfos={this.state.workflow.fileInfos} />
                                         <MergeField setParentState={this.setParentState} getParentState={this.getParentState}
-                                            workflowId={this.state.workflowId} />
+                                            workflowId={this.state.workflow.name} />
                                     </div>
                                     <div className="col-lg-5">
                                         <div className="option_wrapper">
                                             <div id="options" className="col-lg-12">
                                                 <PassOption setParentState={this.setParentState} getParentState={this.getParentState}
-                                                    workflowId={this.state.workflowId} workflow={this.state.workflow} />
+                                                    workflowId={this.state.workflow.name}
+                                                    passwordVisible={this.state.workflow.passwordInfo.visible} />
                                                 <Deadline setParentState={this.setParentState} getParentState={this.getParentState} 
-                                                    workflowId={this.state.workflowId} workflow={this.state.workflow} />
+                                                    workflowId={this.state.workflow.name} 
+                                                    deadlineVisible={this.state.workflow.expirationInfo ? this.state.workflow.expirationInfo.visible : ''} />
                                                 <Reminder setParentState={this.setParentState} getParentState={this.getParentState} 
-                                                    workflowId={this.state.workflowId} />
+                                                    workflowId={this.state.workflow.name} />
                                             </div>
                                         </div>
                                     </div>

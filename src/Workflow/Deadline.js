@@ -10,23 +10,12 @@ class Deadline extends Component {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
             workflowId: props.workflowId,
-            workflow: props.workflow,
             hasDeadlineChecked: true,
-            visible: null,
+            visible: props.deadlineVisible,
             date: date
         };
 
         this.state.setParentState({ deadline: this.getDaysTillDeadline(date) });
-    }
-
-    // Set visible after intiating workflow
-    componentDidMount() {
-        // Set visible only if there is expirationInfo data
-        if (this.state.workflow.expirationInfo) {
-            this.setState({
-                visible: this.state.workflow.expirationInfo.visible
-            })
-        }
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -35,7 +24,7 @@ class Deadline extends Component {
                 workflowId: props.workflowId,
                 workflow: props.workflow,
                 hasDeadlineChecked: true,
-                visible: null,
+                visible: props.deadlineVisible,
                 date: Deadline.getNextDay()
             };
         }
