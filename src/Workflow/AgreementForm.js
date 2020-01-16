@@ -10,6 +10,7 @@ import MergeField from './MergeField';
 import Deadline from './Deadline';
 import Reminder from './Reminder';
 import PassOption from './PassOption';
+import ConfigService from '../Services/ConfigService';
 
 class AgreementForm extends Component {
     constructor(props) {
@@ -18,20 +19,23 @@ class AgreementForm extends Component {
         this.state = {
             workflow: null,
             signService: new SignService(),
+            configService: new ConfigService(),
             workflowService: new WorkflowService(),
 
+            workflowName: props.workflowName,
             isPasswordValid: true,
+            features: null,
 
             // Agreement data
-            workflow_id: props.workflowId,
-            transient_id: props.transientDocumentId,
-            agreement_name: "",
-            file_infos: [],
-            recipients_list: [],
-            recipient_group: [],
-            carbon_copy_group: [],
-            merge_field_group: [],
-            pass_option: "",
+            workflowId: props.workflowId,
+            transientId: props.transientDocumentId,
+            agreementName: "",
+            fileInfos: [],
+            recipientsList: [],
+            recipientGroup: [],
+            carbonCopyGroup: [],
+            mergeFieldGroup: [],
+            passOption: "",
             deadline: "",
             reminders: "",
             message: ""
@@ -49,25 +53,27 @@ class AgreementForm extends Component {
     }
 
     async componentDidMount() {
-        const workflow = await this.state.signService.getWorkflowById(this.state.workflow_id);
+        const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
         this.setWorkflow(workflow);
+        const features = await this.state.configService.getFeatures();
+        this.setState({
+            features: features
+        })
     }
 
     // Sets workflow data
     setWorkflow(workflow) {
-        console.log('workflow: ');
-        console.log(workflow);
         if (workflow) {
             const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
             const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
             this.setState({
                 workflow: workflow,
-                agreement_name: agreementName,
+                agreementName: agreementName,
                 message: message,
-                file_infos: workflow.fileInfos ? workflow.fileInfos : [],
-                recipients_list: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
-                carbon_copy_group: workflow.ccsListInfo ? workflow.ccsListInfo : [],
-                merge_field_group: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
+                fileInfos: workflow.fileInfos ? workflow.fileInfos : [],
+                recipientsList: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
+                carbonCopyGroup: [],
+                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
             });
         }
         else {
@@ -80,16 +86,16 @@ class AgreementForm extends Component {
     }
 
     async componentDidUpdate(prevProps, prevState) {
-        if (prevProps.workflow_id !== this.state.workflow_id) {
-            const workflow = await this.state.signService.getWorkflowById(this.state.workflow_id);
+        if (prevProps.workflowId !== this.state.workflowId) {
+            const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
             this.setWorkflow(workflow);
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (state.workflow_id !== props.workflow_id) {
+        if (state.workflowId !== props.workflowId) {
             return {
-                workflow_id: props.workflow_id
+                workflowId: props.workflowId
             };
         }
         return null;
@@ -106,14 +112,12 @@ class AgreementForm extends Component {
     // onClick event handler for submitting data
     onSubmit = async () => {
         const agreementData = this.state.workflowService.createAgreementData(this.state);
-        // console.log("State:");
-        // console.log(this.state);
         console.log('Agreement data to be submitted: ');
         console.log(agreementData);
 
-        // TODO: Uncomment to submit agreement to API server
+        // Submit agreement to API server
         const response = await this.state.signService.postWorkflowAgreement(
-            this.state.workflow_id, agreementData);
+            this.state.workflowId, agreementData);
 
         if ('url' in response) {
             alert('Agreement sent');
@@ -128,7 +132,6 @@ class AgreementForm extends Component {
         if (!this.state.workflow) {
             return (<div></div>);
         }
-        // console.log(this.state);
         return (
             <div id="dynamic_form">
                 <div className="row">
@@ -138,9 +141,11 @@ class AgreementForm extends Component {
                                 <div>
                                     <h3>{this.state.workflow.description}</h3>
                                 </div>
-                                <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState} 
-                                    recipientsListInfo={this.state.workflow.recipientsListInfo} />
+                                <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
+                                    workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflow.displayName}
+                                    recipientsListInfo={this.state.workflow.recipientsListInfo} workflow={this.state.workflow} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
+                                    workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflow.displayName}
                                     ccsListInfo={this.state.workflow.ccsListInfo} />
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">
@@ -148,10 +153,10 @@ class AgreementForm extends Component {
                                     <div className="col-lg-7">
                                         <div>
                                             <h3 className="recipient_label">Document Name</h3>
-                                            <input type="text" id="agreement_name" name="agreement_name"
+                                            <input type="text" id="agreement_name" name="agreementName"
                                                 placeholder="Enter Agreement Name" className="recipient_form_input"
                                                 required
-                                                value={this.state.agreement_name}
+                                                value={this.state.agreementName}
                                                 onChange={this.onTextChanged}>
                                             </input>
                                         </div>
@@ -164,15 +169,21 @@ class AgreementForm extends Component {
                                             </textarea>
                                         </div>
                                         <FileList setParentState={this.setParentState} getParentState={this.getParentState}
-                                            fileInfos={this.state.workflow.fileInfos} />
-                                        <MergeField setParentState={this.setParentState} getParentState={this.getParentState} />
+                                            workflowId={this.state.workflow.name} fileInfos={this.state.workflow.fileInfos} />
+                                        <MergeField setParentState={this.setParentState} getParentState={this.getParentState}
+                                            workflowId={this.state.workflow.name} />
                                     </div>
                                     <div className="col-lg-5">
                                         <div className="option_wrapper">
                                             <div id="options" className="col-lg-12">
-                                                <PassOption setParentState={this.setParentState} getParentState={this.getParentState} />
-                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState} />
-                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState} />
+                                                <PassOption setParentState={this.setParentState} getParentState={this.getParentState}
+                                                    workflowId={this.state.workflow.name}
+                                                    passwordVisible={this.state.workflow.passwordInfo.visible} />
+                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState} 
+                                                    workflowId={this.state.workflow.name} 
+                                                    deadlineVisible={this.state.workflow.expirationInfo ? this.state.workflow.expirationInfo.visible : ''} />
+                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState} 
+                                                    workflowId={this.state.workflow.name} />
                                             </div>
                                         </div>
                                     </div>

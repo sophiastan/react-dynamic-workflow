@@ -17,28 +17,30 @@ const fetch = require('node-fetch');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const dotEnvOptions = {
+    path: __dirname + '../../.env'
+}
+
+require('dotenv').config(dotEnvOptions);
+// require('dotenv').config();
+
 // Form Data, Multer, & Uploads
 const FormData = require('form-data');
 const fs = require('fs');
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
-// HTTPS & Path
-const path = require('path');
-
-// js-yaml
-const yaml = require('js-yaml');
-const config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'config', 'config.yaml'), 'utf-8'));
-
 // Main App
 const app = express();
 
 // Configuration
-var integration = config['enterprise']['integration'];
-var host = config['server']['host'];
-var endpoint = config['server']['endpoint'];
+const features = require('../key.js');
+
+var integration = features.integration;
+var host = features.host;
+var endpoint = features.endpoint;
 var url = host + endpoint;
-var port = process.env.PORT || config.port || 80;
+var port = features.port || 3200;
 
 app.use(cors());
 app.use(express.static(__dirname + '/static'));
@@ -52,9 +54,9 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/static/test.html');
 });
 
-// Get features from config files
-app.get('/features', function (req, res){
-    res.json(config['features'])
+// Get features from key file - try to not make it async funciton
+app.get('/features', async function(req, res) {
+    res.json(features);
 })
 
 // GET /workflows
@@ -163,6 +165,6 @@ app.post('/api/postTransient', upload.single('myfile'), async function (req, res
     });
 
     res.json(data)
-  })
+})
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

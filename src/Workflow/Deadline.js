@@ -4,93 +4,82 @@ import React, { Component } from 'react';
 class Deadline extends Component {
     constructor(props) {
         super(props);
-
+        
+        const date = Deadline.getNextDay();
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            hasDeadlineChecked: false,
-            date: new Date().toISOString().substr(0, 10),
-            today_date: "",
-            default_value: ""
+            workflowId: props.workflowId,
+            hasDeadlineChecked: true,
+            visible: props.deadlineVisible,
+            date: date
         };
+
+        this.state.setParentState({ deadline: this.getDaysTillDeadline(date) });
     }
 
-    getDateFormat = (date) => {
-        /***
-         * This function will formate the date for input
-         * @param {Date} date The date object we wish to formate
-         */
-
-        // Create the day, month, and year variables
-        var dd = date.getDate();
-        var mm = date.getMonth() + 1;
-        var y = date.getFullYear();
-
-        // Month under 10 add leading 0
-        if (dd < 10) {
-            dd = '0' + dd
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId) {
+            return {
+                workflowId: props.workflowId,
+                workflow: props.workflow,
+                hasDeadlineChecked: true,
+                visible: props.deadlineVisible,
+                date: Deadline.getNextDay()
+            };
         }
-        if (mm < 10) {
-            mm = '0' + mm
-        }
-
-        // Format
-        var date_format = y + '-' + mm + '-' + dd;
-
-        return date_format;
+        return null;
     }
 
-    // setDateValues = (target_input) => {
-    //     // Create Date objects
-    //     var today = new Date();
-    //     var max_days = new Date();
-    //     var predefine_date = new Date();
+    // Get date for next day
+    static getNextDay() {
+        let date = new Date();
+        date.setDate(date.getDate() + 1);
 
-    //     // Set max days and get string outputs
-    //     this.state.today_date = this.getDateFormat(today);
-    //     today.setDate(today.getDate() + 1);
-    //     max_days.setDate(today.getDate() + this.max_days);
-    //     var max_days_date = this.getDateFormat(max_days);
+        const dd = ("0" + (date.getDate())).slice(-2);
+        const mm = ("0" + (date.getMonth() +　1)).slice(-2);
+        const yyyy = date.getFullYear();
+        date = yyyy + '-' + mm + '-' + dd ;
 
-    //     // Set range of dates
-    //     if(typeof this.state.default_value !== 'undefined'){
-    //         predefine_date.setDate(today.getDate() + Number(this.state.default_value));
-    //         let predefine_date_format = this.getDateFormat(predefine_date)
-    //         target_input.value = predefine_date_format;
-    //     }
-    //     else{
-    //         target_input.value = this.state.today_date;
-    //     }
+        return date;
+    }
 
-    //     target_input.min = this.state.today_date;
-    //     target_input.max = max_days_date;
-    // }
+    // Get number of days until signing deadline
+    getDaysTillDeadline(selectedDate) {
+        const todayDate = new Date();
+        const dateInput = new Date(selectedDate);
+        const diffTime = Math.abs(dateInput - todayDate);
+        const expirationInfo = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    // Event handler when checkbox changed
+        return expirationInfo;
+    }
+
+     // Event handler when checkbox changed
     onCheckboxChanged = (event) => {
         this.setState({ [event.target.name]: event.target.checked });
-    }
 
+        if (!event.target.checked) {
+            this.state.setParentState({ deadline: '' });
+        }
+    }
 
     // Event handler when deadline changed
     onDeadlineChanged = (event) => {
-        const date_input = event.target.value;
+        const selectedDate = event.target.value;
+        this.setState({
+            date: selectedDate
+        });
 
-        const today_date = new Date();
-        const selected_date = new Date(date_input);
-
-        const diffTime = Math.abs(selected_date - today_date);
-        const daysUntilSigningDeadline = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        console.log("daysUntilSigningDeadline: " + daysUntilSigningDeadline);
-
-        this.state.setParentState({ deadline: daysUntilSigningDeadline });
-        console.log("deadline: " + this.state.getParentState().deadline);
+        this.state.setParentState({ deadline: this.getDaysTillDeadline(selectedDate) });
     }
 
     render() {
+        // console.log("deadline visible " + this.state.visible);
         return (
+            this.state.visible ?
             <div className="add_border_bottom" id="deadline_div">
-                <input type="checkbox" name="hasDeadlineChecked" id="deadline_checkbox" onClick={this.onCheckboxChanged}></input>
+                <input type="checkbox" name="hasDeadlineChecked" id="deadline_checkbox" 
+                    checked={this.state.hasDeadlineChecked} onChange={this.onCheckboxChanged}></input>
                 <label className="checkbox_input" htmlFor="deadline_checkbox">Completion Deadline</label>
                 {
                     this.state.hasDeadlineChecked &&
@@ -99,7 +88,7 @@ class Deadline extends Component {
                             className="recipient_form_input" onChange={this.onDeadlineChanged}></input>
                     </div>
                 }
-            </div>
+            </div> : (<div></div>)
         );
     }
 }

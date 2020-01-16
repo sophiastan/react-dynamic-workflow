@@ -8,8 +8,25 @@ class RecipientsList extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            recipients_list: props.recipientsListInfo ? props.recipientsListInfo : []
+            recipientsList: props.recipientsListInfo ? props.recipientsListInfo : [],
+            workflowId: props.workflowId,
+            hideRecipient: props.features.hideRecipient,
+            hideWorkflowList: props.features.hideWorkflowList,
+            workflowName: props.workflowName
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.workflowId !== state.workflowId) {
+            return {
+                workflowId: props.workflowId,
+                recipientsList: props.recipientsListInfo,
+                hidePredefined: props.features.hidePredefined,
+                hideWorkflowList: props.features.hideWorkflowList,
+                workflowName: props.workflowName
+            };
+        }
+        return null;
     }
 
     // Event handler when an item in the list changed
@@ -21,7 +38,7 @@ class RecipientsList extends Component {
 
         // Update email text for recipient
         this.setState(state => {
-            const list = this.state.getParentState().recipients_list.map((item, i) => {
+            const list = this.state.recipientsList.map((item, i) => {
                 if (i === index) {
                     item.defaultValue = val;
                     return item;
@@ -32,13 +49,13 @@ class RecipientsList extends Component {
             });
 
             return {
-                recipients_list: list
+                recipientsList: list
             }
         });
 
         // Update recipient for submission
         this.state.setParentState(state => {
-            const list = this.state.getParentState().recipients_list.map((item, i) => {
+            const list = this.state.getParentState().recipientsList.map((item, i) => {
                 if (i === index) {
                     const recipient = {
                         "name": item.name,
@@ -52,23 +69,37 @@ class RecipientsList extends Component {
             });
 
             return {
-                recipients_list: list
+                recipientsList: list
             }
         });
     }
 
 
     render() {
+        // console.log("hideRecipientWorkflowList " + this.hideRecipientWorkflowList());
+        const hideRecipient = this.state.hideRecipient;
+        const hideWorkflows = this.state.hideWorkflowList.includes(this.state.workflowName) ? true : false;
+        const hideAll = this.state.hideWorkflowList === "" ? true : false;
+        // console.log("hideRecipient " + hideRecipient);
+        // console.log("hideWorkflows " + hideWorkflows);
         return (
             <div>
                 {
-                    this.state.recipients_list &&
-                    this.state.recipients_list.map((recipient, index) =>
-                        <div className="add_border_bottom" id={`recipient_group_${index}`} key={index}>
+                    this.state.recipientsList &&
+                    this.state.recipientsList.map((recipient, index) =>
+                        <div className="add_border_bottom"
+                            // className={(hideRecipient && hideWorkflows) ? "recipient_hidden" :
+                            // (hideRecipient && hideAll) ? "recipient_hidden" : "add_border_bottom"}
+                            id={`recipient_group_${index}`} key={index}>
                             <h3 className="recipient_label">{recipient.label}</h3>
                             <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
-                                className="recipient_form_input" placeholder="Enter Recipient's Email"
-                                value={recipient.defaultValue}
+                                // className={recipient.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"}
+                                className={(recipient.defaultValue && hideRecipient && hideWorkflows) ? "recipient_hidden" :
+                                    (recipient.defaultValue && hideRecipient && hideAll) ? "recipient_hidden" :
+                                        recipient.defaultValue ? "recipient_form_input predefined_input" :
+                                            "recipient_form_input"}
+                                placeholder="Enter Recipient's Email" value={recipient.defaultValue}
+                                readOnly={recipient.editable ? false : true}
                                 onChange={(event) => this.onEmailChanged(event, index)}>
                             </input>
                         </div>
