@@ -13,22 +13,26 @@ class App extends Component {
 
     this.state = {
       configService: new ConfigService(),
+      features: null,
       hideSelector: null
     }
   }
 
-  componentDidMount() {
-    // const hideSelector = this.state.configService.getHideSelector();
-    // this.setState = ({
-    //   hideSelector: hideSelector
-    // })
-    // console.log(this.state.hideSelector);
+  async componentDidMount() {
+    const features = await this.state.configService.getFeatures();
+    this.setState({
+      features: features
+    })
+    const hideSelector = this.state.features.hideSelector;
+    this.setState({
+      hideSelector: hideSelector
+    })
   }
 
   render() {
-    // if (this.state.hideSelector === true) { 
+    if (this.state.hideSelector) { 
 
-    if (this.state.configService.hideSelector) {
+    // if (this.state.configService.hideSelector) {
 
       // Create routes that show specific workflow via a route url
       return (

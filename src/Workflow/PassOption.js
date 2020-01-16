@@ -10,20 +10,31 @@ class PassOption extends Component {
             getParentState: props.getParentState,
             hasPasswordChecked: false,
             showPasswordChecked: false,
+            visible: null,
             passOption: "",
             confirmPassOption: "",
-            workflowId: props.workflowId
+            workflowId: props.workflowId,
+            workflow: props.workflow
         };
+    }
+
+    // Set visible after intiating workflow
+    componentDidMount() {
+        this.setState({
+            visible: this.state.workflow.passwordInfo.visible
+        })
     }
 
     static getDerivedStateFromProps(props, state) {
         if (props.workflowId !== state.workflowId) {
             return {
-                workflowId: props.workflowId,
                 hasPasswordChecked: false,
                 showPasswordChecked: false,
+                visible: null,
                 passOption: "",
-                confirmPassOption: ""
+                confirmPassOption: "",
+                workflowId: props.workflowId,
+                workflow: props.workflow
             };
         }
         return null;
@@ -80,44 +91,46 @@ class PassOption extends Component {
     }
 
     render() {
-       const passwordType = this.state.showPasswordChecked ? "text" : "password";
+        const passwordType = this.state.showPasswordChecked ? "text" : "password";
+        // console.log("password visible " + this.state.visible);
         return (
-            <div className="add_border_bottom" id="pass_div">
-                <input type="checkbox" name="hasPasswordChecked" id="pass_checkbox"
-                    checked={this.state.hasPasswordChecked} onChange={this.onCheckboxChanged}></input>
-                <label className="checkbox_input" id="pass_checkbox">Password Required</label>
-                {
-                    this.state.hasPasswordChecked &&
-                    <div id="sub_pass_div" className="add_border_bottom">
-                        <h3 className="recipient_label">Password must contain 1 to 32 characters.</h3>
-                        <input
-                            type={passwordType}
-                            name="passOption"
-                            id="password"
-                            className="recipient_form_input"
-                            maxLength="32"
-                            placeholder="Password"
-                            onChange={this.onPassChanged}>
-                        </input>
-                        <input
-                            type={passwordType}
-                            name="confirmPassOption"
-                            id="confirm_password"
-                            className="recipient_form_input"
-                            maxLength="32"
-                            placeholder="Confirm Password"
-                            onChange={this.onPassChanged}>
-                        </input>
-                        <input type="checkbox" name="showPasswordChecked" id="input_checkbox" 
-                            checked={this.state.showPasswordChecked} onChange={this.onCheckboxChanged}></input>
-                        <label className="checkbox_input" htmlFor="input_checkbox">Show Password</label>
-                        {
-                            !this.state.getParentState().isPasswordValid &&
-                            <h3 className="recipient_label error_msg">Password Requirement Not Met</h3>
-                        }
-                    </div>
-                }
-            </div>
+            this.state.visible ?
+                <div className="add_border_bottom" id="pass_div">
+                    <input type="checkbox" name="hasPasswordChecked" id="pass_checkbox"
+                        checked={this.state.hasPasswordChecked} onChange={this.onCheckboxChanged}></input>
+                    <label className="checkbox_input" id="pass_checkbox">Password Required</label>
+                    {
+                        this.state.hasPasswordChecked &&
+                        <div id="sub_pass_div" className="add_border_bottom">
+                            <h3 className="recipient_label">Password must contain 1 to 32 characters.</h3>
+                            <input
+                                type={passwordType}
+                                name="passOption"
+                                id="password"
+                                className="recipient_form_input"
+                                maxLength="32"
+                                placeholder="Password"
+                                onChange={this.onPassChanged}>
+                            </input>
+                            <input
+                                type={passwordType}
+                                name="confirmPassOption"
+                                id="confirm_password"
+                                className="recipient_form_input"
+                                maxLength="32"
+                                placeholder="Confirm Password"
+                                onChange={this.onPassChanged}>
+                            </input>
+                            <input type="checkbox" name="showPasswordChecked" id="input_checkbox"
+                                checked={this.state.showPasswordChecked} onChange={this.onCheckboxChanged}></input>
+                            <label className="checkbox_input" htmlFor="input_checkbox">Show Password</label>
+                            {
+                                !this.state.getParentState().isPasswordValid &&
+                                <h3 className="recipient_label error_msg">Password Requirement Not Met</h3>
+                            }
+                        </div>
+                    }
+                </div> : (<div></div>)
         );
     }
 }

@@ -10,18 +10,32 @@ class Deadline extends Component {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
             workflowId: props.workflowId,
-            hasDeadlineChecked: false,
+            workflow: props.workflow,
+            hasDeadlineChecked: true,
+            visible: null,
             date: date
         };
 
         this.state.setParentState({ deadline: this.getDaysTillDeadline(date) });
     }
 
+    // Set visible after intiating workflow
+    componentDidMount() {
+        // Set visible only if there is expirationInfo data
+        if (this.state.workflow.expirationInfo) {
+            this.setState({
+                visible: this.state.workflow.expirationInfo.visible
+            })
+        }
+    }
+
     static getDerivedStateFromProps(props, state) {
         if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
-                hasDeadlineChecked: false,
+                workflow: props.workflow,
+                hasDeadlineChecked: true,
+                visible: null,
                 date: Deadline.getNextDay()
             };
         }
@@ -60,7 +74,6 @@ class Deadline extends Component {
         }
     }
 
-
     // Event handler when deadline changed
     onDeadlineChanged = (event) => {
         const selectedDate = event.target.value;
@@ -72,7 +85,9 @@ class Deadline extends Component {
     }
 
     render() {
+        // console.log("deadline visible " + this.state.visible);
         return (
+            this.state.visible ?
             <div className="add_border_bottom" id="deadline_div">
                 <input type="checkbox" name="hasDeadlineChecked" id="deadline_checkbox" 
                     checked={this.state.hasDeadlineChecked} onChange={this.onCheckboxChanged}></input>
@@ -84,7 +99,7 @@ class Deadline extends Component {
                             className="recipient_form_input" onChange={this.onDeadlineChanged}></input>
                     </div>
                 }
-            </div>
+            </div> : (<div></div>)
         );
     }
 }

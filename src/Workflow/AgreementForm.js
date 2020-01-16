@@ -60,8 +60,6 @@ class AgreementForm extends Component {
         this.setState({
             features: features
         })
-
-        console.log(this.state.features);
     }
 
     // Sets workflow data
@@ -147,7 +145,7 @@ class AgreementForm extends Component {
                                 </div>
                                 <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
                                     workflowId={this.state.workflowId} features={this.state.features} workflowName={this.state.workflowName}
-                                    recipientsListInfo={this.state.workflow.recipientsListInfo} />
+                                    recipientsListInfo={this.state.workflow.recipientsListInfo} workflow={this.state.workflow} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
                                     workflowId={this.state.workflowId} features={this.state.features} workflowName={this.state.workflowName}
                                     ccsListInfo={this.state.workflow.ccsListInfo} />
@@ -181,9 +179,9 @@ class AgreementForm extends Component {
                                         <div className="option_wrapper">
                                             <div id="options" className="col-lg-12">
                                                 <PassOption setParentState={this.setParentState} getParentState={this.getParentState}
-                                                    workflowId={this.state.workflowId} />
+                                                    workflowId={this.state.workflowId} workflow={this.state.workflow} />
                                                 <Deadline setParentState={this.setParentState} getParentState={this.getParentState} 
-                                                    workflowId={this.state.workflowId} />
+                                                    workflowId={this.state.workflowId} workflow={this.state.workflow} />
                                                 <Reminder setParentState={this.setParentState} getParentState={this.getParentState} 
                                                     workflowId={this.state.workflowId} />
                                             </div>

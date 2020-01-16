@@ -20,6 +20,7 @@ class RecipientsList extends Component {
         // console.log(state.hidePredefined);
         // console.log(state.hideWorkflowList);
         // console.log(state.workflowName);
+        console.log(state.workflow);
         if (props.workflowId !== state.workflowId &&
             props.recipientsListInfo !== state.recipientsList) {
             return {
@@ -104,6 +105,7 @@ class RecipientsList extends Component {
                                 <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
                                     className={recipient.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"}
                                     placeholder="Enter Recipient's Email" value={recipient.defaultValue}
+                                    // readOnly={recipient.editable ? false : true}
                                     onChange={(event) => this.onEmailChanged(event, index)}>
                                 </input>
                             </div>
