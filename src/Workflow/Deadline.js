@@ -14,7 +14,12 @@ class Deadline extends Component {
             date: date
         };
 
-        this.state.setParentState({ deadline: this.getDaysTillDeadline(date) });
+        if (this.state.hasDeadlineChecked) {
+            this.state.setParentState({ deadline: this.getDaysTillDeadline(date) });
+        }
+        else {
+            this.state.setParentState({ deadline: '' });
+        }
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -46,9 +51,9 @@ class Deadline extends Component {
         const todayDate = new Date();
         const dateInput = new Date(selectedDate);
         const diffTime = Math.abs(dateInput - todayDate);
-        const daysUntilSigningDeadline = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const expirationInfo = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        return daysUntilSigningDeadline;
+        return expirationInfo;
     }
 
      // Event handler when checkbox changed
@@ -64,7 +69,12 @@ class Deadline extends Component {
             date: selectedDate
         });
 
-        this.state.setParentState({ deadline: this.getDaysTillDeadline(selectedDate) });
+        if (this.state.hasDeadlineChecked) {
+            this.state.setParentState({ deadline: this.getDaysTillDeadline(selectedDate) });
+        }
+        else {
+            this.state.setParentState({ deadline: '' });
+        }
     }
 
     render() {

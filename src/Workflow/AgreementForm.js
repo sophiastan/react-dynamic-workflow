@@ -55,7 +55,7 @@ class AgreementForm extends Component {
         const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
         this.setWorkflow(workflow);
 
-        const features = this.state.configService.getFeatures();
+        const features = await this.state.configService.getFeatures();
         this.setState({
             features: features
         })

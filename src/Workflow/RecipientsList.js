@@ -16,8 +16,8 @@ class RecipientsList extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        // console.log(state.hidePredefined);
-        // console.log(state.hideWorkflowList);
+        console.log(state.hidePredefined);
+        console.log(state.hideWorkflowList);
         if (props.workflowId !== state.workflowId &&
             props.recipientsListInfo !== state.recipientsList) {
             return {
