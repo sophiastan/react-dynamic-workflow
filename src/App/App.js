@@ -25,9 +25,16 @@ class App extends Component {
   }
 
   render() {
-    if (!this.state.features) 
+    if (!this.state.features)
       return (<div></div>);
-      
+
+    // return (
+    //   <Switch>
+    //     <Route exact path="/" component={Home} />
+    //     <Route path="/workflow/:name" component={WorkflowSelector} />
+    //   </Switch>
+    // );
+
     if (this.state.features.hideSelector) { 
 
       // Create routes that show specific workflow via a route url

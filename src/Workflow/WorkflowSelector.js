@@ -1,24 +1,42 @@
 import React, { Component } from 'react';
 import AgreementForm from './AgreementForm';
 import SignService from '../Services/SignService';
+import ConfigService from '../Services/ConfigService';
+import WorkflowService from '../Services/WorkflowService';
 
 class WorkflowSelector extends Component {
 
     constructor(props) {
         super(props);
+
+        let workflowName = null;
+        if (props.match && props.match.params) {
+            workflowName = props.match.params.name;
+        }
+
         this.state = {
             signService: new SignService(),
+            configService: new ConfigService(),
+            workflowService: new WorkflowService(),
             workflowId: null,
-            workflows: []
+            workflows: [],
+            workflowName: workflowName,
+            features: null
         };
     }
 
     async componentDidMount() {
         const workflows = await this.state.signService.getWorkflows();
+        const workflowId = this.state.workflowService.getWorkflowId(workflows, this.state.workflowName);
+        const features = await this.state.configService.getFeatures();
 
-        this.setState({
-            workflows: workflows
-        });
+        if (workflows) {
+            this.setState({
+                workflows: workflows,
+                workflowId: workflowId,
+                features: features
+            });
+        }
     }
 
     onWorkflowChanged = (event) => {
@@ -32,10 +50,13 @@ class WorkflowSelector extends Component {
     }
 
     render() {
+        // console.log(this.state.features.hideSelector);
         return (
             <div className="container h-100">
                 <div className="row h-100 justify-content-center align-items-center">
                     <div id="workflow_form">
+                        {/* {this.state.features.hideSelector ? (<div></div>) : */}
+                        {/* ( */}
                         <div id="workflow_form_top">
                             <div id="workflow_form_top_wrapper">
                                 <div id="workflow_selector">
@@ -63,6 +84,8 @@ class WorkflowSelector extends Component {
                                 </div>
                             </div>
                         </div>
+                        {/* )
+                    } */}
                         <div id="workflow_form_bottom">
                             <div id="workflow_form_bot_wrapper">
                                 <AgreementForm workflowId={this.state.workflowId}></AgreementForm>
