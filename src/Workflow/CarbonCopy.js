@@ -122,7 +122,6 @@ class CarbonCopy extends Component {
         const hideCC = this.state.hideCC;
         const hideCCWorkflows = this.state.hideCCWorkflowList.includes(this.state.workflowName) ? true : false;
         const hideAll = this.state.hideCCWorkflowList === "" ? true : false;
-        // console.log("hideCC " + hideCC);
         // console.log("hideCCWorkflowList " + this.state.hideCCWorkflowList);
         // console.log("hideCCWorkflows " + hideCCWorkflows);
         return (

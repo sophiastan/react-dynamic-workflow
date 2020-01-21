@@ -77,12 +77,12 @@ class RecipientsList extends Component {
 
 
     render() {
-        // console.log("hideRecipientWorkflowList " + this.hideRecipientWorkflowList());
         const hideRecipient = this.state.hideRecipient;
         const hideWorkflows = this.state.hideWorkflowList.includes(this.state.workflowName) ? true : false;
         const hideAll = this.state.hideWorkflowList === "" ? true : false;
-        // console.log("hideRecipient " + hideRecipient);
         // console.log("hideWorkflows " + hideWorkflows);
+        // console.log("hideWorkflowList " + this.state.hideWorkflowList);
+
         return (
             <div>
                 {
