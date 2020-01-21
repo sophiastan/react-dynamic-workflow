@@ -1,5 +1,3 @@
-// import AgreementData from "../Workflow/AgreementData";
-
 class WorkflowService {
 
     // Gets workflow Id for a workflow name.
@@ -24,7 +22,6 @@ class WorkflowService {
         };
         
         if (source.deadline !== "") {
-            // agreement.documentCreationInfo.daysUntilSigningDeadline = source.deadline;
             agreement.documentCreationInfo.expirationInfo = source.deadline;
         }
 

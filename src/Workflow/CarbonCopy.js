@@ -86,18 +86,6 @@ class CarbonCopy extends Component {
         return list;
     }
 
-    hideCCWorkflowList = () => {
-        const hideCCWorkflowList = this.state.hideCCWorkflowList;
-        const workflowName = this.state.workflowName;
-
-        if (hideCCWorkflowList.includes(workflowName)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
     // Event handler when an item in the list changed
     onCcChanged = (event, index) => {
         const val = event.target.value;
@@ -105,6 +93,7 @@ class CarbonCopy extends Component {
         const localCCList = this.state.carbonCopyGroup.map((item, i) => {
             if (i === index) {
                 item.defaultValue = val;
+                item.modified = true;
                 return item;
             }
             else {
@@ -133,7 +122,6 @@ class CarbonCopy extends Component {
         const hideCC = this.state.hideCC;
         const hideCCWorkflows = this.state.hideCCWorkflowList.includes(this.state.workflowName) ? true : false;
         const hideAll = this.state.hideCCWorkflowList === "" ? true : false;
-        // console.log("hideCC " + hideCC);
         // console.log("hideCCWorkflowList " + this.state.hideCCWorkflowList);
         // console.log("hideCCWorkflows " + hideCCWorkflows);
         return (
@@ -147,7 +135,7 @@ class CarbonCopy extends Component {
                                 // className={cc.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"} 
                                 className={(cc.defaultValue && hideCC && hideCCWorkflows) ? "recipient_hidden" :
                                     (cc.defaultValue && hideCC && hideAll) ? "recipient_hidden" :
-                                        cc.defaultValue ? "recipient_form_input predefined_input" :
+                                        !cc.modified ? "recipient_form_input predefined_input" :
                                             "recipient_form_input"}
                                 placeholder="Enter Cc's Email" value={cc.defaultValue}
                                 onChange={(event) => this.onCcChanged(event, i)}>
