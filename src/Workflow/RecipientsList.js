@@ -41,6 +41,7 @@ class RecipientsList extends Component {
             const list = this.state.recipientsList.map((item, i) => {
                 if (i === index) {
                     item.defaultValue = val;
+                    item.modified = true;
                     return item;
                 }
                 else {
@@ -96,7 +97,7 @@ class RecipientsList extends Component {
                                 // className={recipient.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"}
                                 className={(recipient.defaultValue && hideRecipient && hideWorkflows) ? "recipient_hidden" :
                                     (recipient.defaultValue && hideRecipient && hideAll) ? "recipient_hidden" :
-                                        recipient.defaultValue ? "recipient_form_input predefined_input" :
+                                        !recipient.modified ? "recipient_form_input predefined_input" :
                                             "recipient_form_input"}
                                 placeholder="Enter Recipient's Email" value={recipient.defaultValue}
                                 readOnly={recipient.editable ? false : true}

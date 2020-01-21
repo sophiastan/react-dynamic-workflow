@@ -29,6 +29,7 @@ class MergeField extends Component {
             const list = this.state.getParentState().mergeFieldGroup.map((item, i) => {
                 if (i === index) {
                     const fieldData = {
+                        "displayName": item.displayName,
                         "defaultValue": val,
                         "fieldName": item.fieldName
                     }
