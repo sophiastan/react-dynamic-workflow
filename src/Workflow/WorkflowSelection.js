@@ -3,7 +3,7 @@ import AgreementForm from './AgreementForm';
 import SignService from '../Services/SignService';
 import WorkflowService from '../Services/WorkflowService';
 
-class Selector_SpecificWorkflow extends Component {
+class WorkflowSelection extends Component {
     constructor(props) {
         super(props);
 
@@ -88,4 +88,4 @@ class Selector_SpecificWorkflow extends Component {
     }
 }
 
-export default Selector_SpecificWorkflow;
+export default WorkflowSelection;

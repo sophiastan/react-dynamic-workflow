@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Home from './Home';
-import Selector_SpecificWorkflow from '../Workflow/Selector_SpecificWorkflow';
+import WorkflowSelection from '../Workflow/WorkflowSelection';
 import ConfigService from '../Services/ConfigService';
 
 class App extends Component {
@@ -34,7 +34,7 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/workflow/:name" 
-              render={(props) => <Selector_SpecificWorkflow {...props} hideSelector={true} />}
+              render={(props) => <WorkflowSelection {...props} hideSelector={true} />}
           />
         </Switch>
       );
@@ -45,10 +45,10 @@ class App extends Component {
       return (
         <Switch>
           <Route exact path="/" 
-              render={(props) => <Selector_SpecificWorkflow {...props} hideSelector={false} />}
+              render={(props) => <WorkflowSelection {...props} hideSelector={false} />}
           />
           <Route path="/workflow/:name"
-              render={(props) => <Selector_SpecificWorkflow {...props} hideSelector={false} />}
+              render={(props) => <WorkflowSelection {...props} hideSelector={false} />}
           />
         </Switch>
       );

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import SignService from '../Services/SignService';
 import WorkflowService from '../Services/WorkflowService';
+import ConfigService from '../Services/ConfigService';
 
 import RecipientsList from './RecipientsList';
 import CarbonCopy from './CarbonCopy';
@@ -10,7 +11,6 @@ import MergeField from './MergeField';
 import Deadline from './Deadline';
 import Reminder from './Reminder';
 import PassOption from './PassOption';
-import ConfigService from '../Services/ConfigService';
 
 class AgreementForm extends Component {
     constructor(props) {
