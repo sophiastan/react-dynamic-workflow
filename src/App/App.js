@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Home from './Home';
-import WorkflowSelector from '../Workflow/WorkflowSelector';
-import SpecificWorkflow from '../Workflow/SpecificWorkflow';
 import Selector_SpecificWorkflow from '../Workflow/Selector_SpecificWorkflow';
 import ConfigService from '../Services/ConfigService';
-// TODO: make app into class, put const into componentDidMount and create state, put conditional to render
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -27,14 +25,17 @@ class App extends Component {
   render() {
     if (!this.state.features) 
       return (<div></div>);
-      
-    if (this.state.features.hideSelector) { 
+    
+    const hideSelector = this.state.features.hideSelector;  
+    if (hideSelector) { 
 
       // Create routes that show specific workflow via a route url
       return (
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/workflow/:name" component={SpecificWorkflow} />
+          <Route path="/workflow/:name" 
+              render={(props) => <Selector_SpecificWorkflow {...props} hideSelector={true} />}
+          />
         </Switch>
       );
     }
@@ -43,8 +44,12 @@ class App extends Component {
       // Create routes that show a list of workflows in default url
       return (
         <Switch>
-          <Route exact path="/" component={WorkflowSelector} />
-          <Route path="/workflow/:name" component={Selector_SpecificWorkflow} />
+          <Route exact path="/" 
+              render={(props) => <Selector_SpecificWorkflow {...props} hideSelector={false} />}
+          />
+          <Route path="/workflow/:name"
+              render={(props) => <Selector_SpecificWorkflow {...props} hideSelector={false} />}
+          />
         </Switch>
       );
     }
