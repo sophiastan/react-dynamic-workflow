@@ -1,3 +1,15 @@
+/*
+Copyright 2019 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
 import React, { Component } from 'react';
 import AgreementForm from './AgreementForm';
 import SignService from '../Services/SignService';
@@ -33,14 +45,18 @@ class WorkflowSelection extends Component {
         }
     }
 
+    // Sets workflowId to show correct workflow data
     onWorkflowChanged = (event) => {
         const workflowId = event.target.value;
         this.setState({
-            workflowId: workflowId
+            selectedWorkflowId: workflowId
         })
     }
 
     runWorkflow = (event) => {
+        this.setState({
+            workflowId: this.state.selectedWorkflowId
+        })
     }
 
     render() {
@@ -56,7 +72,9 @@ class WorkflowSelection extends Component {
                                             <div className="form-group">
                                                 <label htmlFor="workflow_dropdown" id="workflow_dropdown_label">Workflow Selector</label>
                                                 <select className="form-control" id="workflow_dropdown"
-                                                    value={this.state.workflowName} onChange={this.onWorkflowChanged}>
+                                                    value={this.state.workflowName} 
+                                                    onChange={this.onWorkflowChanged}
+                                                    >
                                                     <option value=""></option>
                                                     {
                                                         this.state.workflows ? this.state.workflows.map(

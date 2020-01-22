@@ -1,3 +1,15 @@
+/*
+Copyright 2019 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
 import React, { Component } from 'react';
 
 // Component for managing recipients list
@@ -16,6 +28,7 @@ class RecipientsList extends Component {
         };
     }
 
+    // Refresh after selecting another workflow
     static getDerivedStateFromProps(props, state) {
         if (props.workflowId !== state.workflowId) {
             return {
@@ -78,27 +91,20 @@ class RecipientsList extends Component {
 
     render() {
         const hideRecipient = this.state.hideRecipient;
-        const hideWorkflows = this.state.hideWorkflowList.includes(this.state.workflowName) ? true : false;
+        const hideWorkflows = (this.state.hideWorkflowList.indexOf(this.state.workflowName) >= 0 ? true : false);
         const hideAll = this.state.hideWorkflowList === "" ? true : false;
-        // console.log("hideWorkflows " + hideWorkflows);
-        // console.log("hideWorkflowList " + this.state.hideWorkflowList);
 
         return (
             <div>
                 {
                     this.state.recipientsList &&
                     this.state.recipientsList.map((recipient, index) =>
-                        <div className="add_border_bottom"
-                            // className={(hideRecipient && hideWorkflows) ? "recipient_hidden" :
-                            // (hideRecipient && hideAll) ? "recipient_hidden" : "add_border_bottom"}
+                        <div className={(recipient.defaultValue && hideRecipient && hideWorkflows) ? "recipient_hidden" :
+                            (recipient.defaultValue && hideRecipient && hideAll) ? "recipient_hidden" : "add_border_bottom"}
                             id={`recipient_group_${index}`} key={index}>
                             <h3 className="recipient_label">{recipient.label}</h3>
                             <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
-                                // className={recipient.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"}
-                                className={(recipient.defaultValue && hideRecipient && hideWorkflows) ? "recipient_hidden" :
-                                    (recipient.defaultValue && hideRecipient && hideAll) ? "recipient_hidden" :
-                                        !recipient.modified ? "recipient_form_input predefined_input" :
-                                            "recipient_form_input"}
+                                className={!recipient.modified ? "recipient_form_input predefined_input" : "recipient_form_input"}
                                 placeholder="Enter Recipient's Email" value={recipient.defaultValue}
                                 readOnly={recipient.editable ? false : true}
                                 onChange={(event) => this.onEmailChanged(event, index)}>
