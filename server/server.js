@@ -22,12 +22,11 @@ const dotEnvOptions = {
 }
 
 require('dotenv').config(dotEnvOptions);
-// require('dotenv').config();
 
 // Form Data, Multer, & Uploads
 const FormData = require('form-data');
 const fs = require('fs');
-const multer  = require('multer');
+const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
 // Main App
@@ -45,7 +44,7 @@ var port = features.port || 3200;
 app.use(cors());
 app.use(express.static(__dirname + '/static'));
 app.use(bodyParser.urlencoded({
-  extended: true
+    extended: true
 }));
 app.use(bodyParser.json());
 
@@ -55,7 +54,7 @@ app.get('/', function (req, res) {
 });
 
 // Get features from key file - try to not make it async funciton
-app.get('/features', async function(req, res) {
+app.get('/features', async function (req, res) {
     res.json(features);
 })
 
@@ -73,7 +72,8 @@ app.get('/api/getWorkflows', async function (req, res, next) {
 
         return fetch(url + endpoint, {
             method: 'GET',
-            headers: headers});
+            headers: headers
+        });
     }
 
     const workflow_list = await getWorkflows();
@@ -83,7 +83,7 @@ app.get('/api/getWorkflows', async function (req, res, next) {
 });
 
 // GET /workflows/{workflowId}
-app.get('/api/getWorkflowById/:id', async function(req, res, next){
+app.get('/api/getWorkflowById/:id', async function (req, res, next) {
 
     function getWorkflowById() {
         /***
@@ -96,7 +96,8 @@ app.get('/api/getWorkflowById/:id', async function(req, res, next){
 
         return fetch(url + endpoint, {
             method: 'GET',
-            headers: headers})
+            headers: headers
+        })
     }
 
     const workflow_by_id = await getWorkflowById();
@@ -106,7 +107,7 @@ app.get('/api/getWorkflowById/:id', async function(req, res, next){
 });
 
 // POST /workflows/{workflowId}/agreements
-app.post('/api/postAgreement/:id', async function(req, res, next){
+app.post('/api/postAgreement/:id', async function (req, res, next) {
 
     function postAgreement() {
         /***
@@ -120,9 +121,10 @@ app.post('/api/postAgreement/:id', async function(req, res, next){
         };
 
         return fetch(url + endpoint, {
-            method:'POST',
+            method: 'POST',
             headers: headers,
-            body: JSON.stringify(req.body)})
+            body: JSON.stringify(req.body)
+        })
     }
 
     const api_response = await postAgreement();

@@ -1,68 +1,113 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Dynamic Workflow
+Dynamic Workflow built on top of express using Adobe Sign API.
 
-## Available Scripts
+![sign image](docs/sign_image.png "Sign Image")
 
-In the project directory, you can run:
+## Overview
+Dynamic workflows allow users to specify the next participants within an agreement.
 
-### `npm start`
+## Disclaimer
+There is a known issue that has been submitted to JIRA for participant groups. The feature is currently there, but the functionality has a bug. Once this issue is resolved, a patch will be issued out.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Features
+| Features | Description |
+| --- | --- |
+| Dynamic Routing | Allows user to provide the next participant associated with the workflow. |
+| Hide All Workflow w/ Predefined Recipients | Allows the application to hide workflows with predefined recipients. |
+| Hide Target Workflows w/ Predefined Recipients | Specify which workflows you want to only hide predefined recipients. |
+| CSS Theme | Easily change the theme by adjusting CSS variables |
+| Sender Input Fields | Allow workflow sender input fields to be replicated over into the form. |
+| Upload Documents | Allow the sender to upload additional documents if enabled in workflow. |
+| Recipient Groups | Allows you to have the ability to dynamically route to recipient groups.  *As of version 1.1, this feature is blocked please see disclaimer.* |
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Deployment Instructions
+This is a server-side version of the Dynamic Workflow application. You must host and deploy this application for it to work. There are many methods of deploying an application. In this example, I will be deploying it to Digital Ocean. Feel free to choose whichever platform/services and use this documentation as a guideline.
 
-### `npm test`
+### Digital Ocean
+1. Click create and select droplet
+2. Choose an image. We will be going with Ubuntu 18.04.3 LTS x64
+3. Choose a plan that best fits your business needs. For demo purposes, I will be choosing a Standard plan at $5/mo
+4. Select your preferred datacenter region
+5. Select any additional options
+6. Choose an SSH for the authentication method
+7. Create an SSH key for your droplet
+8. Choose a hostname
+9. Click create droplet
+10. SSH into your server
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Node.js
+```sh
+# Refresh your local package index with the following command
+sudo apt update
 
-### `npm run build`
+# Install Node.js from repositories
+sudo apt install nodejs
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Install node packaging manager
+sudo apt install npm
+```
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Importing Source File
+There are two options to import your source file.  Git or FTP.
+1. **Git:** In the appropriate dir, execute `git clone {url_to_repo}`
+2. **FTP:** You can use whichever tool you prefer tool, like [Cyberduck](https://cyberduck.io/).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Install Dependencies
 
-### `npm run eject`
+You will need to install all dependencies associated with this application
+```sh
+cd Dynamic/Workflow
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Installing nodemon
+Use nodemon as a dev node on production. *We will use pm2 as our process manager*
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```sh
+npm install -g nodemon
+npm start dev # Use only for development
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Default port 80
+To run application on default port 80 install lib2cap-bin
+```sh
+sudo apt-get install lib2cap-bin
+sudo setcap cap/net/bind/service=+ep `readlink -f \`which node\``
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Install pm2
+Install pm2 to and run application in the background
+```sh
+npm install pm2 -g
+pm2 start ~/Dynamic/Workflow/server/server.js
+```
 
-## Learn More
+## Configuration
+There is a sample env file, `.env.dist`, that needs to be copied to `.env` and modified for your environment.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+There are three main components within the configuration file.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Server
+- `host`: The host address to your Sign Console.
+- `endpoint`: This is the API endpoint
 
-### Code Splitting
+### Enterprise
+- `integration`:   This is your integration key for Adobe Sign. Please see the integration key section.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## Features
 
-### Analyzing the Bundle Size
+- `REACT_APP_HIDE_PREDEFINED_RECIPIENT`: This turns on the feature to hide predefined recipients in your workflow.
+  - `true`: Turn on
+  - `false`: Turn off
+- `REACT_APP_HIDE_PREDEFINED_RECIPIENT_WORKFLOW_LIST`: A list to target specific workflows to hide predefined recipients.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+## Integration Key
+You will be required to create an integration key with limited scopes for this application and add the integration key inside the config.yaml file. [Click Me](https://helpx.adobe.com/sign/kb/how-to-create-an-integration-key.html)
 
-### Making a Progressive Web App
+![integration key](docs/integration_key.png "Integration Key")
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+### Contributing
+Contributions are welcomed! Read the [Contributing Guide](./.github/CONTRIBUTING.md) for more information.
 
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Licensing
+This project is licensed under the Apache V2 License. See [LICENSE](LICENSE) for more information.

@@ -1,6 +1,16 @@
-// This class handles reading config data from a config file.
-// TODO: Read data from a config file. Currently the config are hard code.
+/*
+Copyright 2019 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
 
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
+// This class handles reading config data from a config file.
 class ConfigService {
     constructor() {
         this.baseUrl = "http://localhost:3200";
@@ -14,28 +24,6 @@ class ConfigService {
         .then(resp => resp.json())
         return body;
     }
-
-    // getHideSelector = () => {
-    //     const features = this.getFeatures();
-    //     const hideSelector = features.hideSelector;
-    //     return hideSelector;
-    // }
-
-     // Get application features - TODO: make it a sync fetch not async
-     // fetch(url) .then(resp => resp.json())
-    //  getFeatures = async () => {
-    //     const url = this.baseUrl + "/features";
-    //     const resp = await fetch(url);
-    //     const body = await resp.json();
-    //     return body;
-    // }
-
-    // getHideSelector = async () => {
-    //     const features = await this.getFeatures();
-    //     const hideSelector = features.hideSelector;
-    //     return hideSelector;
-    // }
-
 
 }
 

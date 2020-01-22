@@ -1,3 +1,15 @@
+/*
+Copyright 2019 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
 import React, { Component } from 'react';
 
 // Component for managing a list of carbon copy groups
@@ -24,6 +36,7 @@ class CarbonCopy extends Component {
         });
     }
 
+    // Refresh after selecting another workflow
     static getDerivedStateFromProps(props, state) {
         if (props.workflowId !== state.workflowId) {
             return {
@@ -66,8 +79,6 @@ class CarbonCopy extends Component {
             let ccItem = list.find(x => x.name === item.name);
             if (item.defaultValue) {
                 if (ccItem) {
-                    // ccItem for item already exist in list
-                    // We need to add a new email to ccItem.emails
                     ccItem.emails.push(item.defaultValue);
                 }
                 else {
@@ -120,23 +131,20 @@ class CarbonCopy extends Component {
 
     render() {
         const hideCC = this.state.hideCC;
-        const hideCCWorkflows = this.state.hideCCWorkflowList.includes(this.state.workflowName) ? true : false;
+        const hideCCWorkflows = (this.state.hideCCWorkflowList.indexOf(this.state.workflowName) >= 0) ? true : false;
         const hideAll = this.state.hideCCWorkflowList === "" ? true : false;
-        // console.log("hideCCWorkflowList " + this.state.hideCCWorkflowList);
-        // console.log("hideCCWorkflows " + hideCCWorkflows);
+
         return (
             <div>
                 {
                     this.state.carbonCopyGroup &&
                     this.state.carbonCopyGroup.map((cc, i) =>
-                        <div className="add_border_bottom" id={`cc_div_${i}`} key={i}>
+                        <div className={(cc.defaultValue && hideCC && hideCCWorkflows) ? "recipient_hidden" :
+                            (cc.defaultValue && hideCC && hideAll) ? "recipient_hidden" : "add_border_bottom"}
+                            id={`cc_div_${i}`} key={i}>
                             <h3 className="recipient_label">{cc.label}</h3>
                             <input type="text" id={`cc_${i}`} name={`cc_${i}`}
-                                // className={cc.defaultValue ? "recipient_form_input predefined_input" : "recipient_form_input"} 
-                                className={(cc.defaultValue && hideCC && hideCCWorkflows) ? "recipient_hidden" :
-                                    (cc.defaultValue && hideCC && hideAll) ? "recipient_hidden" :
-                                        !cc.modified ? "recipient_form_input predefined_input" :
-                                            "recipient_form_input"}
+                                className={!cc.modified ? "recipient_form_input predefined_input" : "recipient_form_input"}
                                 placeholder="Enter Cc's Email" value={cc.defaultValue}
                                 onChange={(event) => this.onCcChanged(event, i)}>
                             </input>
