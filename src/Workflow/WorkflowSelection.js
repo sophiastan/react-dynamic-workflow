@@ -49,11 +49,14 @@ class WorkflowSelection extends Component {
     onWorkflowChanged = (event) => {
         const workflowId = event.target.value;
         this.setState({
-            workflowId: workflowId
+            selectedWorkflowId: workflowId
         })
     }
 
     runWorkflow = (event) => {
+        this.setState({
+            workflowId: this.state.selectedWorkflowId
+        })
     }
 
     render() {
