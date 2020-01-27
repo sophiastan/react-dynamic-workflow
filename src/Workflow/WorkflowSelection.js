@@ -14,6 +14,7 @@ import React, { Component } from 'react';
 import AgreementForm from './AgreementForm';
 import SignService from '../Services/SignService';
 import WorkflowService from '../Services/WorkflowService';
+import queryString from 'query-string';
 
 class WorkflowSelection extends Component {
     constructor(props) {
@@ -31,17 +32,37 @@ class WorkflowSelection extends Component {
             workflowId: null,
             signService: new SignService(),
             workflowService: new WorkflowService(),
+            signer: null,
+            cc: null,
         };
     }
 
     async componentDidMount() {
         const workflows = await this.state.signService.getWorkflows();
         const workflowId = this.state.workflowService.getWorkflowId(workflows, this.state.workflowName);
+
         if (workflows) {
             this.setState({
                 workflows: workflows,
                 workflowId: workflowId
             });
+
+            const values = queryString.parse(this.props.location.search);
+            if (this.props.location && this.props.location.search) {
+                this.setState({
+                    signer: values.signer,
+                    cc: values.cc
+                })
+            }
+            console.log(this.state.signer);
+            // console.log(this.state.cc);
+
+            // const query = new URLSearchParams(this.props.location.search);
+            // const signer = query.get('signer');
+            // this.setState({
+            //     signer: signer
+            // })
+            // console.log(this.state.signer);
         }
     }
 
@@ -53,7 +74,7 @@ class WorkflowSelection extends Component {
         })
     }
 
-    runWorkflow = (event) => {
+    runWorkflow = () => {
         this.setState({
             workflowId: this.state.selectedWorkflowId
         })
@@ -96,7 +117,8 @@ class WorkflowSelection extends Component {
                         }
                         <div id="workflow_form_bottom">
                             <div id="workflow_form_bot_wrapper">
-                                <AgreementForm workflowId={this.state.workflowId}></AgreementForm>
+                                {/* <AgreementForm workflowId={this.state.workflowId}></AgreementForm> */}
+                                <AgreementForm workflowId={this.state.workflowId} signer={this.state.signer} cc={this.state.cc}></AgreementForm>
                             </div>
                         </div>
                     </div>

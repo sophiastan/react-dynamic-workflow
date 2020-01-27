@@ -38,6 +38,8 @@ class AgreementForm extends Component {
             isPasswordValid: true,
             features: null,
 
+            signer: props.signer,
+
             // Agreement data
             workflowId: props.workflowId,
             transientId: props.transientDocumentId,
