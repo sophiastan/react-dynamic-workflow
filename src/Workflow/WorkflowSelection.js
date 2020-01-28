@@ -25,6 +25,9 @@ class WorkflowSelection extends Component {
             workflowName = props.match.params.name;
         }
 
+        const returnValues = queryString.parse(this.props.location.search);
+        const values = returnValues ? returnValues : null;
+
         this.state = {
             hideSelector: props.hideSelector,
             workflows: [],
@@ -32,8 +35,13 @@ class WorkflowSelection extends Component {
             workflowId: null,
             signService: new SignService(),
             workflowService: new WorkflowService(),
-            signer: null,
-            cc: null,
+            values : {
+                recipient: values.recipient,
+                cc: values.cc,
+                fields: values.fields,
+                deadline: values.deadline,
+                reminder: values.reminder
+            }
         };
     }
 
@@ -47,22 +55,6 @@ class WorkflowSelection extends Component {
                 workflowId: workflowId
             });
 
-            const values = queryString.parse(this.props.location.search);
-            if (this.props.location && this.props.location.search) {
-                this.setState({
-                    signer: values.signer,
-                    cc: values.cc
-                })
-            }
-            console.log(this.state.signer);
-            // console.log(this.state.cc);
-
-            // const query = new URLSearchParams(this.props.location.search);
-            // const signer = query.get('signer');
-            // this.setState({
-            //     signer: signer
-            // })
-            // console.log(this.state.signer);
         }
     }
 
@@ -118,7 +110,7 @@ class WorkflowSelection extends Component {
                         <div id="workflow_form_bottom">
                             <div id="workflow_form_bot_wrapper">
                                 {/* <AgreementForm workflowId={this.state.workflowId}></AgreementForm> */}
-                                <AgreementForm workflowId={this.state.workflowId} signer={this.state.signer} cc={this.state.cc}></AgreementForm>
+                                <AgreementForm workflowId={this.state.workflowId} values={this.state.values}></AgreementForm>
                             </div>
                         </div>
                     </div>
