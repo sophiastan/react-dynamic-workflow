@@ -17,14 +17,14 @@ class RecipientsList extends Component {
     constructor(props) {
         super(props);
 
-        let recipientList = props.recipientsListInfo ? props.recipientsListInfo : [];
+        let recipientsList = props.recipientsListInfo ? props.recipientsListInfo : [];
         let recipientEmails = props.recipientEmails ? props.recipientEmails : [];
-        recipientList = this.fillDefaultValue(recipientList, recipientEmails);
+        recipientsList = this.fillDefaultValue(recipientsList, recipientEmails);
 
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            recipientsList: recipientList,
+            recipientsList: recipientsList,
             workflowId: props.workflowId,
             hideRecipient: props.features.hideRecipient,
             hideWorkflowList: props.features.hideWorkflowList,
@@ -32,6 +32,7 @@ class RecipientsList extends Component {
         };
     }
 
+    // Fill input with query string
     fillDefaultValue(recipientList, recipientEmails) {
         if(Array.isArray(recipientEmails)) {
             recipientEmails.map(email => {
@@ -48,7 +49,6 @@ class RecipientsList extends Component {
                 recipient.defaultValue = recipientEmails;
             }
         }
-
         return recipientList;
     }
 
@@ -57,7 +57,7 @@ class RecipientsList extends Component {
         if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
-                recipientsList: props.recipientsListInfo,
+                recipientsList: props.recipientsListInfo ? props.recipientsListInfo : [],
                 hidePredefined: props.features.hidePredefined,
                 hideWorkflowList: props.features.hideWorkflowList,
                 workflowName: props.workflowName
@@ -82,7 +82,6 @@ class RecipientsList extends Component {
                     return item;
                 }
                 else {
-                    // item.defaultValue = this.state.recipient;
                     return item;
                 }
             });
@@ -132,7 +131,6 @@ class RecipientsList extends Component {
                                 className={!recipient.modified ? "recipient_form_input predefined_input" : "recipient_form_input"}
                                 placeholder="Enter Recipient's Email" 
                                 value={recipient.defaultValue}
-                                // value={this.state.recipient ? this.state.recipient : recipient.defaultValue}
                                 readOnly={recipient.editable ? false : true}
                                 onChange={(event) => this.onEmailChanged(event, index)}>
                             </input>

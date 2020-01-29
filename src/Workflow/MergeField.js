@@ -17,13 +17,36 @@ class MergeField extends Component {
     constructor(props) {
         super(props);
 
+        let mergeFieldList = props.mergeFieldsInfo ? props.mergeFieldsInfo : [];
+        let fieldFill = props.fieldFill ? props.fieldFill : [];
+        mergeFieldList = this.fillDefaultValue(mergeFieldList, fieldFill);
+
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
             workflowId: props.workflowId,
-            fields: props.fields
+            mergeFieldList: mergeFieldList
         };
-        console.log(this.state.fields);
+    }
+
+    // Fill input with query string
+    fillDefaultValue(mergeFieldList, fieldFill) {
+        if(Array.isArray(fieldFill)) {
+            fieldFill.map(item => {
+                const field = mergeFieldList.find(f => !f.defaultValue);
+                if (field) {
+                    field.defaultValue = item;
+                }
+                return item;
+            });
+        }
+        else {
+            const field = mergeFieldList.find(f => !f.defaultValue);
+            if (field) {
+                field.defaultValue = fieldFill;
+            }
+        }
+        return mergeFieldList;
     }
 
     // Refresh after selecting another workflow

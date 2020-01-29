@@ -24,12 +24,12 @@ class Deadline extends Component {
             workflowId: props.workflowId,
             hasDeadlineChecked: true,
             visible: props.deadlineVisible,
-            date: date,
-            deadline: props.deadline
+            date: props.deadlineFill ? props.deadlineFill : date
         };
-        console.log(this.state.deadline);
-
-        this.state.setParentState({ deadline: this.getDaysTillDeadline(date) });
+        
+        this.state.setParentState({ 
+            deadline: this.getDaysTillDeadline(props.deadlineFill ? props.deadlineFill : date) 
+        });
     }
 
     // Refresh after selecting another workflow
@@ -40,7 +40,7 @@ class Deadline extends Component {
                 workflow: props.workflow,
                 hasDeadlineChecked: true,
                 visible: props.deadlineVisible,
-                date: Deadline.getNextDay()
+                date: props.deadlineFill ? props.deadlineFill : Deadline.getNextDay()
             };
         }
         return null;

@@ -17,19 +17,19 @@ class CarbonCopy extends Component {
     constructor(props) {
         super(props);
 
-        const items = CarbonCopy.createCCGroup(props.ccsListInfo);
+        let items = CarbonCopy.createCCGroup(props.ccsListInfo);
+        let ccEmails = props.ccEmails ? props.ccEmails : [];
+        items = this.fillDefaultValue(items, ccEmails);
+
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
             workflowId: props.workflowId,
-            ccsListInfo: props.ccsListInfo,
             carbonCopyGroup: items,
             hideCC: props.features.hideCC,
             hideCCWorkflowList: props.features.hideCCWorkflowList,
-            workflowName: props.workflowName,
-            cc: props.cc
+            workflowName: props.workflowName
         };
-        console.log(this.state.cc);
 
         props.setParentState(state => {
             return {
@@ -38,12 +38,31 @@ class CarbonCopy extends Component {
         });
     }
 
+    // Fill input with query string
+    fillDefaultValue(ccList, ccEmails) {
+        if(Array.isArray(ccEmails)) {
+            ccEmails.map(email => {
+                const cc = ccList.find(c => !c.defaultValue);
+                if (cc) {
+                    cc.defaultValue = email;
+                }
+                return email;
+            });
+        }
+        else {
+            const cc = ccList.find(c => !c.defaultValue);
+            if (cc) {
+                cc.defaultValue = ccEmails;
+            }
+        }
+        return ccList;
+    }
+
     // Refresh after selecting another workflow
     static getDerivedStateFromProps(props, state) {
         if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
-                ccsListInfo: props.ccsListInfo,
                 carbonCopyGroup: CarbonCopy.createCCGroup(props.ccsListInfo),
                 hideCC: props.features.hideCC,
                 hideCCWorkflowList: props.features.hideCCWorkflowList,
