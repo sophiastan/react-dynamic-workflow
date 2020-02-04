@@ -37,6 +37,7 @@ class AgreementForm extends Component {
             workflowName: props.workflowName,
             isPasswordValid: true,
             features: null,
+            timesClicked: 1,
 
             queryData: props.queryData,
 
@@ -128,25 +129,31 @@ class AgreementForm extends Component {
 
     // onClick event handler for submitting data
     onSubmit = async () => {
-        const agreementData = this.state.workflowService.createAgreementData(this.state);
-        console.log('Agreement data to be submitted: ');
-        console.log(agreementData);
+        // const agreementData = this.state.workflowService.createAgreementData(this.state);
+        // console.log('Agreement data to be submitted: ');
+        // console.log(agreementData);
 
-        // Submit agreement to API server
-        const response = await this.state.signService.postWorkflowAgreement(
-            this.state.workflowId, agreementData);
+        this.setState((prevState) => ({
+            timesClicked: prevState.timesClicked + 1
+        }));
 
-        if ('url' in response) {
-            alert('Agreement sent');
-        }
-        else {
-            alert(response.message);
-        }
+        console.log(this.state.timesClicked);
+
+        // // Submit agreement to API server
+        // const response = await this.state.signService.postWorkflowAgreement(
+        //     this.state.workflowId, agreementData);
+
+        // if ('url' in response) {
+        //     alert('Agreement sent');
+        // }
+        // else {
+        //     alert(response.message);
+        // }
     }
 
     render() {
         // Cannot submit if password is invalid
-        const isSubmitEnabled = this.state.isPasswordValid;
+        const isSubmitEnabled = this.state.isPasswordValid && (this.state.timesClicked <= 5); // change to maxSubmits
         if (!this.state.workflow) {
             return (<div></div>);
         }
