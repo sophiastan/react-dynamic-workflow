@@ -37,7 +37,7 @@ class AgreementForm extends Component {
             workflowName: props.workflowName,
             isPasswordValid: true,
             features: null,
-            timesClicked: 1,
+            timesClicked: 0,
 
             queryData: props.queryData,
 
@@ -74,6 +74,7 @@ class AgreementForm extends Component {
         this.setState({
             features: features
         })
+        console.log("componentDidMount maxSubmits: " + this.state.features.maxSubmits);
     }
 
     // Sets workflow data
@@ -154,6 +155,7 @@ class AgreementForm extends Component {
     render() {
         // Cannot submit if password is invalid
         const isSubmitEnabled = this.state.isPasswordValid && (this.state.timesClicked <= 5); // change to maxSubmits
+        // console.log("render maxSubmits: " + this.state.features.maxSubmits);
         if (!this.state.workflow) {
             return (<div></div>);
         }

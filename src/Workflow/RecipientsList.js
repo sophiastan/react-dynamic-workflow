@@ -135,7 +135,7 @@ class RecipientsList extends Component {
 
     render() {
         const hideRecipient = this.state.hideRecipient;
-        const hideWorkflows = (this.state.hideWorkflowList.indexOf(this.state.workflowName) >= 0 ? true : false);
+        const hideWorkflows = this.state.hideWorkflowList && (this.state.hideWorkflowList.indexOf(this.state.workflowName) >= 0 ? true : false);
         const hideAll = this.state.hideWorkflowList === "" ? true : false;
 
         return (
