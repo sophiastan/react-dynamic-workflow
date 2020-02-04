@@ -37,7 +37,8 @@ class AgreementForm extends Component {
             workflowName: props.workflowName,
             isPasswordValid: true,
             features: null,
-            timesClicked: 0,
+            allMaxSubmits: 0,
+            maxSubmits: 0,
 
             queryData: props.queryData,
 
@@ -74,15 +75,14 @@ class AgreementForm extends Component {
         this.setState({
             features: features
         })
-        console.log("componentDidMount maxSubmits: " + this.state.features.maxSubmits);
     }
 
     // Sets workflow data
     setWorkflow(workflow) {
         if (workflow) {
-            const agreementName = this.state.queryData.agreementName ? this.state.queryData.agreementName : 
+            const agreementName = this.state.queryData.agreementName ? this.state.queryData.agreementName :
                 workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
-            const message = this.state.queryData.message ? this.state.queryData.message : 
+            const message = this.state.queryData.message ? this.state.queryData.message :
                 workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
             this.setState({
                 workflow: workflow,
@@ -91,7 +91,8 @@ class AgreementForm extends Component {
                 fileInfos: workflow.fileInfos ? workflow.fileInfos : [],
                 recipientsList: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
                 carbonCopyGroup: [],
-                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
+                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : [],
+                maxSubmits: 0
             });
         }
         else {
@@ -130,16 +131,22 @@ class AgreementForm extends Component {
 
     // onClick event handler for submitting data
     onSubmit = async () => {
-        // const agreementData = this.state.workflowService.createAgreementData(this.state);
-        // console.log('Agreement data to be submitted: ');
-        // console.log(agreementData);
+        const agreementData = this.state.workflowService.createAgreementData(this.state);
+        console.log('Agreement data to be submitted: ');
+        console.log(agreementData);
 
-        this.setState((prevState) => ({
-            timesClicked: prevState.timesClicked + 1
-        }));
+        // Increments submit counter
+        this.setState({
+            maxSubmits: ++this.state.maxSubmits,
+            allMaxSubmits: ++this.state.allMaxSubmits
+        })
+        // console.log("maxSubmits " + this.state.maxSubmits);
+        // console.log("allMaxSubmits " + this.state.allMaxSubmits);
 
-        console.log(this.state.timesClicked);
-
+        const reachedMaxSubmits = this.state.features && (this.state.maxSubmits < this.state.features.maxSubmits)
+        && (this.state.allMaxSubmits < this.state.features.allMaxSubmits);
+        console.log(reachedMaxSubmits);
+        
         // // Submit agreement to API server
         // const response = await this.state.signService.postWorkflowAgreement(
         //     this.state.workflowId, agreementData);
@@ -153,9 +160,8 @@ class AgreementForm extends Component {
     }
 
     render() {
-        // Cannot submit if password is invalid
-        const isSubmitEnabled = this.state.isPasswordValid && (this.state.timesClicked <= 5); // change to maxSubmits
-        // console.log("render maxSubmits: " + this.state.features.maxSubmits);
+        const isSubmitEnabled = this.state.isPasswordValid && this.state.features && (this.state.maxSubmits < this.state.features.maxSubmits)
+            && (this.state.allMaxSubmits < this.state.features.allMaxSubmits);
         if (!this.state.workflow) {
             return (<div></div>);
         }
@@ -170,7 +176,7 @@ class AgreementForm extends Component {
                                 </div>
                                 <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
                                     workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflow.displayName}
-                                    recipientsListInfo={this.state.workflow.recipientsListInfo} workflow={this.state.workflow} 
+                                    recipientsListInfo={this.state.workflow.recipientsListInfo} workflow={this.state.workflow}
                                     recipientEmails={this.state.queryData.recipientEmails} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
                                     workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflow.displayName}
@@ -208,11 +214,11 @@ class AgreementForm extends Component {
                                                 <PassOption setParentState={this.setParentState} getParentState={this.getParentState}
                                                     workflowId={this.state.workflow.name}
                                                     passwordVisible={this.state.workflow.passwordInfo.visible} />
-                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState} 
+                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState}
                                                     workflowId={this.state.workflow.name} deadlineFill={this.state.queryData.deadlineFill}
                                                     deadlineVisible={this.state.workflow.expirationInfo ? this.state.workflow.expirationInfo.visible : ''} />
-                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState} 
-                                                    workflowId={this.state.workflow.name} reminders={this.state.reminders} 
+                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState}
+                                                    workflowId={this.state.workflow.name} reminders={this.state.reminders}
                                                     reminderFill={this.state.queryData.reminderFill} />
                                             </div>
                                         </div>
