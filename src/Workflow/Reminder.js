@@ -20,9 +20,15 @@ class Reminder extends Component {
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            hasReminderChecked: false,
-            workflowId: props.workflowId
+            hasReminderChecked: props.reminderFill ? true : false,
+            workflowId: props.workflowId,
+            reminders: props.reminderFill ? props.reminderFill : props.reminders
         };
+
+        // Set reminders state in parent
+        this.state.setParentState({
+            reminders: props.reminderFill ? props.reminderFill : props.reminders
+        });
     }
 
     // Refresh after selecting another workflow
@@ -30,7 +36,8 @@ class Reminder extends Component {
         if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
-                hasReminderChecked: false   
+                hasReminderChecked: props.reminderFill ? true : false,
+                reminders: props.reminderFill ? props.reminderFill : props.reminders
             };
         }
         return null;
@@ -42,12 +49,14 @@ class Reminder extends Component {
     }
 
 
-    // Set reminders state
+    // Set reminders state for editing and parent
     onReminderChanged = (event) => {
+        this.setState({ reminders: event.target.value });
         this.state.setParentState({ reminders: event.target.value });
     }
 
     render() {
+        let optionState = this.state.reminders;
         return (
             <div className="add_border_bottom" id="reminder_div">
                 <input type="checkbox" name="hasReminderChecked" id="reminder_checkbox"
@@ -56,7 +65,7 @@ class Reminder extends Component {
                 {
                     this.state.hasReminderChecked &&
                     <div id="sub_reminder_div" className="add_border_bottom">
-                        <select id="reminder_dropdown" onChange={this.onReminderChanged}>
+                        <select id="reminder_dropdown" value={optionState} onChange={this.onReminderChanged}>
                             <option value="DAILY_UNTIL_SIGNED">Every day</option>
                             <option value="WEEKLY_UNTIL_SIGNED">Every week</option>
                             <option value="WEEKDAILY_UNTIL_SIGNED">Every business day</option>

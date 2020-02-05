@@ -14,6 +14,7 @@ import React, { Component } from 'react';
 import AgreementForm from './AgreementForm';
 import SignService from '../Services/SignService';
 import WorkflowService from '../Services/WorkflowService';
+import queryString from 'query-string';
 
 class WorkflowSelection extends Component {
     constructor(props) {
@@ -24,6 +25,9 @@ class WorkflowSelection extends Component {
             workflowName = props.match.params.name;
         }
 
+        let locationSearch = queryString.parse(this.props.location.search);
+        let queryData = locationSearch ? locationSearch : null;
+
         this.state = {
             hideSelector: props.hideSelector,
             workflows: [],
@@ -31,29 +35,40 @@ class WorkflowSelection extends Component {
             workflowId: null,
             signService: new SignService(),
             workflowService: new WorkflowService(),
+            queryData : {
+                agreementName: queryData.agreementName,
+                message: queryData.message,
+                recipientEmails: queryData.recipient,
+                ccEmails: queryData.cc,
+                fieldFill: queryData.field,
+                deadlineFill: queryData.deadline,
+                reminderFill: queryData.reminder
+            }
         };
     }
 
     async componentDidMount() {
-        const workflows = await this.state.signService.getWorkflows();
-        const workflowId = this.state.workflowService.getWorkflowId(workflows, this.state.workflowName);
+        let workflows = await this.state.signService.getWorkflows();
+        let workflowId = this.state.workflowService.getWorkflowId(workflows, this.state.workflowName);
+
         if (workflows) {
             this.setState({
                 workflows: workflows,
                 workflowId: workflowId
             });
+
         }
     }
 
     // Sets workflowId to show correct workflow data
     onWorkflowChanged = (event) => {
-        const workflowId = event.target.value;
+        let workflowId = event.target.value;
         this.setState({
             selectedWorkflowId: workflowId
         })
     }
 
-    runWorkflow = (event) => {
+    runWorkflow = () => {
         this.setState({
             workflowId: this.state.selectedWorkflowId
         })
@@ -96,7 +111,7 @@ class WorkflowSelection extends Component {
                         }
                         <div id="workflow_form_bottom">
                             <div id="workflow_form_bot_wrapper">
-                                <AgreementForm workflowId={this.state.workflowId}></AgreementForm>
+                                <AgreementForm workflowId={this.state.workflowId} queryData={this.state.queryData}></AgreementForm>
                             </div>
                         </div>
                     </div>

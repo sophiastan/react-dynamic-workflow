@@ -17,12 +17,14 @@ class CarbonCopy extends Component {
     constructor(props) {
         super(props);
 
-        const items = CarbonCopy.createCCGroup(props.ccsListInfo);
+        let items = CarbonCopy.createCCGroup(props.ccsListInfo);
+        let ccEmails = props.ccEmails ? props.ccEmails : [];
+        items = this.fillDefaultValue(items, ccEmails);
+
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
             workflowId: props.workflowId,
-            ccsListInfo: props.ccsListInfo,
             carbonCopyGroup: items,
             hideCC: props.features.hideCC,
             hideCCWorkflowList: props.features.hideCCWorkflowList,
@@ -36,12 +38,31 @@ class CarbonCopy extends Component {
         });
     }
 
+    // Fill input with query string
+    fillDefaultValue(ccList, ccEmails) {
+        if(Array.isArray(ccEmails)) {
+            ccEmails.map(email => {
+                let cc = ccList.find(c => !c.defaultValue);
+                if (cc) {
+                    cc.defaultValue = email;
+                }
+                return email;
+            });
+        }
+        else {
+            let cc = ccList.find(c => !c.defaultValue);
+            if (cc) {
+                cc.defaultValue = ccEmails;
+            }
+        }
+        return ccList;
+    }
+
     // Refresh after selecting another workflow
     static getDerivedStateFromProps(props, state) {
         if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
-                ccsListInfo: props.ccsListInfo,
                 carbonCopyGroup: CarbonCopy.createCCGroup(props.ccsListInfo),
                 hideCC: props.features.hideCC,
                 hideCCWorkflowList: props.features.hideCCWorkflowList,
@@ -53,12 +74,12 @@ class CarbonCopy extends Component {
 
     // Create a list of ccs for editing
     static createCCGroup(ccsListInfo) {
-        const items = [];
+        let items = [];
         if (ccsListInfo) {
             ccsListInfo.map((cc, index) => {
                 for (let i = 0; i < cc.maxListCount; i++) {
-                    const defaultValue = i === 0 ? cc.defaultValue : "";
-                    const item = {
+                    let defaultValue = i === 0 ? cc.defaultValue : "";
+                    let item = {
                         "label": cc.label,
                         "name": cc.name,
                         "defaultValue": defaultValue
@@ -74,7 +95,7 @@ class CarbonCopy extends Component {
 
     // Creates cc data for submit and group emails by name field
     createCcList(localCCList) {
-        const list = [];
+        let list = [];
         localCCList.map((item, i) => {
             let ccItem = list.find(x => x.name === item.name);
             if (item.defaultValue) {
@@ -83,8 +104,8 @@ class CarbonCopy extends Component {
                 }
                 else {
                     // Create new ccItem that contains name and emails
-                    const ccData = [item.defaultValue];
-                    const ccItem = {
+                    let ccData = [item.defaultValue];
+                    let ccItem = {
                         "name": item.name,
                         "emails": ccData
                     }
@@ -99,9 +120,9 @@ class CarbonCopy extends Component {
 
     // Event handler when an item in the list changed
     onCcChanged = (event, index) => {
-        const val = event.target.value;
+        let val = event.target.value;
 
-        const localCCList = this.state.carbonCopyGroup.map((item, i) => {
+        let localCCList = this.state.carbonCopyGroup.map((item, i) => {
             if (i === index) {
                 item.defaultValue = val;
                 item.modified = true;
@@ -119,7 +140,7 @@ class CarbonCopy extends Component {
             }
         });
 
-        const parentCCList = this.createCcList(localCCList);
+        let parentCCList = this.createCcList(localCCList);
 
         // Update cc list for submit
         this.state.setParentState(state => {
@@ -130,9 +151,9 @@ class CarbonCopy extends Component {
     }
 
     render() {
-        const hideCC = this.state.hideCC;
-        const hideCCWorkflows = (this.state.hideCCWorkflowList.indexOf(this.state.workflowName) >= 0) ? true : false;
-        const hideAll = this.state.hideCCWorkflowList === "" ? true : false;
+        let hideCC = this.state.hideCC;
+        let hideCCWorkflows = this.state.hideCCWorkflowList && (this.state.hideCCWorkflowList.indexOf(this.state.workflowName) >= 0) ? true : false;
+        let hideAll = this.state.hideCCWorkflowList === "" ? true : false;
 
         return (
             <div>

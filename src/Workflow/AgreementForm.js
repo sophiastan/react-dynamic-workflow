@@ -37,6 +37,10 @@ class AgreementForm extends Component {
             workflowName: props.workflowName,
             isPasswordValid: true,
             features: null,
+            allMaxSubmits: 0,
+            maxSubmits: 0,
+
+            queryData: props.queryData,
 
             // Agreement data
             workflowId: props.workflowId,
@@ -67,17 +71,18 @@ class AgreementForm extends Component {
     async componentDidMount() {
         const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
         this.setWorkflow(workflow);
-        const features = await this.state.configService.getFeatures();
         this.setState({
-            features: features
+            features: await this.state.configService.getFeatures()
         })
     }
 
     // Sets workflow data
     setWorkflow(workflow) {
         if (workflow) {
-            const agreementName = workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
-            const message = workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
+            const agreementName = this.state.queryData.agreementName ? this.state.queryData.agreementName :
+                workflow.agreementNameInfo ? workflow.agreementNameInfo.defaultValue : '';
+            const message = this.state.queryData.message ? this.state.queryData.message :
+                workflow.messageInfo ? workflow.messageInfo.defaultValue : '';
             this.setState({
                 workflow: workflow,
                 agreementName: agreementName,
@@ -85,7 +90,8 @@ class AgreementForm extends Component {
                 fileInfos: workflow.fileInfos ? workflow.fileInfos : [],
                 recipientsList: workflow.recipientsListInfo ? workflow.recipientsListInfo : [],
                 carbonCopyGroup: [],
-                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : []
+                mergeFieldGroup: workflow.mergeFieldsInfo ? workflow.mergeFieldsInfo : [],
+                maxSubmits: 0
             });
         }
         else {
@@ -125,8 +131,29 @@ class AgreementForm extends Component {
     // onClick event handler for submitting data
     onSubmit = async () => {
         const agreementData = this.state.workflowService.createAgreementData(this.state);
-        // console.log('Agreement data to be submitted: ');
-        // console.log(agreementData);
+        console.log('Agreement data to be submitted: ');
+        console.log(agreementData);
+
+        // Increments submit counter
+        this.setState({
+            maxSubmits: ++this.state.maxSubmits,
+            allMaxSubmits: ++this.state.allMaxSubmits
+        })
+        // console.log("maxSubmits " + this.state.maxSubmits);
+        // console.log("allMaxSubmits " + this.state.allMaxSubmits);
+
+        // let canSubmit = this.state.features && (this.state.maxSubmits < this.state.features.maxSubmits)
+        // && (this.state.allMaxSubmits < this.state.features.allMaxSubmits);
+        // console.log(canSubmit);
+        // if (!canSubmit) {
+        //     setTimeout(() => {
+        //         this.setState({
+        //             maxSubmits: 0,
+        //             allMaxSubmits: 0
+        //         })
+        //     }, this.state.features.timeoutPeriod);
+        // }
+        // console.log(canSubmit);
 
         // Submit agreement to API server
         const response = await this.state.signService.postWorkflowAgreement(
@@ -141,8 +168,8 @@ class AgreementForm extends Component {
     }
 
     render() {
-        // Cannot submit if password is invalid
-        const isSubmitEnabled = this.state.isPasswordValid;
+        const isSubmitEnabled = this.state.isPasswordValid && this.state.features && (this.state.maxSubmits < this.state.features.maxSubmits)
+            && (this.state.allMaxSubmits < this.state.features.allMaxSubmits);
         if (!this.state.workflow) {
             return (<div></div>);
         }
@@ -157,10 +184,11 @@ class AgreementForm extends Component {
                                 </div>
                                 <RecipientsList setParentState={this.setParentState} getParentState={this.getParentState}
                                     workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflow.displayName}
-                                    recipientsListInfo={this.state.workflow.recipientsListInfo} workflow={this.state.workflow} />
+                                    recipientsListInfo={this.state.workflow.recipientsListInfo} workflow={this.state.workflow}
+                                    recipientEmails={this.state.queryData.recipientEmails} />
                                 <CarbonCopy setParentState={this.setParentState} getParentState={this.getParentState}
                                     workflowId={this.state.workflow.name} features={this.state.features} workflowName={this.state.workflow.displayName}
-                                    ccsListInfo={this.state.workflow.ccsListInfo} />
+                                    ccsListInfo={this.state.workflow.ccsListInfo} ccEmails={this.state.queryData.ccEmails} />
                             </div>
                             <div className="col-lg-12" id="bottom_form_bottom">
                                 <div className="row">
@@ -185,7 +213,8 @@ class AgreementForm extends Component {
                                         <FileList setParentState={this.setParentState} getParentState={this.getParentState}
                                             workflowId={this.state.workflow.name} fileInfos={this.state.workflow.fileInfos} />
                                         <MergeField setParentState={this.setParentState} getParentState={this.getParentState}
-                                            workflowId={this.state.workflow.name} />
+                                            workflowId={this.state.workflow.name} mergeFieldsInfo={this.state.workflow.mergeFieldsInfo}
+                                            fieldFill={this.state.queryData.fieldFill} />
                                     </div>
                                     <div className="col-lg-5">
                                         <div className="option_wrapper">
@@ -193,11 +222,12 @@ class AgreementForm extends Component {
                                                 <PassOption setParentState={this.setParentState} getParentState={this.getParentState}
                                                     workflowId={this.state.workflow.name}
                                                     passwordVisible={this.state.workflow.passwordInfo.visible} />
-                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState} 
-                                                    workflowId={this.state.workflow.name} 
+                                                <Deadline setParentState={this.setParentState} getParentState={this.getParentState}
+                                                    workflowId={this.state.workflow.name} deadlineFill={this.state.queryData.deadlineFill}
                                                     deadlineVisible={this.state.workflow.expirationInfo ? this.state.workflow.expirationInfo.visible : ''} />
-                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState} 
-                                                    workflowId={this.state.workflow.name} />
+                                                <Reminder setParentState={this.setParentState} getParentState={this.getParentState}
+                                                    workflowId={this.state.workflow.name} reminders={this.state.reminders}
+                                                    reminderFill={this.state.queryData.reminderFill} />
                                             </div>
                                         </div>
                                     </div>

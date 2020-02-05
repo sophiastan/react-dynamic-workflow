@@ -17,17 +17,20 @@ class Deadline extends Component {
     constructor(props) {
         super(props);
         
-        const date = Deadline.getNextDay();
+        let date = Deadline.getNextDay();
+        
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
             workflowId: props.workflowId,
             hasDeadlineChecked: true,
             visible: props.deadlineVisible,
-            date: date
+            date: props.deadlineFill ? props.deadlineFill : date
         };
-
-        this.state.setParentState({ deadline: this.getDaysTillDeadline(date) });
+        
+        this.state.setParentState({ 
+            deadline: this.getDaysTillDeadline(props.deadlineFill ? props.deadlineFill : date) 
+        });
     }
 
     // Refresh after selecting another workflow
@@ -38,7 +41,7 @@ class Deadline extends Component {
                 workflow: props.workflow,
                 hasDeadlineChecked: true,
                 visible: props.deadlineVisible,
-                date: Deadline.getNextDay()
+                date: props.deadlineFill ? props.deadlineFill : Deadline.getNextDay()
             };
         }
         return null;
@@ -49,9 +52,9 @@ class Deadline extends Component {
         let date = new Date();
         date.setDate(date.getDate() + 1);
 
-        const dd = ("0" + (date.getDate())).slice(-2);
-        const mm = ("0" + (date.getMonth() +　1)).slice(-2);
-        const yyyy = date.getFullYear();
+        let dd = ("0" + (date.getDate())).slice(-2);
+        let mm = ("0" + (date.getMonth() +　1)).slice(-2);
+        let yyyy = date.getFullYear();
         date = yyyy + '-' + mm + '-' + dd ;
 
         return date;
@@ -59,10 +62,10 @@ class Deadline extends Component {
 
     // Get number of days until signing deadline
     getDaysTillDeadline(selectedDate) {
-        const todayDate = new Date();
-        const dateInput = new Date(selectedDate);
-        const diffTime = Math.abs(dateInput - todayDate);
-        const expirationInfo = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        let todayDate = new Date();
+        let dateInput = new Date(selectedDate);
+        let diffTime = Math.abs(dateInput - todayDate);
+        let expirationInfo = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         return expirationInfo;
     }
@@ -78,7 +81,7 @@ class Deadline extends Component {
 
     // Event handler when deadline changed
     onDeadlineChanged = (event) => {
-        const selectedDate = event.target.value;
+        let selectedDate = event.target.value;
         this.setState({
             date: selectedDate
         });

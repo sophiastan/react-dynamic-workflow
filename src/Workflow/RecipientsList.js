@@ -17,15 +17,59 @@ class RecipientsList extends Component {
     constructor(props) {
         super(props);
 
+        let recipientsList = props.recipientsListInfo ? props.recipientsListInfo : [];
+        let recipientEmails = props.recipientEmails ? props.recipientEmails : [];
+        recipientsList = this.fillDefaultValue(recipientsList, recipientEmails);
+
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            recipientsList: props.recipientsListInfo ? props.recipientsListInfo : [],
+            recipientsList: recipientsList,
             workflowId: props.workflowId,
             hideRecipient: props.features.hideRecipient,
             hideWorkflowList: props.features.hideWorkflowList,
             workflowName: props.workflowName
         };
+
+        // Update recipient for submission
+        this.state.setParentState(state => {
+            let list = this.state.getParentState().recipientsList.map((item) => {
+                let emailData = {
+                    "email": item.defaultValue
+                }
+                
+                let recipient = {
+                    "name": item.name,
+                    "recipients": [emailData]
+                }
+                return recipient;
+            });
+
+            return {
+                recipientsList: list
+            }
+        });
+        
+    }
+
+    // Fill input with query string
+    fillDefaultValue(recipientList, recipientEmails) {
+        if(Array.isArray(recipientEmails)) {
+            recipientEmails.map(email => {
+                let recipient = recipientList.find(r => !r.defaultValue);
+                if (recipient) {
+                    recipient.defaultValue = email;
+                }
+                return email;
+            });
+        }
+        else {
+            let recipient = recipientList.find(r => !r.defaultValue);
+            if (recipient) {
+                recipient.defaultValue = recipientEmails;
+            }
+        }
+        return recipientList;
     }
 
     // Refresh after selecting another workflow
@@ -33,7 +77,7 @@ class RecipientsList extends Component {
         if (props.workflowId !== state.workflowId) {
             return {
                 workflowId: props.workflowId,
-                recipientsList: props.recipientsListInfo,
+                recipientsList: props.recipientsListInfo ? props.recipientsListInfo : [],
                 hidePredefined: props.features.hidePredefined,
                 hideWorkflowList: props.features.hideWorkflowList,
                 workflowName: props.workflowName
@@ -44,14 +88,14 @@ class RecipientsList extends Component {
 
     // Event handler when an item in the list changed
     onEmailChanged = (event, index) => {
-        const val = event.target.value;
-        const emailData = {
+        let val = event.target.value;
+        let emailData = {
             "email": val
         }
 
         // Update email text for recipient
         this.setState(state => {
-            const list = this.state.recipientsList.map((item, i) => {
+            let list = this.state.recipientsList.map((item, i) => {
                 if (i === index) {
                     item.defaultValue = val;
                     item.modified = true;
@@ -69,9 +113,9 @@ class RecipientsList extends Component {
 
         // Update recipient for submission
         this.state.setParentState(state => {
-            const list = this.state.getParentState().recipientsList.map((item, i) => {
+            let list = this.state.getParentState().recipientsList.map((item, i) => {
                 if (i === index) {
-                    const recipient = {
+                    let recipient = {
                         "name": item.name,
                         "recipients": [emailData]
                     }
@@ -90,9 +134,9 @@ class RecipientsList extends Component {
 
 
     render() {
-        const hideRecipient = this.state.hideRecipient;
-        const hideWorkflows = (this.state.hideWorkflowList.indexOf(this.state.workflowName) >= 0 ? true : false);
-        const hideAll = this.state.hideWorkflowList === "" ? true : false;
+        let hideRecipient = this.state.hideRecipient;
+        let hideWorkflows = this.state.hideWorkflowList && (this.state.hideWorkflowList.indexOf(this.state.workflowName) >= 0 ? true : false);
+        let hideAll = this.state.hideWorkflowList === "" ? true : false;
 
         return (
             <div>
@@ -105,7 +149,8 @@ class RecipientsList extends Component {
                             <h3 className="recipient_label">{recipient.label}</h3>
                             <input type="text" id={`recipient_${index}`} name={`recipient_${index}`}
                                 className={!recipient.modified ? "recipient_form_input predefined_input" : "recipient_form_input"}
-                                placeholder="Enter Recipient's Email" value={recipient.defaultValue}
+                                placeholder="Enter Recipient's Email" 
+                                value={recipient.defaultValue}
                                 readOnly={recipient.editable ? false : true}
                                 onChange={(event) => this.onEmailChanged(event, index)}>
                             </input>

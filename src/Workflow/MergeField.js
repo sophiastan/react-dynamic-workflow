@@ -17,11 +17,36 @@ class MergeField extends Component {
     constructor(props) {
         super(props);
 
+        let mergeFieldList = props.mergeFieldsInfo ? props.mergeFieldsInfo : [];
+        let fieldFill = props.fieldFill ? props.fieldFill : [];
+        mergeFieldList = this.fillDefaultValue(mergeFieldList, fieldFill);
+
         this.state = {
             setParentState: props.setParentState,
             getParentState: props.getParentState,
-            workflowId: props.workflowId
+            workflowId: props.workflowId,
+            mergeFieldList: mergeFieldList
         };
+    }
+
+    // Fill input with query string
+    fillDefaultValue(mergeFieldList, fieldFill) {
+        if(Array.isArray(fieldFill)) {
+            fieldFill.map(item => {
+                let field = mergeFieldList.find(f => !f.defaultValue);
+                if (field) {
+                    field.defaultValue = item;
+                }
+                return item;
+            });
+        }
+        else {
+            let field = mergeFieldList.find(f => !f.defaultValue);
+            if (field) {
+                field.defaultValue = fieldFill;
+            }
+        }
+        return mergeFieldList;
     }
 
     // Refresh after selecting another workflow
@@ -36,12 +61,12 @@ class MergeField extends Component {
 
     // Event handler when an item in the list changed
     onFieldChanged = (event, index) => {
-        const val = event.target.value;
+        let val = event.target.value;
 
         this.state.setParentState(state => {
-            const list = this.state.getParentState().mergeFieldGroup.map((item, i) => {
+            let list = this.state.getParentState().mergeFieldGroup.map((item, i) => {
                 if (i === index) {
-                    const fieldData = {
+                    let fieldData = {
                         "displayName": item.displayName,
                         "defaultValue": val,
                         "fieldName": item.fieldName
@@ -60,8 +85,8 @@ class MergeField extends Component {
     }
 
     render() {
-        const mergeFieldGroup = this.state.getParentState().mergeFieldGroup;
-        const showMergeField = mergeFieldGroup && mergeFieldGroup.length >  0;
+        let mergeFieldGroup = this.state.getParentState().mergeFieldGroup;
+        let showMergeField = mergeFieldGroup && mergeFieldGroup.length >  0;
         return (
             <div>
                 { showMergeField &&
