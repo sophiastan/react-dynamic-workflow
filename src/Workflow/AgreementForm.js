@@ -71,9 +71,8 @@ class AgreementForm extends Component {
     async componentDidMount() {
         const workflow = await this.state.signService.getWorkflowById(this.state.workflowId);
         this.setWorkflow(workflow);
-        const features = await this.state.configService.getFeatures();
         this.setState({
-            features: features
+            features: await this.state.configService.getFeatures()
         })
     }
 
@@ -143,20 +142,29 @@ class AgreementForm extends Component {
         // console.log("maxSubmits " + this.state.maxSubmits);
         // console.log("allMaxSubmits " + this.state.allMaxSubmits);
 
-        const reachedMaxSubmits = this.state.features && (this.state.maxSubmits < this.state.features.maxSubmits)
-        && (this.state.allMaxSubmits < this.state.features.allMaxSubmits);
-        console.log(reachedMaxSubmits);
-        
-        // // Submit agreement to API server
-        // const response = await this.state.signService.postWorkflowAgreement(
-        //     this.state.workflowId, agreementData);
+        // let canSubmit = this.state.features && (this.state.maxSubmits < this.state.features.maxSubmits)
+        // && (this.state.allMaxSubmits < this.state.features.allMaxSubmits);
+        // console.log(canSubmit);
+        // if (!canSubmit) {
+        //     setTimeout(() => {
+        //         this.setState({
+        //             maxSubmits: 0,
+        //             allMaxSubmits: 0
+        //         })
+        //     }, this.state.features.timeoutPeriod);
+        // }
+        // console.log(canSubmit);
 
-        // if ('url' in response) {
-        //     alert('Agreement sent');
-        // }
-        // else {
-        //     alert(response.message);
-        // }
+        // Submit agreement to API server
+        const response = await this.state.signService.postWorkflowAgreement(
+            this.state.workflowId, agreementData);
+
+        if ('url' in response) {
+            alert('Agreement sent');
+        }
+        else {
+            alert(response.message);
+        }
     }
 
     render() {
