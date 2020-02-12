@@ -10,16 +10,7 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-import React, { Component } from 'react';
-
-class Home extends Component {
-  render() {
-    return (
-      <div>
-        <h3 className="text-left mt-3 ml-3">Provide url for creating agreement</h3>
-      </div>
-    );
-  }
+// Holds environment variables from .env file
+module.exports = {
+  SERVER_URL: "http://localhost:3200"
 }
-
-export default Home;

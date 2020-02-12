@@ -11,17 +11,16 @@ governing permissions and limitations under the License.
 */
 
 // This class handles reading config data from a config file.
+const features = require('./features.js');
+
 class ConfigService {
     constructor() {
-        this.baseUrl = "http://localhost:3200";
+        this.baseUrl = features.SERVER_URL;
     }
-    
     hideSelector = false;
-
     getFeatures = () => {
-        const url = this.baseUrl + "/features";
-        const body = fetch(url)
-        .then(resp => resp.json())
+        const body = fetch(`${this.baseUrl}/features`)
+          .then(resp => resp.json())
         return body;
     }
 }
